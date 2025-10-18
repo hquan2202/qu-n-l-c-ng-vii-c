@@ -1,0 +1,29 @@
+<div class="picker-popup">
+  <div class="picker-popup">
+    <!-- Header 1 hàng: tiêu đề + dấu X -->
+    <div class="picker-header">
+      <div class="h3">
+        <h3>Phông nền bảng</h3>
+      </div>
+        <mat-icon class="close-btn" (click)="closePicker()">close</mat-icon>
+
+    </div>
+
+  <div class="picker-content">
+    <!-- Nội dung scrollable: ảnh + gradient -->
+    <div class="section">
+      <h4>Ảnh nền</h4>
+      <div class="picker-grid">
+        <img *ngFor="let bg of backgrounds" [src]="bg" (click)="pick(bg)" />
+      </div>
+    </div>
+
+    <div class="section">
+      <h4>Màu sắc / Gradient</h4>
+      <div class="picker-grid">
+        <div *ngFor="let g of gradients" [ngStyle]="{'background': g}" class="gradient-tile" (click)="pick(g)"></div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>

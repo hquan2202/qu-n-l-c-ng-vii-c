@@ -1,0 +1,26 @@
+<div class="sidebar-container">
+  <div
+    class="menu-item"
+    routerLink="/home"
+    routerLinkActive="active"
+    [routerLinkActiveOptions]="{ exact: true }"
+  >
+    <mat-icon class="menu-icon">home</mat-icon>
+    <span class="menu-text">Trang chủ</span>
+  </div>
+
+  <div class="menu-item" routerLink="/board" routerLinkActive="active">
+    <mat-icon class="menu-icon">dashboard</mat-icon>
+    <span class="menu-text">Bảng</span>
+  </div>
+
+  <div class="menu-item" routerLink="/projects" routerLinkActive="active">
+    <mat-icon class="menu-icon">folder</mat-icon>
+    <span class="menu-text">Dự án</span>
+  </div>
+
+  <div class="menu-item" routerLink="/teams" routerLinkActive="active">
+    <mat-icon class="menu-icon">group</mat-icon>
+    <span class="menu-text">Nhóm</span>
+  </div>
+</div>

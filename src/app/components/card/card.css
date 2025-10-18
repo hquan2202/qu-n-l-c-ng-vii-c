@@ -1,0 +1,26 @@
+.card {
+  flex: 1; /* 👈 giúp chia đều trong hàng */
+  width: 150px;
+  height: 70px; /* 👈 chiều cao cố định cho đồng đều */
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  padding: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 14px rgba(0,0,0,0.15);
+}
+
+.card-title {
+  font-weight: 500;
+  font-size: 15px;
+  color: black;
+  margin: 0;
+}

@@ -1,0 +1,18 @@
+<div class="home-container">
+  <h2>Không gian làm việc</h2>
+
+  <div class="home-stats">
+    <app-card
+      *ngFor="let c of cards"
+      [title]="c.title"
+      [color]="c.color"
+      (click)="c.title === '+ Tạo bảng mới' ? openPopup() : null">
+    </app-card>
+  </div>
+
+  <app-task-description
+    *ngIf="showPopup"
+    (close)="closePopup()"
+    (createBoard)="addNewBoard($event)">
+  </app-task-description>
+</div>

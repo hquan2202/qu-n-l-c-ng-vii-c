@@ -1,0 +1,22 @@
+<div class="board-container">
+  <h2>Bảng công việc</h2>
+
+  <div class="board-columns">
+    <div class="board-column" *ngFor="let column of columns; let i = index">
+      <h3>{{ column.title }}</h3>
+
+      <div class="card" *ngFor="let card of column.cards">
+        {{ card }}
+      </div>
+
+      <div class="add-card">
+        <input
+          type="text"
+          [(ngModel)]="column.newCardName"
+          placeholder="Nhập tên thẻ mới..."
+        />
+        <button (click)="addCard(i)">+ Thêm</button>
+      </div>
+    </div>
+  </div>
+</div>
