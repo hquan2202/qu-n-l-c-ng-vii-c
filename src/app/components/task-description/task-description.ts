@@ -2,11 +2,12 @@ import { Component, EventEmitter, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { BackgroundPickerComponent } from '../background-picker/background-picker';
+import { MatIcon } from '@angular/material/icon';
 
 @Component({
   selector: 'app-task-description',
   standalone: true,
-  imports: [FormsModule, CommonModule, BackgroundPickerComponent],
+  imports: [FormsModule, CommonModule, BackgroundPickerComponent, MatIcon],
   templateUrl: './task-description.html',
   styleUrls: ['./task-description.css']
 })
@@ -57,6 +58,8 @@ export class TaskDescriptionComponent {
     console.log('Tạo bảng:', this.boardTitle);
     this.close.emit(); // hoặc gọi service để tạo bảng
   }
-
+  closePicker() {
+    this.close.emit();
+  }
 
 }

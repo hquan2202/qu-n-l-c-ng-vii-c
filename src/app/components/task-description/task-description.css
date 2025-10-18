@@ -18,12 +18,32 @@
 }
 
 .popup-content h2 {
-  margin: 0 0 16px 0;
+  margin: 0 0 5px 0;
   font-size: 20px;
   font-weight: 600;
   text-align: center;
 }
-
+.header{
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  justify-items: center;
+}
+.h3{
+  justify-items: center;
+  align-items: center;
+}
+mat-icon.close-btn {
+  padding: 0;             /* bỏ padding để không thấy nền */
+  border: none;
+  border-radius: 0;       /* bỏ bo tròn */
+  cursor: pointer;
+  background: none ;  /* override nếu Material set sẵn */
+  box-shadow: none;       /* loại shadow nếu có */
+  color: #666;            /* màu chữ */
+  font-size: 20px;
+  align-items: center;
+}
 .preview {
   width: 100%;
   height: 120px;
