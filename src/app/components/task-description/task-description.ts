@@ -47,17 +47,25 @@ export class TaskDescriptionComponent {
     this.selectedBackground = bg;
     this.showPicker = false;
   }
-
   onCreateBoard() {
     if (!this.boardTitle || this.boardTitle.trim() === '') {
       alert('Vui lòng nhập tiêu đề bảng trước khi tạo!');
       return;
     }
 
-    // Nếu hợp lệ thì xử lý tạo bảng
-    console.log('Tạo bảng:', this.boardTitle);
-    this.close.emit(); // hoặc gọi service để tạo bảng
+    // Emit dữ liệu bảng mới (title + background)
+    this.createBoard.emit({
+      title: this.boardTitle.trim(),
+      background: this.selectedBackground
+    });
+
+    // Reset form và đóng popup
+    this.boardTitle = '';
+    this.showPicker = false;
+    this.close.emit();
   }
+
+
   closePicker() {
     this.close.emit();
   }

@@ -12,7 +12,7 @@
     <div
       class="preview"
       [ngStyle]="{
-        'background': selectedBackground?.startsWith('http')
+        'background': selectedBackground.startsWith('http')
           ? 'url(' + selectedBackground + ') center/cover'
           : selectedBackground
       }">

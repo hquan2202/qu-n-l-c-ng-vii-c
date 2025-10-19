@@ -1,26 +1,59 @@
 .card {
-  flex: 1; /* 👈 giúp chia đều trong hàng */
-  width: 150px;
-  height: 70px; /* 👈 chiều cao cố định cho đồng đều */
-  border-radius: 12px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-  padding: 18px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
+  width: 220px;
+  height: 120px;
+  border-radius: 8px;
+  overflow: hidden;
   cursor: pointer;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  position: relative;
+  transition: transform 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 .card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 6px 14px rgba(0,0,0,0.15);
+  transform: scale(1.03);
+}
+
+
+.card-bg {
+  flex: 1.2; /* 🔹 chiếm nhiều không gian hơn (tăng từ 1 lên 1.2) */
 }
 
 .card-title {
+  background: #e0e0e0;
+  text-align: center;
+  font-weight: bold;
+  font-size: 15px;
+  color: #333;
+  height: 30px; /* 🔹 thanh trắng nhỏ hơn */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+}
+/* 🎯 card đặc biệt: "+ Tạo bảng mới" */
+.create-card {
+  border: 2px;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.create-card .card-bg {
+  display: none; /* không cần nền ảnh */
+}
+
+.create-card .card-title {
+  background: none;
+  color: black;
   font-weight: 500;
   font-size: 15px;
-  color: black;
-  margin: 0;
+  text-align: center;
+}
+
+.create-card:hover {
+  background: lightgray;
+  border-color: lightgrey;
 }

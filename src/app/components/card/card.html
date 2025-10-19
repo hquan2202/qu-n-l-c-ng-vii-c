@@ -1,3 +1,19 @@
-<div class="card" [style.background]="color">
-  <h3 class="card-title">{{ title }}</h3>
+<div
+  class="card"
+  [ngClass]="{ 'create-card': title === '+ Tạo bảng mới' }"
+  (mouseenter)="hover = true"
+  (mouseleave)="hover = false"
+>
+  <div
+    class="card-bg"
+    [ngStyle]="{
+      'background': color.includes('http') ? 'url(' + color + ')' : color,
+      'background-size': 'cover',
+      'background-position': 'center'
+    }"
+  ></div>
+
+  <div class="card-title">
+    <h3>{{ title }}</h3>
+  </div>
 </div>

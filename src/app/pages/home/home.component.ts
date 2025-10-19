@@ -1,39 +1,35 @@
-// File: src/app/pages/home/home.component.ts
 import { Component } from '@angular/core';
-import { NgFor, NgIf } from '@angular/common';
-import { CardComponent } from '../../components/card/card';
+import {NgClass, NgFor, NgIf} from '@angular/common';
 import { TaskDescriptionComponent } from '../../components/task-description/task-description';
+import { CardComponent } from '../../components/card/card';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CardComponent, NgFor, NgIf, TaskDescriptionComponent],
+  imports: [NgFor, NgIf, TaskDescriptionComponent, CardComponent, NgClass],
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css']
 })
 export class HomeComponent {
   showPopup = false;
+  cards = JSON.parse(localStorage.getItem('boards') || '[]');
 
-  cards = [
-    { title: 'Công việc', color: '#C6CFE9' },
-    { title: 'Hoàn Thành', color: '#B5EAD6' },
-    { title: 'Đang làm', color: '#FFFFD8' },
-    { title: '+ Tạo bảng mới', color: '#fff' }
-  ];
-
-  openPopup(): void {
+  openPopup() {
     this.showPopup = true;
   }
 
-  closePopup(): void {
+  closePopup() {
     this.showPopup = false;
   }
 
-  addNewBoard(event: { title: string; background: string }): void {
-    this.cards.splice(this.cards.length - 1, 0, {
-      title: event.title,
-      color: event.background
-    });
+  addNewBoard(board: { title: string; background: string }) {
+    this.cards.push(board);
+    localStorage.setItem('boards', JSON.stringify(this.cards));
     this.showPopup = false;
+  }
+
+  deleteCard(index: number) {
+    this.cards.splice(index, 1);
+    localStorage.setItem('boards', JSON.stringify(this.cards));
   }
 }
