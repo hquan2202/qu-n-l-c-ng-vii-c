@@ -1,3 +1,4 @@
+
 .app-container {
   display: flex;
   height: 100vh;
@@ -5,13 +6,16 @@
 }
 
 app-sidebar {
-  width: 220px;
+  width: 260px;
   background: #3f51b5;
   color: white;
+  margin-top: 55px;
+  height: calc(100vh - 55px);
 }
 
 .content {
   flex: 1;
   overflow-y: auto;
-  background: #EEEEEE;
+  background: #f5f7fb;
+  padding: 65px 20px 20px 20px;
 }
