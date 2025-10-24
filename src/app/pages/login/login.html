@@ -1,1 +1,77 @@
-<p>login works!</p>
+<div class="login-page">
+  <div class="login-card" role="main" aria-labelledby="login-title">
+    <div class="brand">
+      <!-- Thay bằng logo của bạn -->
+      <img src="assets/logo.png" alt="Project Logo" class="logo" />
+      <h1 id="login-title">MyBoard</h1>
+    </div>
+
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form" novalidate>
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input
+          id="email"
+          type="email"
+          formControlName="email"
+          placeholder="you@example.com"
+          aria-describedby="emailHelp"
+        />
+        <div class="error" *ngIf="f['email'].touched && f['email'].invalid">
+          <small *ngIf="f['email'].errors?.['required']">Email bắt buộc.</small>
+          <small *ngIf="f['email'].errors?.['email']">Email không hợp lệ.</small>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="password">Mật khẩu</label>
+        <div class="password-row">
+          <input
+            id="password"
+            [type]="showPassword ? 'text' : 'password'"
+            formControlName="password"
+            placeholder="Mật khẩu"
+          />
+          <button
+            type="button"
+            class="show-btn"
+            (click)="toggleShowPassword()"
+            aria-pressed="{{ showPassword }}"
+          >
+            {{ showPassword ? 'Ẩn' : 'Hiện' }}
+          </button>
+        </div>
+        <div class="error" *ngIf="f['password'].touched && f['password'].invalid">
+          <small *ngIf="f['password'].errors?.['required']">Mật khẩu bắt buộc.</small>
+          <small *ngIf="f['password'].errors?.['minlength']">Ít nhất 6 ký tự.</small>
+        </div>
+      </div>
+
+      <div class="actions-row">
+        <label class="remember">
+          <input type="checkbox" formControlName="remember" /> Ghi nhớ đăng nhập
+        </label>
+        <a class="forgot" (click)="forgot()">Quên mật khẩu?</a>
+      </div>
+
+      <button class="btn primary" type="submit" [disabled]="loginForm.invalid">
+        Đăng nhập
+      </button>
+
+      <div class="divider">hoặc</div>
+
+      <div class="socials">
+        <button type="button" class="btn oauth" (click)="oauth('google')">
+          Đăng nhập với Google
+        </button>
+        <button type="button" class="btn oauth" (click)="oauth('github')">
+          Đăng nhập với GitHub
+        </button>
+      </div>
+
+      <div class="signup">
+        Chưa có tài khoản?
+        <a (click)="register()">Đăng ký</a>
+      </div>
+    </form>
+  </div>
+</div>

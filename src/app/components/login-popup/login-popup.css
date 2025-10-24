@@ -1,0 +1,211 @@
+/* Overlay mờ bao phủ toàn màn hình */
+/*.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 3000; /* ⚡ tăng cao hơn header
+  animation: fadeIn 0.3s ease;
+}*/
+
+:host ::ng-deep .popup,
+:host ::ng-deep .popup * {
+  color: #000 !important;
+}
+
+
+/* Popup nổi ở giữa */
+.popup {
+  background: #fff;
+  border-radius: 12px;
+  padding: 35px 20px;
+  width: 380px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+  position: relative;
+  text-align: left;
+  font-family: "Inter", sans-serif;
+  animation: slideUp 0.3s ease;
+  z-index: 3001; /* ⚡ cao hơn overlay */
+}
+
+/* Tiêu đề */
+h2 {
+  margin-bottom: 20px;
+  color: #1976d2;
+  font-weight: 600;
+  text-align: center;
+}
+
+/* Các nhóm input */
+.form-group {
+  margin-bottom: 1rem;
+}
+
+label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 500;
+  color: #333;
+}
+
+input[type="email"],
+input[type="password"],
+input[type="text"] {
+  width: 100%;
+  padding: 10px 5px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  transition: border-color 0.2s;
+}
+
+input:focus {
+  border-color: #1976d2;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(25, 118, 210, 0.2);
+}
+
+/* Hiện/Ẩn mật khẩu */
+.password-wrapper {
+  position: relative;
+}
+
+.show-btn {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  border: none;
+  background: none;
+  color: #1976d2;
+  cursor: pointer;
+  font-size: 0.85rem;
+}
+
+/* Thông báo lỗi */
+.error {
+  color: #d32f2f;
+  font-size: 12px;
+  margin-top: 4px;
+}
+
+/* Hàng ghi nhớ & quên mật khẩu */
+.remember-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.9rem;
+  margin: 10px 0 16px;
+}
+
+.forgot {
+  color: #1976d2;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.forgot:hover {
+  text-decoration: underline;
+}
+
+/* Nút chính */
+.btn.primary {
+  width: 100%;
+  background: #1976d2;
+  color: white;
+  border: none;
+  padding: 10px;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.btn.primary:disabled {
+  opacity: 0.6;
+}
+
+.btn.primary:hover:not(:disabled) {
+  background: #1565c0;
+}
+
+/* Phân cách */
+.divider {
+  color: #aaa;
+  font-size: 0.85rem;
+  margin: 12px 0;
+  text-align: center;
+}
+
+/* Nút đăng nhập OAuth */
+.socials {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.btn.oauth {
+  border: 1px solid #ddd;
+  background: #fafafa;
+  border-radius: 8px;
+  padding: 10px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn.oauth:hover {
+  background: #f0f0f0;
+}
+
+/* Dòng đăng ký */
+.signup {
+  font-size: 0.9rem;
+  margin-top: 1rem;
+  text-align: center;
+}
+
+.signup a {
+  color: #1976d2;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.signup a:hover {
+  text-decoration: underline;
+}
+
+/* Nút đóng popup */
+.close-btn {
+  position: absolute;
+  right: 12px;
+  top: 10px;
+  background: none;
+  border: none;
+  font-size: 1.4rem;
+  color: #888;
+  cursor: pointer;
+}
+
+.close-btn:hover {
+  color: #333;
+}
+
+/* Hiệu ứng */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { transform: translateY(15px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+.popup {
+  opacity: 1 !important;
+  transform: none !important;
+  display: block !important;
+}
