@@ -1,0 +1,59 @@
+<!-- Popup Login -->
+  <div class="popup" (click)="$event.stopPropagation()">
+    <button class="close-btn" (click)="closePopup()">×</button>
+
+    <h2>Đăng nhập</h2>
+
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+      <div class="form-group">
+        <label>Email</label>
+        <input
+          type="email"
+          formControlName="email"
+          placeholder="Nhập email của bạn"
+        />
+        <small *ngIf="f['email'].touched && f['email'].invalid" class="error">
+          Vui lòng nhập email hợp lệ
+        </small>
+      </div>
+
+      <div class="form-group">
+        <label>Mật khẩu</label>
+        <div class="password-wrapper">
+          <input
+            [type]="showPassword ? 'text' : 'password'"
+            formControlName="password"
+            placeholder="Nhập mật khẩu"
+          />
+          <button type="button" class="show-btn" (click)="toggleShowPassword()">
+            {{ showPassword ? 'Ẩn' : 'Hiện' }}
+          </button>
+        </div>
+        <small *ngIf="f['password'].touched && f['password'].invalid" class="error">
+          Mật khẩu ít nhất 6 ký tự
+        </small>
+      </div>
+
+      <div class="remember-row">
+        <label><input type="checkbox" formControlName="remember" /> Ghi nhớ</label>
+        <a class="forgot" (click)="forgot()">Quên mật khẩu?</a>
+      </div>
+
+      <button type="submit" class="btn primary" [disabled]="loginForm.invalid">
+        Đăng nhập
+      </button>
+    </form>
+
+    <div class="divider">hoặc</div>
+
+    <div class="socials">
+      <button class="btn oauth" (click)="oauth('google')">Đăng nhập với Google</button>
+      <button class="btn oauth" (click)="oauth('github')">Đăng nhập với GitHub</button>
+    </div>
+
+    <p class="signup">
+      Chưa có tài khoản?
+      <a (click)="register()">Đăng ký ngay</a>
+    </p>
+  </div>
+
