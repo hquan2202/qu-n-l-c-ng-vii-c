@@ -10,6 +10,7 @@ import { SidebarComponent} from './components/sidebar/sidebar';
     RouterOutlet,
     HeaderComponent,
     SidebarComponent,
+
   ],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'], // ✅ phải là styleUrls

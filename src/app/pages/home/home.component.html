@@ -1,19 +1,35 @@
-
+<!-- file: src/app/pages/home/home.component.html -->
 <div class="home-container">
   <h2>Không gian làm việc</h2>
-  <div class="home-stats">
-    <app-card
-      *ngFor="let c of cards"
-      [title]="c.title"
-      [color]="c.color"
-      [ngClass]="{'create-card': c.title === '+ Tạo bảng mới'}"
-      (click)="c.title === '+ Tạo bảng mới' ? openPopup() : null">
-    </app-card>
-  </div>
 
+  <div class="home-stats">
+    <ng-container *ngFor="let c of cards; let i = index">
+      <!-- Nếu là 'Tạo bảng mới' -->
+      <div
+        *ngIf="c.title === 'Tạo bảng mới'; else normalCard"
+        class="create-board"
+        role="button"
+        tabindex="0"
+        (click)="openPopup()"
+        (keydown.enter)="openPopup()"
+      >
+        <span>Tạo bảng mới</span>
+      </div>
+
+      <!-- Card thông thường -->
+      <ng-template #normalCard>
+        <app-card
+          [title]="c.title"
+          [color]="c.color"
+          (delete)="deleteCard(i)">
+        </app-card>
+      </ng-template>
+    </ng-container>
+  </div>
 
   <app-task-description
     *ngIf="showPopup"
-    (close)="closePopup()">
+    (close)="closePopup()"
+    (addBoard)="addNewBoard($event)">
   </app-task-description>
 </div>

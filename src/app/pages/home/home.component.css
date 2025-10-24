@@ -1,15 +1,37 @@
+/* css */
 .home-container {
-  padding: 10px 10px;
+  padding: 16px;
 }
-.h2{
-  font-size: 18px;
-  font-weight: 600;
-  color: white;
-}
-.home-stats{
+
+.home-stats {
   display: flex;
-  color: #222;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.create-card {
+  border: 2px;
+  cursor: pointer;
+  opacity: 0.95;
+}
+.create-board {
+  width: 220px;
+  height: 120px;
+  background-color: #ffffff;
+  border: 2px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   font-size: 16px;
-  margin-top: 20px;
-  gap: 30px;
+  font-weight: 600;
+  color: #555;
+  transition: all 0.25s ease;
+  cursor: pointer;
+}
+
+.create-board:hover {
+  background-color: #f9f9f9;
+  border-color: #888;
+  transform: scale(1.05);
 }

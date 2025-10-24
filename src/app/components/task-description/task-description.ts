@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import {Component, EventEmitter, model, Output} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { BackgroundPickerComponent } from '../background-picker/background-picker';
@@ -12,7 +12,7 @@ import { MatIcon } from '@angular/material/icon';
   styleUrls: ['./task-description.css']
 })
 export class TaskDescriptionComponent {
-  @Output() createBoard = new EventEmitter<{ title: string; background: string }>();
+  @Output() addBoard = new EventEmitter<{ title: string; background: string }>();
   @Output() close = new EventEmitter<void>();
 
   boardTitle = '';
@@ -34,7 +34,6 @@ export class TaskDescriptionComponent {
     'linear-gradient(135deg, #ffecd2, #fcb69f)'
   ];
 
-
   selectBackground(bg: string) {
     this.selectedBackground = bg;
   }
@@ -54,7 +53,7 @@ export class TaskDescriptionComponent {
     }
 
     // Emit dữ liệu bảng mới (title + background)
-    this.createBoard.emit({
+    this.addBoard.emit({
       title: this.boardTitle.trim(),
       background: this.selectedBackground
     });
