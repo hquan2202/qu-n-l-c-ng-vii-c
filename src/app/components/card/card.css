@@ -57,3 +57,32 @@
   background: lightgray;
   border-color: lightgrey;
 }
+.card {
+  position: relative;
+  width: 220px;
+  height: 120px;
+  border-radius: 12px;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.card-delete-btn {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  background: transparent; /* không nền */
+  border: none;            /* không viền */
+  border-radius: 0;        /* không bo tròn */
+  padding: 0;              /* bỏ padding thừa */
+  cursor: pointer;
+  color: gray;          /* màu đỏ mặc định */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.card-delete-btn:hover {
+  color: #d32f2f;          /* đỏ đậm khi hover */
+  background: transparent; /* vẫn không nền */
+  box-shadow: none;        /* bỏ mọi shadow */
+}

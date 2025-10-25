@@ -1,32 +1,32 @@
-<!-- file: src/app/pages/home/home.component.html -->
 <div class="home-container">
   <h2>Không gian làm việc</h2>
 
   <div class="home-stats">
     <ng-container *ngFor="let c of cards; let i = index">
-      <!-- Nếu là 'Tạo bảng mới' -->
-      <div
-        *ngIf="c.title === 'Tạo bảng mới'; else normalCard"
-        class="create-board"
-        role="button"
-        tabindex="0"
-        (click)="openPopup()"
-        (keydown.enter)="openPopup()"
-      >
+      <!-- Nút Tạo bảng mới -->
+      <div *ngIf="normalizeTitle(c.title) === CREATE_TITLE; else normalCard"
+           class="create-board"
+           (click)="openPopup()">
         <span>Tạo bảng mới</span>
       </div>
 
-      <!-- Card thông thường -->
+      <!-- Card bình thường -->
       <ng-template #normalCard>
-        <app-card
-          [title]="c.title"
-          [color]="c.color"
-          (delete)="deleteCard(i)">
-        </app-card>
+        <div class="card-wrapper">
+          <app-card
+            [title]="c.title"
+            [color]="c.color"
+            [background]="c.background ?? ''"
+            (cardClick)="onCardClick(c, i)"
+            (delete)="deleteCard(i)">
+          </app-card>
+        </div>
       </ng-template>
     </ng-container>
   </div>
 
+
+  <!-- popup create board -->
   <app-task-description
     *ngIf="showPopup"
     (close)="closePopup()"

@@ -1,39 +1,22 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
   selector: 'app-card',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, MatIconModule, MatButtonModule],
   templateUrl: './card.html',
   styleUrls: ['./card.css']
 })
 export class CardComponent {
-  @Input() title!: string;
-  @Input() color!: string;
+  @Input() title: string = '';
+  @Input() color: string = '#000';
+  @Input() background?: string;
+
   @Output() cardClick = new EventEmitter<void>();
-
-  onCardClick() {
-    this.cardClick.emit();
-  }
-
   @Output() delete = new EventEmitter<void>();
 
-  hover = false;
-
-  deleteCard(event: MouseEvent) {
-    event.stopPropagation();
-    this.delete.emit();
-  }
-
-  // ✅ Kiểm tra xem có phải ảnh không
-  isImage(bg: string): boolean {
-    return bg.startsWith('http') || bg.includes('unsplash.com');
-  }
-
-  // ✅ Trả về đúng kiểu nền (ảnh, gradient, màu trơn)
-  getBackgroundStyle(): string {
-    if (this.isImage(this.color)) return `url(${this.color})`;
-    return this.color;
-  }
+  hover: boolean = false; // ← khai báo hover để template dùng được
 }

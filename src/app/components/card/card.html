@@ -1,19 +1,32 @@
 <div
   class="card"
   [ngClass]="{ 'create-card': title === '+ Tạo bảng mới' }"
+  (click)="cardClick.emit()"
   (mouseenter)="hover = true"
   (mouseleave)="hover = false"
 >
   <div
     class="card-bg"
     [ngStyle]="{
-      'background': color.includes('http') ? 'url(' + color + ')' : color,
+      'background': (background || '#ffffff').includes('http') ? 'url(' + background + ')' : (background || '#ffffff'),
       'background-size': 'cover',
       'background-position': 'center'
     }"
   ></div>
 
-  <div class="card-title">
+  <!-- title -->
+  <div class="card-title" [ngStyle]="{'color': color}">
     <h3>{{ title }}</h3>
   </div>
+
+  <!-- nút xóa góc trên bên phải -->
+  <button
+    *ngIf="title !== '+ Tạo bảng mới'"
+    class="card-delete-btn"
+    (click)="delete.emit(); $event.stopPropagation()"
+    aria-label="Xóa bảng"
+  >
+    <mat-icon>close</mat-icon>
+  </button>
+
 </div>
