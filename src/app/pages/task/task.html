@@ -1,9 +1,12 @@
-<div
-  *ngFor="let card of cards; let i = index"
-  class="card"
-  [ngClass]="{ 'create-card': normalizeTitle(card.title) === normalizeTitle(CREATE_TITLE) }"
-  [style.backgroundColor]="card.color"
-  (click)="onCardClick(card, i)"
->
-  <h3>{{ card.title }}</h3>
+<div class="task-container">
+  <div class="task-container">
+    <div class="task-header">
+      <h2 class="task-title">{{ board?.title || 'Chi tiết bảng' }}</h2>
+    </div>
+  </div>
+
+  <div class="task-content">
+    <!-- Nội dung khác của task (mô tả, label, comment, ...) -->
+  </div>
 </div>
+

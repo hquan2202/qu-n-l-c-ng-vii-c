@@ -19,9 +19,9 @@ import { MatIconModule } from '@angular/material/icon';
 })
 export class BoardComponent implements OnInit {
   columns: any[] = [
-    { title: 'To Do', cards: [] },
-    { title: 'In Progress', cards: [] },
-    { title: 'Done', cards: [] }
+    { title: 'Cần làm', cards: [] },
+    { title: 'Đang tiến hành', cards: [] },
+    { title: 'Hoàn thành', cards: [] }
   ];
 
   editing: { i: number; j: number } | null = null;

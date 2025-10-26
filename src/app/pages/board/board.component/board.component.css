@@ -1,7 +1,6 @@
-/* board.component.css (Hoàn chỉnh) */
 
 .board-container {
-  padding: 24px 32px;
+  padding: 12px;
   font-family: Arial, sans-serif;
   background: #f5f7fb;
   min-width: 100%;
@@ -14,6 +13,7 @@
 h2 {
   margin: 0 0 12px 0;
   color: #263238;
+  font-size: 20px;
 }
 
 /* --- COLUMN ACTIONS CONTAINER (Mới) --- */

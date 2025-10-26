@@ -1,11 +1,15 @@
 /* css */
 .home-container {
-  padding: 16px;
+  padding: 8px;
 }
-
+.h2{
+  margin-bottom: 12px;
+  color: #263238;
+  font-size: 20px;
+}
 .home-stats {
   display: flex;
-  gap: 12px;
+  gap: 15px;
   flex-wrap: wrap;
 }
 

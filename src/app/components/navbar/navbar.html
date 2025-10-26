@@ -1,0 +1,16 @@
+<nav class="navbar">
+  <!-- Bên trái: logo + nút -->
+  <div class="left">
+    <img src="assets/images/tasklogo.png" alt="logo" class="logo-img">
+    <span class="app-name">Task</span>
+    <mat-icon class="material-symbols-outlined">filter_list</mat-icon>
+    <mat-icon class="view-icon" (click)="toggleView()">view_module</mat-icon>
+  </div>
+
+  <!-- Bên phải: notifications + avatar -->
+  <div class="right">
+    <mat-icon class="material-symbols-outlined">group</mat-icon>
+    <mat-icon class="notification-icon">notifications</mat-icon>
+    <mat-icon class="avatar-icon"(click)="openLoginPopup()">account_circle</mat-icon>
+  </div>
+</nav>

@@ -1,26 +1,22 @@
-import { Component } from '@angular/core';
-import { CommonModule, NgClass, NgFor } from '@angular/common';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { Board } from '../../models/board.model';
 
 @Component({
   selector: 'app-task',
   standalone: true,
-  imports: [CommonModule, NgFor, NgClass],
+  imports: [CommonModule],
   templateUrl: './task.html',
   styleUrls: ['./task.css']
 })
 export class TaskComponent {
-  cards = [
-    { title: 'Task 1', color: '#e6f7ff' },
-    { title: 'Task 2', color: '#ffffff' }
-  ];
+  @Input() board?: Board;
 
-  CREATE_TITLE = 'Tạo bảng mới';
+  // 🔹 khai báo event back
+  @Output() back = new EventEmitter<void>();
 
-  normalizeTitle(title: string): string {
-    return title.trim().toLowerCase();
-  }
-
-  onCardClick(card: any, index: number): void {
-    console.log('Card clicked:', card, index);
+  // ví dụ: gọi khi muốn back
+  closeBoard() {
+    this.back.emit();
   }
 }

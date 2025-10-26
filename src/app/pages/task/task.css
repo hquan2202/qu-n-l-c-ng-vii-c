@@ -1,8 +1,11 @@
-.task-page {
-  padding: 20px;
-  font-family: Arial, sans-serif;
+.task-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }
 
-.task-page h2 {
-  color: #333;
+.task-title {
+  font-size: 18px;
+  font-weight: 600;
+  margin: 0;
 }

@@ -11,12 +11,17 @@ import { MatButtonModule } from '@angular/material/button';
   styleUrls: ['./card.css']
 })
 export class CardComponent {
+  @Input() id: string = ''; // ✅ thêm id
   @Input() title: string = '';
   @Input() color: string = '#000';
   @Input() background?: string;
 
-  @Output() cardClick = new EventEmitter<void>();
+  @Output() cardClick = new EventEmitter<string>(); // ✅ phát id ra
   @Output() delete = new EventEmitter<void>();
 
-  hover: boolean = false; // ← khai báo hover để template dùng được
+  hover: boolean = false;
+
+  onCardClick() {
+    this.cardClick.emit(this.id);
+  }
 }

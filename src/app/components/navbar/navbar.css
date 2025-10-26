@@ -1,0 +1,37 @@
+.navbar {
+  height: 55px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  background-color: #524290;
+  color: white;
+  box-sizing: border-box;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.navbar .left,
+.navbar .right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.navbar .logo-img {
+  height: 32px;
+  width: auto;
+}
+
+.navbar mat-icon {
+  cursor: pointer;
+  font-size: 24px;       /* Giống header */
+  padding: 6px;
+  border-radius: 50%;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.navbar mat-icon:hover {
+  color: lightgrey;
+}

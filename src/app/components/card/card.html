@@ -8,14 +8,16 @@
   <div
     class="card-bg"
     [ngStyle]="{
-      'background': (background || '#ffffff').includes('http') ? 'url(' + background + ')' : (background || '#ffffff'),
+      'background': (background || '#ffffff').includes('http')
+        ? 'url(' + background + ')'
+        : (background || '#ffffff'),
       'background-size': 'cover',
       'background-position': 'center'
     }"
   ></div>
 
   <!-- title -->
-  <div class="card-title" [ngStyle]="{'color': color}">
+  <div class="card-title" [ngStyle]="{ color: color }">
     <h3>{{ title }}</h3>
   </div>
 
@@ -28,5 +30,4 @@
   >
     <mat-icon>close</mat-icon>
   </button>
-
 </div>

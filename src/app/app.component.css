@@ -1,21 +1,27 @@
-
 .app-container {
   display: flex;
   height: 100vh;
   width: 100vw;
 }
-
-app-sidebar {
-  width: 260px;
-  background: #3f51b5;
-  color: white;
-  margin-top: 55px;
-  height: calc(100vh - 55px);
+app-header {
+    height: 55px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
+    box-sizing: border-box;
 }
-
+app-navbar {
+    height: 100%;
+    width: 60px;
+}
+app-sidebar {
+    width: 280px;
+    height: 100%; /* chiếm hết height của app-container */
+}
 .content {
-  flex: 1;
+  width: 100%;
   overflow-y: auto;
   background: #f5f7fb;
-  padding: 65px 20px 20px 20px;
+  padding: 0 12px;
 }

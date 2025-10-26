@@ -12,3 +12,5 @@ import {RouterLink, RouterLinkActive} from '@angular/router';
 })
 export class SidebarComponent {}
 
+export class Sidebar {
+}

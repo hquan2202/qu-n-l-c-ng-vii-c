@@ -1,30 +1,28 @@
 
 .sidebar-container {
-  width: 260px;
+  width: 280px;
   height: 100%;
-  margin-top: 0;
-
   background-color: #6d60bc;
   color: white;
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
-  padding: 0px 20px 20px 20px;
+  padding: 0px 50px 20px 20px;
 }
-
 
 .menu-item {
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 10px 16px;
+  padding: 10px 10px;
   cursor: pointer;
-  width: calc(100% + 40px);
+  width: 260px;
   margin-left: -20px;
   transition: background-color 0.2s;
 }
 
 .menu-item:hover,
 .menu-item.active {
+
   background-color: #5a4ea3;
 }

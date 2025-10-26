@@ -1,4 +1,6 @@
-<app-header></app-header>
+<app-header *ngIf="!isTaskPage"></app-header>
+
+<app-navbar *ngIf="isTaskPage"></app-navbar>
 
 <div class="app-container">
   <app-sidebar></app-sidebar>

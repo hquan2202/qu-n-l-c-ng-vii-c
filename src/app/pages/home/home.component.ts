@@ -39,15 +39,20 @@ export class HomeComponent {
     this.selectedBoard = undefined;
   }
 
-  // --- Xử lý click card ---
+// --- Xử lý click card ---
   onCardClick(card: Board, index: number): void {
     if (this.normalizeTitle(card.title) === CREATE_TITLE) {
       this.selectedBoard = undefined;
       this.openPopup();
       return;
     }
-    this.router.navigate(['/board', index], { state: { board: card } });
+
+    this.selectedBoard = card;
+
+    // Navigate sang TaskComponent theo id card
+    this.router.navigate(['/card', card.id], { state: { board: card } });
   }
+
 
   // --- Thêm card mới ---
   addNewBoard(board?: { title?: string; color?: string; background?: string }): void {
