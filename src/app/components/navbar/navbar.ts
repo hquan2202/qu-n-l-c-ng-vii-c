@@ -2,16 +2,24 @@ import { Component } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { LoginComponent } from '../../pages/login/login';
-import {ViewPopupComponent} from '../view-popup/view-popup'; // đường dẫn tùy bạn
-import { CommonModule } from '@angular/common';
+import { FilterComponent } from '../filter/filter';
+import { UiFilterService } from '../../services/ui-filter/ui-filter.service';
+import { AsyncPipe, NgIf, CommonModule } from '@angular/common';
+import { Observable } from 'rxjs';
+import { ViewPopupComponent } from '../view-popup/view-popup'; // đường dẫn tùy bạn
 
 @Component({
   selector: 'app-navbar',
   standalone: true,
-  imports: [  CommonModule,
-                    MatIconModule,
-                    MatDialogModule,
-                    ViewPopupComponent],
+  imports: [
+    CommonModule,
+    MatIconModule,
+    MatDialogModule,
+    FilterComponent,
+    ViewPopupComponent,
+    NgIf,
+    AsyncPipe,
+  ],
   templateUrl: './navbar.html',
   styleUrls: ['./navbar.css']
 })
@@ -33,7 +41,6 @@ export class NavBarComponent {
     console.log('View mode toggled:', this.isGridView ? 'Grid' : 'List');
   }
 
-
   toggleBackground(): void {
     this.isDarkBackground = !this.isDarkBackground;
     console.log('Background toggled:', this.isDarkBackground ? 'Dark' : 'Light');
@@ -41,8 +48,8 @@ export class NavBarComponent {
 
   openLoginPopup(): void {
     this.dialog.open(LoginComponent, {
-      width: '400px',      // chiều rộng dialog
-      panelClass: 'custom-dialog', // nếu muốn custom CSS
+      width: '400px',
+      panelClass: 'custom-dialog',
     });
   }
 }
