@@ -5,6 +5,8 @@
     <span class="app-name">Task</span>
     <mat-icon class="material-symbols-outlined">filter_list</mat-icon>
     <mat-icon class="view-icon" (click)="toggleView()">view_module</mat-icon>
+    <app-view-popup *ngIf="isViewOpen" (close)="isViewOpen = false"></app-view-popup>
+
   </div>
 
   <!-- Bên phải: notifications + avatar -->
@@ -14,3 +16,4 @@
     <mat-icon class="avatar-icon"(click)="openLoginPopup()">account_circle</mat-icon>
   </div>
 </nav>
+
