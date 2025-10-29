@@ -1,0 +1,102 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.3);
+  z-index: 9;
+}
+
+.popup {
+  position: absolute;
+  top: 55px;
+  left: 160px;
+  background: #2f2f2f;
+  color: #de6f81;
+  border-radius: 10px;
+  width: 260px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+  padding: 10px 0 15px;
+  z-index: 10;
+  animation: fadeIn 0.2s ease-in-out;
+}
+
+.close-icon {
+  position: absolute;
+  top: 8px;
+  right: 10px;
+  font-size: 20px;
+  color: #ff5f9e;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.title {
+  font-weight: 600;
+  text-align: center;
+  font-size: 15px;
+  margin-bottom: 8px;
+  color: #ddd;
+}
+
+.view-option {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 8px 15px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.view-option:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+
+
+.divider {
+  height: 1px;
+  background: rgba(255, 255, 255, 0.15);
+  margin: 8px 0;
+}
+
+.desc {
+  font-size: 13px;
+  color: #ccc;
+  padding: 0 15px;
+  line-height: 1.4;
+}
+
+.upgrade-btn {
+  width: 90%;
+  margin: 10px auto;
+  display: block;
+  padding: 8px 10px;
+  border: none;
+  border-radius: 6px;
+  background: #579dff;
+  color: #fff;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.upgrade-btn:hover {
+  background: #6aa9ff;
+}
+
+.learn-more {
+  display: block;
+  text-align: center;
+  color: #9ac2ff;
+  font-size: 13px;
+  text-decoration: none;
+  margin-top: 5px;
+}
+
+.learn-more:hover {
+  text-decoration: underline;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: translateY(0); }
+}

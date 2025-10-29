@@ -19,6 +19,8 @@
     </div>
 
     <mat-icon class="view-icon" (click)="toggleView()">view_module</mat-icon>
+    <app-view-popup *ngIf="isViewOpen" (close)="isViewOpen = false"></app-view-popup>
+
   </div>
 
   <div class="right">
@@ -27,3 +29,4 @@
     <mat-icon class="avatar-icon"(click)="openLoginPopup()">account_circle</mat-icon>
   </div>
 </nav>
+

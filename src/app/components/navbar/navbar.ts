@@ -6,18 +6,30 @@ import { FilterComponent } from '../filter/filter';
 import { UiFilterService } from '../../services/ui-filter/ui-filter.service';
 import { AsyncPipe, NgIf } from '@angular/common';
 import { Observable } from 'rxjs';
+import {ViewPopupComponent} from '../view-popup/view-popup'; // đường dẫn tùy bạn
+import { CommonModule } from '@angular/common';
+
 
 @Component({
   selector: 'app-navbar',
   standalone: true,
+<<<<<<< HEAD
   imports: [MatIconModule, MatDialogModule, FilterComponent, NgIf, AsyncPipe],
   templateUrl:'./navbar.html',
+=======
+  imports: [  CommonModule,
+                    MatIconModule,
+                    MatDialogModule,
+                    ViewPopupComponent],
+  templateUrl: './navbar.html',
+>>>>>>> upstream/master
   styleUrls: ['./navbar.css']
 })
 export class NavBarComponent implements OnInit {
   isSidebarOpen = false;
   isGridView = true;
   isDarkBackground = false;
+  isViewOpen = false; // 🔹 thêm dòng này
 
   isDropdownOpen: boolean = false;
   currentFilterStatus$: Observable<string | null>;
@@ -68,9 +80,10 @@ export class NavBarComponent implements OnInit {
   }
 
   toggleView(): void {
-    this.isGridView = !this.isGridView;
+    this.isViewOpen = !this.isViewOpen; // 🔹 bật/tắt popup
     console.log('View mode toggled:', this.isGridView ? 'Grid' : 'List');
   }
+
 
   toggleBackground(): void {
     this.isDarkBackground = !this.isDarkBackground;

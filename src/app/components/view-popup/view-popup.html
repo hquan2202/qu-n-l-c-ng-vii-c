@@ -1,0 +1,20 @@
+<div class="overlay" (click)="closePopup()"></div>
+
+<div class="popup">
+  <mat-icon class="close-icon" (click)="closePopup()">close</mat-icon>
+
+  <p class="title">Nâng cấp cho Chế độ xem</p>
+
+  <div class="view-option" *ngFor="let view of views">
+    <mat-icon>{{ view.icon }}</mat-icon>
+    <span>{{ view.name }}</span>
+  </div>
+
+  <div class="divider"></div>
+
+  <p class="desc">
+    Xem công việc của bạn theo những cách mới.
+    Quản lý tiến độ, lịch trình và dữ liệu trực tiếp từ bảng của bạn.
+  </p>
+
+</div>
