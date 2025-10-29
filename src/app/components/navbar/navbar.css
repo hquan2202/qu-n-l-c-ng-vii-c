@@ -10,6 +10,9 @@
   box-sizing: border-box;
   font-weight: 600;
   flex-shrink: 0;
+
+  /* 🔥 KHẮC PHỤC LỖI: Cho phép menu thả xuống (dropdown) không bị cắt */
+  overflow: visible;
 }
 
 .navbar .left,
@@ -26,12 +29,71 @@
 
 .navbar mat-icon {
   cursor: pointer;
-  font-size: 24px;       /* Giống header */
+  font-size: 24px;
   padding: 6px;
   border-radius: 50%;
   transition: background-color 0.2s, color 0.2s;
 }
 
 .navbar mat-icon:hover {
-  color: lightgrey;
+  background-color: rgba(255, 255, 255, 0.1);
+  color: white;
+}
+
+/* -------------------------------------- */
+/* --- CẤU TRÚC FILTER DROPDOWN --- */
+/* -------------------------------------- */
+
+.filter-wrapper {
+  /* BẮT BUỘC: Định vị tương đối cho menu tuyệt đối bên trong */
+  position: relative;
+  display: flex;
+  align-items: center;
+  margin-left: 10px; /* Khoảng cách nhỏ với tên app */
+}
+
+/* Style cho icon filter khi nó đang active (mở menu hoặc đang lọc) */
+.filter-wrapper mat-icon.filter-active {
+  background-color: rgba(255, 255, 255, 0.2);
+  color: #ffc107; /* Màu nổi bật (vàng) */
+}
+.filter-wrapper mat-icon.filter-active:hover {
+  background-color: rgba(255, 255, 255, 0.3);
+  color: #ffd700;
+}
+
+/* Menu thả xuống (Dropdown) */
+.filter-menu {
+  position: absolute;
+  top: 100%; /* Đổ xuống ngay dưới wrapper */
+  left: 0;   /* Căn lề trái */
+
+  /* 🔥 BẮT BUỘC: Hiển thị trên mọi phần tử khác */
+  z-index: 9999;
+
+  /* Style của menu */
+  background: white;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  padding: 5px 0;
+  width: 200px;
+
+  /* 🔥 GIẢI PHÁP KHẮC PHỤC LỖI HIỆN THỊ: Transform Scale */
+  transform-origin: top;
+  transform: scaleY(0); /* Ẩn: co lại theo chiều dọc */
+  opacity: 0;
+  visibility: hidden; /* Ẩn hoàn toàn khỏi luồng */
+
+  /* Hiệu ứng chuyển đổi */
+  transition: transform 0.3s ease-out, opacity 0.3s ease-out, visibility 0s 0.3s;
+}
+
+/* Hiển thị Menu */
+.filter-menu.open {
+  transform: scaleY(1); /* Hiện: Phóng to chiều dọc */
+  opacity: 1;
+  visibility: visible;
+  transition: transform 0.3s ease-out, opacity 0.3s ease-out; /* Mở ngay lập tức */
+  margin-top: 5px; /* Khoảng cách nhỏ với icon */
 }

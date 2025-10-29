@@ -1,9 +1,11 @@
-// board.component.ts (Hoàn chỉnh)
-import { Component, OnInit } from '@angular/core';
-import {FormsModule} from '@angular/forms';
-import {NgForOf, NgIf} from '@angular/common';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { NgForOf, NgIf } from '@angular/common';
 // @ts-ignore
 import { MatIconModule } from '@angular/material/icon';
+import { UiFilterService } from '../../../services/ui-filter/ui-filter.service'; // 🔥 IMPORT SERVICE
+import { Subscription } from 'rxjs'; // Cần cho việc hủy đăng ký
+
 
 @Component({
   selector: 'app-board',
@@ -13,11 +15,16 @@ import { MatIconModule } from '@angular/material/icon';
     FormsModule,
     NgForOf,
     NgIf,
-    MatIconModule
+    MatIconModule,
+    // 🔥 XÓA: FilterComponent
   ],
   styleUrls: ['./board.component.css'],
 })
-export class BoardComponent implements OnInit {
+export class BoardComponent implements OnInit, OnDestroy {
+
+  currentFilterStatus: string | null = null;
+  private filterSubscription!: Subscription;
+
   columns: any[] = [
     { title: 'Cần làm', cards: [] },
     { title: 'Đang tiến hành', cards: [] },
@@ -26,11 +33,32 @@ export class BoardComponent implements OnInit {
 
   editing: { i: number; j: number } | null = null;
   editBuffer: any = null;
-
-  // Biến mới cho tính năng Thêm Cột
   newColumnName: string = '';
 
-  ngOnInit(): void {}
+  // 🔥 Inject Service vào constructor (cần public để dùng trong template)
+  constructor(public uiFilterService: UiFilterService) {}
+
+  ngOnInit(): void {
+    // Theo dõi trạng thái lọc từ Service
+    this.filterSubscription = this.uiFilterService.currentFilterStatus$.subscribe(status => {
+      this.currentFilterStatus = status;
+    });
+  }
+
+  ngOnDestroy(): void {
+    this.filterSubscription.unsubscribe();
+  }
+
+  /**
+   * Kiểm tra xem thẻ có nên được highlight (nổi lên) hay không.
+   */
+  shouldHighlight(card: any): boolean {
+    if (!this.currentFilterStatus) {
+      return true; // Nếu không có filter, tất cả đều nổi
+    }
+    // So sánh trạng thái của thẻ với trạng thái được chọn
+    return (card.status || 'To Do') === this.currentFilterStatus;
+  }
 
   openEditor(i: number, j: number, card: any) {
     this.editing = { i, j };
@@ -52,7 +80,6 @@ export class BoardComponent implements OnInit {
     this.closeEditor();
   }
 
-  // Hàm xóa thẻ
   deleteCard() {
     if (!this.editing) return;
     const { i, j } = this.editing;
@@ -72,7 +99,6 @@ export class BoardComponent implements OnInit {
     this.columns[i].newCardName = '';
   }
 
-  // Logic Thêm Cột
   addColumn() {
     const name = this.newColumnName.trim();
     if (!name) return;
@@ -80,7 +106,6 @@ export class BoardComponent implements OnInit {
     this.newColumnName = '';
   }
 
-  // Logic Xóa Cột
   deleteColumn(i: number) {
     if (this.columns.length > 1 && confirm(`Bạn có chắc chắn muốn xóa cột "${this.columns[i].title}" không? Tất cả thẻ sẽ bị mất.`)) {
       this.columns.splice(i, 1);

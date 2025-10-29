@@ -1,0 +1,106 @@
+/* ===============================
+   🎯 FILTER OPTION LIST - DỌC (ỔN ĐỊNH)
+   =============================== */
+
+/* Container chính của danh sách các nút filter */
+.filter-menu .filter-options-list {
+  display: flex !important;
+  flex-direction: column !important;  /* xếp dọc */
+  align-items: stretch;                /* nút full chiều ngang */
+  gap: 6px;
+  width: 100%;
+  padding: 5px 0;
+  box-sizing: border-box;
+}
+
+/* ===============================
+   🟣 NÚT FILTER CƠ BẢN (GHI ĐÈ FRAMEWORK)
+   =============================== */
+.filter-menu .btn-filter-option,
+.filter-menu .filter-options-list button {
+  display: block !important;           /* ép dọc, chặn inline/inline-block */
+  width: 100% !important;
+  box-sizing: border-box;
+
+  text-align: left;
+  padding: 8px 15px;
+  cursor: pointer;
+
+  /* reset viền/nền từ Bootstrap/Material nếu có */
+  background: none !important;
+  border: none !important;
+  border-left: 3px solid transparent !important;
+
+  border-radius: 4px 0 0 4px;
+  font-size: 14px;
+  color: #333;
+  font-weight: 500;
+
+  transition: background-color .2s, color .2s, border-left .2s, box-shadow .2s;
+}
+
+/* Hover */
+.filter-menu .btn-filter-option:hover {
+  background-color: #f3f3f3 !important;
+  color: #000 !important;
+}
+
+/* Active – màu viền trái lấy từ [style.border-left-color] trong template */
+.filter-menu .btn-filter-option.active {
+  background-color: #e9e5ff !important;
+  color: #524290 !important;
+  font-weight: 600;
+  border-left-style: solid !important;
+  box-shadow: inset 2px 0 0 #52429033;
+}
+
+/* Phòng hờ nếu có float/inline từ nơi khác */
+.filter-menu .filter-options-list::after {
+  content: "";
+  display: block;
+  clear: both;
+}
+
+/* ===============================
+   🧩 TƯƠNG THÍCH DROPDOWN/OVERLAY PHỔ BIẾN
+   (bật nếu bạn dùng các lib này)
+   =============================== */
+
+/* ng-bootstrap / Bootstrap dropdown */
+.filter-menu .dropdown-menu { display: block; } /* tránh flex bị override */
+.filter-menu .dropdown-item {
+  display: block !important;
+  width: 100% !important;
+}
+
+/* Angular Material mat-menu */
+.filter-menu .mat-menu-content {
+  display: flex !important;
+  flex-direction: column !important;
+}
+.filter-menu .mat-menu-item {
+  display: block !important;
+  width: 100% !important;
+}
+
+/* ===============================
+   📱 (Tuỳ chọn) Mobile: muốn chuyển ngang thì bật khối dưới
+   =============================== */
+/*
+@media (max-width: 768px) {
+  .filter-menu .filter-options-list {
+    flex-direction: row !important;
+    overflow-x: auto;
+  }
+  .filter-menu .btn-filter-option,
+  .filter-menu .filter-options-list button {
+    width: auto !important;
+    border-left: none !important;
+    border-bottom: 3px solid transparent !important;
+    text-align: center;
+  }
+  .filter-menu .btn-filter-option.active {
+    border-bottom-style: solid !important;
+  }
+}
+*/
