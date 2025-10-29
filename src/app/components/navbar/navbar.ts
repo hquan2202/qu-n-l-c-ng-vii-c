@@ -1,12 +1,17 @@
 import { Component } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { LoginComponent } from '../../pages/login/login'; // đường dẫn tùy bạn
+import { LoginComponent } from '../../pages/login/login';
+import {ViewPopupComponent} from '../view-popup/view-popup'; // đường dẫn tùy bạn
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-navbar',
   standalone: true,
-  imports: [MatIconModule, MatDialogModule],
+  imports: [  CommonModule,
+                    MatIconModule,
+                    MatDialogModule,
+                    ViewPopupComponent],
   templateUrl: './navbar.html',
   styleUrls: ['./navbar.css']
 })
@@ -14,6 +19,7 @@ export class NavBarComponent {
   isSidebarOpen = false;
   isGridView = true;
   isDarkBackground = false;
+  isViewOpen = false; // 🔹 thêm dòng này
 
   constructor(private dialog: MatDialog) {} // inject MatDialog
 
@@ -23,9 +29,10 @@ export class NavBarComponent {
   }
 
   toggleView(): void {
-    this.isGridView = !this.isGridView;
+    this.isViewOpen = !this.isViewOpen; // 🔹 bật/tắt popup
     console.log('View mode toggled:', this.isGridView ? 'Grid' : 'List');
   }
+
 
   toggleBackground(): void {
     this.isDarkBackground = !this.isDarkBackground;

@@ -35,3 +35,12 @@
 .navbar mat-icon:hover {
   color: lightgrey;
 }
+
+app-view-popup {
+  top: 60px; /* khoảng cách từ navbar xuống */
+  left: 120px; /* đẩy sang phải, tuỳ chỉnh cho vừa */
+  z-index: 1000;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
