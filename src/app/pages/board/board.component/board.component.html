@@ -10,6 +10,7 @@
     />
     <button class="btn btn-add-column" (click)="addColumn()">+ Thêm Cột</button>
   </div>
+
   <div class="board-columns">
     <div
       class="board-column"
@@ -27,6 +28,7 @@
           <mat-icon>delete_forever</mat-icon>
         </button>
       </div>
+
       <div
         class="card"
         *ngFor="let card of column.cards; let j = index"
@@ -34,7 +36,15 @@
         role="button"
         (click)="openEditor(i, j, $any(card))"
         aria-haspopup="dialog"
+
+        [class.highlighted]="shouldHighlight($any(card))"
+        [class.dimmed]="currentFilterStatus && !shouldHighlight($any(card))"
       >
+        <div
+          class="card-status-bar"
+          [style.background-color]="uiFilterService.getColor($any(card).status || 'To Do')"
+        ></div>
+
         <div class="title">{{ $any(card).title || card }}</div>
         <div class="meta">Assignee: {{ $any(card).assignee || '—' }}</div>
 
