@@ -178,7 +178,83 @@ h2 {
 .add-card button:hover {
   background: #6d60bc; /* Hover Tím */
 }
+/* --- VÒNG TRÒN ĐÁNH DẤU HOÀN THÀNH --- */
+.completion-circle {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 2px solid #94a3b8; /* màu xám nhẹ */
+  background-color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  color: #16a34a; /* xanh lá đậm */
+  cursor: pointer;
+  opacity: 0;
+  transform: scale(0.85);
+  transition: all 0.25s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
 
+/* Hiển thị khi hover vào card */
+.card:hover .completion-circle {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* Khi đã hoàn thành */
+.completion-circle.completed {
+  background-color: #dcfce7; /* xanh nhạt */
+  border-color: #22c55e;
+  color: #15803d;
+  transform: scale(1.05);
+}
+
+/* Icon trong vòng tròn */
+.completion-circle.completed span {
+  font-weight: bold;
+}
+
+/* Hiệu ứng nhấn khi click */
+.completion-circle:active {
+  transform: scale(0.95);
+}
+/* --- TOOLTIP KHI HOVER VÀO VÒNG TRÒN --- */
+.tooltip {
+  position: absolute;
+  top: 28px;
+  right: 0;
+  background-color: #334155;
+  color: #fff;
+  font-size: 11.5px;
+  padding: 4px 8px;
+  border-radius: 4px;
+  white-space: nowrap;
+  opacity: 0;
+  transform: translateY(-2px);
+  pointer-events: none;
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+.completion-circle:hover .tooltip {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Tam giác nhỏ dưới tooltip */
+.tooltip::after {
+  content: '';
+  position: absolute;
+  top: -5px;
+  right: 10px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: transparent transparent #334155 transparent;
+}
 /* --- MODAL DIALOG STYLE --- */
 
 .modal-overlay {
@@ -255,6 +331,9 @@ textarea {
   color: #fff;
   transition: background-color 0.2s;
   margin-right: auto; /* Đẩy sang trái */
+  border-radius: 2px;
+  border: none;
+  padding: 3px 12px;
 }
 .btn-delete:hover {
   background: #c62828;
@@ -264,6 +343,9 @@ textarea {
   background: #5a4ea3; /* Màu Tím */
   color: #fff;
   transition: background-color 0.2s;
+  border: none;
+  border-radius: 2px;
+  padding: 3px 12px;
 }
 
 .btn-save:hover {
@@ -271,9 +353,11 @@ textarea {
 }
 
 .btn-cancel {
-  background: transparent;
+  background: #e0e0e0;
   color: #0b3a45;
-  border: 1px solid #e6eef4;
+  border: none;
+  border-radius: 2px;
+  padding: 3px 12px;
 }
 
 /* --- RESPONSIVE TWEAK --- */

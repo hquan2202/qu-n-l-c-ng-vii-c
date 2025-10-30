@@ -9,7 +9,7 @@
   position: absolute;
   top: 55px;
   left: 160px;
-  background: #2f2f2f;
+  background: #f3f3f3;
   color: #de6f81;
   border-radius: 10px;
   width: 260px;
@@ -24,7 +24,7 @@
   position: relative;
   align-items: center;
   justify-content: center;
-  padding: 8px 0;
+  padding: 12px 0;
 }
 .title {
   position: absolute;
@@ -33,7 +33,7 @@
   margin: 0;
   font-size: 16px;
   font-weight: 600;
-  color: #ddd;
+  color: #000;
 }
 
 .close-icon {
@@ -55,51 +55,25 @@
   transition: 0.2s;
   font-weight: 500;
   gap: 10px;
-  color: #ddd;
+  color: #000;
 }
 
 .view-option:hover {
-  background: rgba(255, 255, 255, 0.1);
+  background: #e0e0e0;
 }
 
 .divider {
   height: 1px;
-  background: rgba(255, 255, 255, 0.15);
+  background: #ddd;
   margin: 8px 0;
 }
 
 .desc {
   font-size: 13px;
-  color: #ccc;
+  font-weight: 500;
+  color: #000;
   padding: 0 15px;
   line-height: 1.4;
-}
-
-.upgrade-btn {
-  width: 90%;
-  margin: 10px auto;
-  display: block;
-  padding: 8px 10px;
-  border: none;
-  border-radius: 6px;
-  background: #579dff;
-  color: #fff;
-  font-weight: 500;
-  cursor: pointer;
-  transition: background 0.2s;
-}
-
-.upgrade-btn:hover {
-  background: #6aa9ff;
-}
-
-.learn-more {
-  display: block;
-  text-align: center;
-  color: #579dff;
-  font-size: 13px;
-  text-decoration: none;
-  margin-top: 5px;
 }
 
 .learn-more:hover {

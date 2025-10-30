@@ -1,19 +1,30 @@
 <nav class="navbar">
-  <!-- Bên trái: logo + nút -->
   <div class="left">
     <img src="assets/images/tasklogo.png" alt="logo" class="logo-img">
     <span class="app-name">Task</span>
-    <mat-icon class="material-symbols-outlined">filter_list</mat-icon>
+
+    <div class="filter-wrapper">
+      <mat-icon
+        class="material-symbols-outlined"
+        (click)="toggleDropdown()"
+        [class.filter-active]="isDropdownOpen || (currentFilterStatus$ | async)"
+        title="Lọc công việc"
+      >
+        filter_list
+      </mat-icon>
+
+      <div class="filter-menu" [class.open]="isDropdownOpen">
+        <app-filter></app-filter>
+      </div>
+    </div>
+
     <mat-icon class="view-icon" (click)="toggleView()">view_module</mat-icon>
     <app-view-popup *ngIf="isViewOpen" (close)="isViewOpen = false"></app-view-popup>
-
   </div>
 
-  <!-- Bên phải: notifications + avatar -->
   <div class="right">
     <mat-icon class="material-symbols-outlined">group</mat-icon>
     <mat-icon class="notification-icon">notifications</mat-icon>
     <mat-icon class="avatar-icon"(click)="openLoginPopup()">account_circle</mat-icon>
   </div>
 </nav>
-

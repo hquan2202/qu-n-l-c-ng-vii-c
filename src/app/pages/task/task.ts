@@ -102,4 +102,8 @@ export class TaskComponent implements OnInit {
       }
     }
   }
+  toggleComplete(card: any) {
+    card.completed = !card.completed;
+  }
+
 }

@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+// typescript
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule, NgClass, NgFor, NgIf } from '@angular/common';
 import { Router } from '@angular/router';
 import { TaskDescriptionComponent } from '../../components/task-description/task-description';
@@ -23,13 +24,28 @@ const CREATE_TITLE = 'Tạo bảng mới';
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css']
 })
-export class HomeComponent {
+export class HomeComponent implements OnInit, OnDestroy {
   showPopup = false;
   selectedBoard?: Board;
   cards: Board[] = [];
 
+  private onStorageBound = this.onStorageChange.bind(this);
+  private onCustomUpdateBound = this.onCustomBoardsUpdated.bind(this);
+
   constructor(private router: Router) {
     this.cards = this.loadBoards();
+  }
+
+  ngOnInit(): void {
+    // listen for storage changes (other tabs/windows)
+    window.addEventListener('storage', this.onStorageBound);
+    // listen for custom in-app event when other components update boards
+    window.addEventListener('boards:updated', this.onCustomUpdateBound as EventListener);
+  }
+
+  ngOnDestroy(): void {
+    window.removeEventListener('storage', this.onStorageBound);
+    window.removeEventListener('boards:updated', this.onCustomUpdateBound as EventListener);
   }
 
   // --- Popup ---
@@ -39,7 +55,7 @@ export class HomeComponent {
     this.selectedBoard = undefined;
   }
 
-// --- Xử lý click card ---
+  // --- Xử lý click card ---
   onCardClick(card: Board, index: number): void {
     if (this.normalizeTitle(card.title) === CREATE_TITLE) {
       this.selectedBoard = undefined;
@@ -48,11 +64,8 @@ export class HomeComponent {
     }
 
     this.selectedBoard = card;
-
-    // Navigate sang TaskComponent theo id card
     this.router.navigate(['/card', card.id], { state: { board: card } });
   }
-
 
   // --- Thêm card mới ---
   addNewBoard(board?: { title?: string; color?: string; background?: string }): void {
@@ -71,6 +84,8 @@ export class HomeComponent {
 
     this.persist();
     this.showPopup = false;
+    // dispatch custom event so other components in same window update
+    window.dispatchEvent(new CustomEvent('boards:updated'));
   }
 
   // --- Xóa từng card ---
@@ -80,6 +95,7 @@ export class HomeComponent {
     if (!card || this.normalizeTitle(card.title) === CREATE_TITLE) return;
     this.cards.splice(index, 1);
     this.persist();
+    window.dispatchEvent(new CustomEvent('boards:updated'));
   }
 
   // --- Xóa tất cả card do người dùng tạo ---
@@ -87,11 +103,23 @@ export class HomeComponent {
     if (!confirm('Bạn có chắc chắn muốn xóa tất cả card không?')) return;
     this.cards = this.cards.filter(c => this.normalizeTitle(c.title) === CREATE_TITLE);
     this.persist();
+    window.dispatchEvent(new CustomEvent('boards:updated'));
   }
 
   // --- Helpers ---
   normalizeTitle(t?: string): string {   // public để template gọi được
     return String(t ?? '').replace(/^\+?\s*/, '').trim();
+  }
+
+  private onStorageChange(e: StorageEvent) {
+    if (e.key === 'boards') {
+      this.cards = this.loadBoards();
+    }
+  }
+
+  private onCustomBoardsUpdated() {
+    // other in-app components can dispatch `boards:updated` after writing to localStorage
+    this.cards = this.loadBoards();
   }
 
   private loadBoards(): Board[] {
