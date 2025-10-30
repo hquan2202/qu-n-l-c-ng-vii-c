@@ -1,9 +1,11 @@
 <div class="overlay" (click)="closePopup()"></div>
 
-<div class="popup">
-  <mat-icon class="close-icon" (click)="closePopup()">close</mat-icon>
 
-  <p class="title">Nâng cấp cho Chế độ xem</p>
+<div class="popup">
+  <div class="popup-header">
+    <p class="title">Chế độ xem</p>
+    <mat-icon class="close-icon" (click)="closePopup()">close</mat-icon>
+  </div>
 
   <div class="view-option" *ngFor="let view of views">
     <mat-icon>{{ view.icon }}</mat-icon>
