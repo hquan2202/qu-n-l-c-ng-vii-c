@@ -242,19 +242,19 @@ textarea {
   resize: vertical;
 }
 
-.actions {
-  display: flex;
-  gap: 8px;
-  align-items: center;
-  margin-top: 8px;
+.actions .btn {
+  border-radius: 8px !important;
+  border: 1px solid #e6eef4 !important;
+  overflow: hidden;
+
 }
 
 /* Nút Xóa Thẻ (Mới) */
 .btn-delete {
-  background: #d32f2f; /* Màu đỏ */
+  background: #d32f2f;
   color: #fff;
-  transition: background-color 0.2s;
-  margin-right: auto; /* Đẩy sang trái */
+  border: 1px solid rgba(0,0,0,0.08);
+  border-radius: 8px;
 }
 .btn-delete:hover {
   background: #c62828;
@@ -274,6 +274,7 @@ textarea {
   background: transparent;
   color: #0b3a45;
   border: 1px solid #e6eef4;
+
 }
 
 /* --- RESPONSIVE TWEAK --- */
