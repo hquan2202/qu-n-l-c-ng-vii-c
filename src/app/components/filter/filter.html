@@ -1,1 +1,14 @@
-<p>filter works!</p>
+<div class="filter-menu">
+  <div class="filter-options-list">
+    <button
+      *ngFor="let status of availableStatuses"
+      class="btn-filter-option"
+      [class.active]="(currentFilterStatus$ | async) === status"
+      [style.border-left-color]="uiFilterService.getColor(status)"
+      (click)="$event.stopPropagation(); handleFilter(status)"
+      type="button"
+    >
+      {{ status }}
+    </button>
+  </div>
+</div>
