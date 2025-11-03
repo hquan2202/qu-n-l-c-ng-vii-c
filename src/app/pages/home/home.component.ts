@@ -20,7 +20,7 @@ const CREATE_TITLE = 'Tạo bảng mới';
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, NgFor, NgIf, TaskDescriptionComponent, CardComponent, NgClass],
+  imports: [CommonModule, NgFor, NgIf, TaskDescriptionComponent, CardComponent],
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css']
 })

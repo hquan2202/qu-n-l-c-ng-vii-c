@@ -18,7 +18,7 @@ import { UiFilterService } from '../../services/ui-filter/ui-filter.service';
   templateUrl: './filter.html',
   styleUrls: ['./filter.css'],
   encapsulation: ViewEncapsulation.None,
-  imports: [AsyncPipe, NgForOf, NgIf],
+  imports: [AsyncPipe, NgForOf],
 })
 export class FilterComponent implements OnInit {
   availableStatuses: string[] = ['To Do', 'In Progress', 'Review', 'Done'];

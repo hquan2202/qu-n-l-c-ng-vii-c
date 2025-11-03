@@ -23,23 +23,28 @@ import { filter } from 'rxjs/operators';
 })
 export class AppComponent {
   isTaskPage = false;
+  isAuthPage = false;
 
   constructor(private router: Router) {
-    // set trạng thái ngay lần boot đầu
-    this.updateFlag(this.router.url);
+    // cập nhật ngay khi khởi động app
+    this.updateFlags(this.router.url);
 
-    // cập nhật mỗi lần điều hướng hoàn tất
+    // cập nhật mỗi khi điều hướng hoàn tất
     this.router.events
       .pipe(filter((e: Event): e is NavigationEnd => e instanceof NavigationEnd))
-      .subscribe(e => this.updateFlag(e.urlAfterRedirects || e.url));
+      .subscribe(e => this.updateFlags(e.urlAfterRedirects || e.url));
   }
 
-  private updateFlag(url: string) {
+  private updateFlags(url: string) {
     const path = (url || '').split('?')[0]; // bỏ query params
-    // ✔ Giữ behavior cũ cho /card/:id và thêm /board
+
+    // Navbar cho các trang task/board/card
     this.isTaskPage = path.startsWith('/card/') || path.startsWith('/board');
-    // Nếu mai mốt muốn mở rộng, có thể dùng:
-    // const useNavbarOn = ['/card/', '/board'];
-    // this.isTaskPage = useNavbarOn.some(p => path.startsWith(p));
+
+    // Ẩn toàn bộ layout ở các trang đăng nhập/đăng ký/khôi phục
+    this.isAuthPage =
+      path.startsWith('/login') ||
+      path.startsWith('/register') ||
+      path.startsWith('/forgot-password');
   }
 }

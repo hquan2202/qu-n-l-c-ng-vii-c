@@ -1,10 +1,21 @@
-<app-header *ngIf="!isTaskPage"></app-header>
+<!-- app.component.html -->
 
-<app-navbar *ngIf="isTaskPage"></app-navbar>
+<!-- Nếu KHÔNG phải trang login/register/forgot-password -->
+<ng-container *ngIf="!isAuthPage; else authPage">
 
-<div class="app-container">
-  <app-sidebar></app-sidebar>
-  <main class="content">
-    <router-outlet></router-outlet>
-  </main>
-</div>
+  <app-header *ngIf="!isTaskPage"></app-header>
+  <app-navbar *ngIf="isTaskPage"></app-navbar>
+
+  <div class="app-container">
+    <app-sidebar></app-sidebar>
+    <main class="content">
+      <router-outlet></router-outlet>
+    </main>
+  </div>
+
+</ng-container>
+
+<!-- Layout riêng cho trang đăng nhập -->
+<ng-template #authPage>
+  <router-outlet></router-outlet>
+</ng-template>

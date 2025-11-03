@@ -10,29 +10,29 @@
   padding: 0 20px;
   z-index: 1000;
 }
+
 /* Logo bên trái */
 .left {
   display: flex;
-  align-items: center; /* Căn giữa theo chiều dọc */
+  align-items: center;
   height: 28px;
   cursor: pointer;
-
-  .logo-img {
-    width: 30px;
-    height: auto;
-    object-fit: cover;
-    margin-right: 8px;
-  }
-
-  .app-name {
-    font-size: 18px;
-    font-weight: bold;
-    color: #ffffff;
-    margin: 0;
-    text-align: center;
-  }
 }
 
+.left .logo-img {
+  width: 30px;
+  height: auto;
+  object-fit: cover;
+  margin-right: 8px;
+}
+
+.left .app-name {
+  font-size: 18px;
+  font-weight: bold;
+  color: #ffffff;
+  margin: 0;
+  text-align: center;
+}
 
 /* Thanh tìm kiếm ở giữa */
 .center {
@@ -42,72 +42,82 @@
   flex: 1;
   height: 100%;
   width: 100%;
-
-  .search-bar {
-    display: flex;
-    width: 50%;
-    height: 50%;
-    align-items: center;
-    background-color: #EEEEEE;
-    border-radius: 50px;
-    padding: 4px 8px;
-  }
-
-  .search-icon {
-    background: none;
-    border: none;
-    color: #49454F;
-    cursor: pointer;
-    font-size: 20px;
-    margin-left: 3px;
-    transition: color 0.2s;
-    display: flex;
-    align-items: center;
-  }
-
-  .search-icon:hover {
-    color:black;
-  }
-
-  .search-input {
-    width: 50%;
-    height: 50%;
-    background-color: #EEEEEE;
-    border: none;
-    outline: none;
-    left: 13px;
-    padding: 10px 8px;
-    color: black;
-    border-radius: 4px;
-    font-size: 14px;
-  }
 }
+
+.center .search-bar {
+  display: flex;
+  width: 50%;
+  height: 50%;
+  align-items: center;
+  background-color: #EEEEEE;
+  border-radius: 50px;
+  padding: 4px 8px;
+}
+
+.center .search-icon {
+  background: none;
+  border: none;
+  color: #49454F;
+  cursor: pointer;
+  font-size: 20px;
+  margin-left: 3px;
+  transition: color 0.2s;
+  display: flex;
+  align-items: center;
+}
+
+.center .search-icon:hover {
+  color: black;
+}
+
+.center .search-input {
+  width: 50%;
+  height: 50%;
+  background-color: #EEEEEE;
+  border: none;
+  outline: none;
+  left: 13px;
+  padding: 10px 8px;
+  color: black;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
 /* Các icon bên phải */
 .right {
   display: flex;
-  width:10%;
+  width: 10%;
   align-items: center;
   margin-right: 50px;
   justify-content: flex-end;
   flex: none;
   gap: 10px;
 }
-.notification-icon{
-  cursor: pointer;
-  font-size: 24px;
-  color: #EEEEEE;
-  transition: color 0.2s;
-}
-.notification-icon, .avatar-icon {
+
+.notification-icon,
+.avatar-icon {
   cursor: pointer;
   font-size: 24px;
   color: #EEEEEE;
   transition: color 0.2s;
 }
 
-.notification-icon:hover{
+.notification-icon:hover {
   color: white;
 }
+
 .avatar-icon:hover {
   color: darkgrey;
+}
+.avatar{
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  cursor: pointer;
+  object-fit: cover;
+  transition: transform 0.2s;
+}
+
+.avatar-img:hover {
+  transform: scale(1.05);
 }

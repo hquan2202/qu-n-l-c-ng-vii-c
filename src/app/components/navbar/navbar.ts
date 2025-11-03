@@ -1,7 +1,7 @@
 import { Component, OnInit, HostListener, ElementRef } from '@angular/core'; // 🔥 THÊM HostListener, ElementRef
 import { MatIconModule } from '@angular/material/icon';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { LoginComponent } from '../../pages/login/login';
+// import { LoginComponent } from '../../pages/login/login';
 import { FilterComponent } from '../filter/filter';
 import { UiFilterService } from '../../services/ui-filter/ui-filter.service';
 import { AsyncPipe, NgIf } from '@angular/common';
@@ -82,11 +82,4 @@ export class NavBarComponent implements OnInit {
     console.log('Background toggled:', this.isDarkBackground ? 'Dark' : 'Light');
   }
 
-
-  openLoginPopup(): void {
-    this.dialog.open(LoginComponent, {
-      width: '400px',
-      panelClass: 'custom-dialog',
-    });
-  }
 }
