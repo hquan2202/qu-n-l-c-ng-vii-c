@@ -1,28 +1,127 @@
-
+/* ==== BASELINE (giữ đúng thông số của bạn) ==== */
 .sidebar-container {
   width: 280px;
   height: 100%;
   background-color: #6d60bc;
-  color: white;
+  color: #fff;
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
-  padding: 0px 50px 20px 20px;
+  padding: 0 50px 20px 20px;           /* L=20, R=50 */
+  --pad-left: 20px;
+  --pad-right: 50px;
+  --hover: #5a4ea3;
+  position: relative;
+  overflow-x: hidden;                  /* tránh scroll ngang */
 }
 
-.menu-item {
+/* ==== ITEM CHUNG (Trang chủ/Bảng/Nhóm + board con) ==== */
+.menu-item,
+.submenu-item,
+.board-item,
+.board-header {
   display: flex;
   align-items: center;
   gap: 12px;
   padding: 10px 10px;
   cursor: pointer;
+
+  /* giữ layout content như cũ */
   width: 260px;
   margin-left: -20px;
-  transition: background-color 0.2s;
+
+  text-decoration: none;
+  color: inherit;
+  background: transparent;
+  border: none;
+  outline: none;
+
+  border-radius: 8px;
+  position: relative;                 /* để vẽ nền full-width bằng ::before */
+  z-index: 0;
 }
 
-.menu-item:hover,
-.menu-item.active {
+/* NỀN HOVER/ACTIVE PHỦ FULL 280px mà KHÔNG đổi width/margin */
+.menu-item::before,
+.submenu-item::before,
+.board-item::before,
+.board-header::before {
+  content: "";
+  position: absolute;
+  top: 0; bottom: 0;
+  left: calc(-1 * var(--pad-left));    /* phủ hết padding trái */
+  right: calc(-1 * var(--pad-right));  /* phủ hết padding phải */
+  border-radius: 8px;
+  background: transparent;
+  z-index: -1;
+  transition: background-color .2s;
+}
 
-  background-color: #5a4ea3;
+/* Hover/Active: đổi màu tấm nền */
+.menu-item:hover::before,
+.menu-item.active::before,
+.submenu-item:hover::before,
+.submenu-item.active::before,
+.board-item:hover::before,
+.board-item.active::before,
+.board-header:hover::before,
+.board-header.active::before {
+  background: var(--hover);
+}
+
+/* Focus bằng phím (viền trên content, không ảnh hưởng nền full) */
+.menu-item:focus-visible,
+.submenu-item:focus-visible,
+.board-item:focus-visible,
+.board-header:focus-visible {
+  outline: 2px solid #cfd8ff;
+  outline-offset: 2px;
+}
+
+/* ===== KHU VỰC “BẢNG” ===== */
+.board-header { justify-content: flex-start; }
+.boards-list {
+  display: flex;
+  flex-direction: column;
+  padding-left: 0;       /* để nền ::before vẫn phủ full */
+  padding-top: 5px;
+}
+
+/* ===== BOARD ITEM (thụt nội dung, nền vẫn full vì dùng ::before) ===== */
+.board-item { padding-left: 30px; gap: 10px; }
+
+/* ===== THUMBNAIL ===== */
+.board-thumb {
+  width: 28px; height: 28px; flex: 0 0 28px;
+  border-radius: 6px;
+  overflow: hidden;
+  display: grid; place-items: center;
+  background: #eee;
+}
+
+.board-initial { font-size: 12px; font-weight: 700; color: #111; line-height: 1; }
+.truncate     { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* icon material đồng màu chữ */
+.mat-icon, .menu-icon { color: inherit; }
+/* Board được chọn (đang ở /card/:id) */
+.board-item.active::before {
+  background: var(--hover);           /* nền full-bleed giống hover */
+}
+
+/* dải chỉ báo bên trái (nhẹ, optional) */
+.board-item.active::after {
+  content: "";
+  position: absolute;
+  left: calc(-1 * var(--pad-left));
+  top: 8px;
+  bottom: 8px;
+  width: 4px;
+  border-radius: 2px;
+  background: rgba(255,255,255,.85);
+}
+
+/* nếu thumbnail là màu phẳng, tăng viền cho nổi hơn khi active (optional) */
+.board-item.active .board-thumb {
+  box-shadow: 0 0 0 2px rgba(255,255,255,.35) inset;
 }

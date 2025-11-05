@@ -1,16 +1,21 @@
 import { Routes } from '@angular/router';
 import { HomeComponent } from './pages/home/home.component';
 import { BoardComponent } from './pages/board/board.component';
-import { TaskDescriptionComponent} from './components/task-description/task-description';
 import { LoginComponent } from './pages/login/login';
-import {TaskComponent} from './pages/task/task';
-
 
 export const routes: Routes = [
-  { path: '', redirectTo: '/login', pathMatch: 'full' },
-  {path: 'login', component: LoginComponent},
+  { path: '', redirectTo: 'login', pathMatch: 'full' },
+  { path: 'login', component: LoginComponent },
   { path: 'home', component: HomeComponent },
-  { path: 'board', component: BoardComponent },
-  { path: 'card/:id', component: TaskComponent }
 
+  // ✅ khi bấm menu “Bảng” trong sidebar => ra list board
+  { path: 'board', component: HomeComponent },
+
+  // ✅ khi mở 1 bảng cụ thể => /board/:id
+  { path: 'board/:id', component: BoardComponent },
+
+  // alias nếu bạn đang dùng “card/:id"
+  { path: 'card/:id', redirectTo: 'board/:id' },
+
+  { path: '**', redirectTo: 'home' },
 ];
