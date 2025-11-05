@@ -11,23 +11,8 @@
     <span class="menu-text">Bảng</span>
   </div>
 
-  <div class="boards-list">
-    <a class="submenu-item board-item"
-       *ngFor="let b of myBoards; trackBy: trackById"
-
-       [routerLink]="['/board', b.id]"
-       routerLinkActive="active"
-       [routerLinkActiveOptions]="{ exact: true }">
-      <div class="board-thumb" [ngStyle]="getThumbStyle(b)">
-        <span class="board-initial" *ngIf="!isImage(b.background)">{{ getInitial(b.title) }}</span>
-      </div>
-      <span class="menu-text truncate">{{ b.title }}</span>
-    </a>
-  </div>
-
-  <!-- Nhóm -->
-  <a class="menu-item" routerLink="/teams" routerLinkActive="active">
     <mat-icon class="menu-icon">group</mat-icon>
     <span class="menu-text">Nhóm</span>
   </a>
 </div>
+
