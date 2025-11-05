@@ -1,25 +1,33 @@
 <div class="sidebar-container">
-  <div
-    class="menu-item"
-    routerLink="/home"
-    routerLinkActive="active"
-    [routerLinkActiveOptions]="{ exact: false }"
-  >
+  <!-- Trang chủ -->
+  <a class="menu-item" routerLink="/home" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}">
     <mat-icon class="menu-icon">home</mat-icon>
     <span class="menu-text">Trang chủ</span>
-  </div>
+  </a>
 
-  <div class="menu-item"
-       routerLink="/board"
-       routerLinkActive="active">
+  <!-- Bảng (KHÔNG toggle, luôn show list) -->
+  <div class="menu-item board-header">
     <mat-icon class="menu-icon">dashboard</mat-icon>
     <span class="menu-text">Bảng</span>
   </div>
 
-  <div class="menu-item"
-       routerLink="/teams"
-       routerLinkActive="active">
+  <div class="boards-list">
+    <a class="submenu-item board-item"
+       *ngFor="let b of myBoards; trackBy: trackById"
+
+       [routerLink]="['/board', b.id]"
+       routerLinkActive="active"
+       [routerLinkActiveOptions]="{ exact: true }">
+      <div class="board-thumb" [ngStyle]="getThumbStyle(b)">
+        <span class="board-initial" *ngIf="!isImage(b.background)">{{ getInitial(b.title) }}</span>
+      </div>
+      <span class="menu-text truncate">{{ b.title }}</span>
+    </a>
+  </div>
+
+  <!-- Nhóm -->
+  <a class="menu-item" routerLink="/teams" routerLinkActive="active">
     <mat-icon class="menu-icon">group</mat-icon>
     <span class="menu-text">Nhóm</span>
-  </div>
+  </a>
 </div>
