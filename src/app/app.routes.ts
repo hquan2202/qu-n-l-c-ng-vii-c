@@ -4,6 +4,8 @@ import { BoardComponent } from './pages/board/board.component/board.component';
 import { TaskDescriptionComponent} from './components/task-description/task-description';
 import { LoginComponent } from './pages/login/login';
 import {TaskComponent} from './pages/task/task';
+import { GroupComponent } from './pages/group/group';
+
 
 
 export const routes: Routes = [
@@ -11,6 +13,7 @@ export const routes: Routes = [
   {path: 'login', component: LoginComponent},
   { path: 'home', component: HomeComponent },
   { path: 'board', component: BoardComponent },
-  { path: 'card/:id', component: TaskComponent }
+  { path: 'card/:id', component: TaskComponent },
+  { path: 'group', component: GroupComponent }
 
 ];
