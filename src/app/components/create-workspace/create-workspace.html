@@ -1,0 +1,51 @@
+<div class="overlay" (click)="closePopup()"></div>
+
+<div class="workspace-popup" (click)="$event.stopPropagation()">
+  <div class="popup-left">
+    <h2>Hãy xây dựng một Không gian làm việc</h2>
+    <p class="subtitle">
+      Tăng năng suất của bạn bằng cách giúp mọi người dễ dàng truy cập bảng ở một vị trí.
+    </p>
+
+    <form (ngSubmit)="createWorkspace()">
+      <label for="name">Tên Không gian làm việc</label>
+      <input
+        id="name"
+        [(ngModel)]="workspaceName"
+        name="name"
+        placeholder="Công ty của bạn"
+        required
+      />
+      <p class="hint">Đây là tên của công ty, nhóm hoặc tổ chức của bạn.</p>
+
+      <label for="type">Loại Không gian làm việc</label>
+      <select id="type" [(ngModel)]="workspaceType" name="type" required>
+        <option value="" disabled selected>Chọn...</option>
+        <option>Công ty</option>
+        <option>Nhóm học tập</option>
+        <option>Dự án cá nhân</option>
+        <option>Tổ chức</option>
+      </select>
+
+      <label for="desc">Mô tả Không gian làm việc <span class="optional">Tùy chọn</span></label>
+      <textarea
+        id="desc"
+        [(ngModel)]="workspaceDesc"
+        name="desc"
+        placeholder="Nhóm của chúng tôi tổ chức mọi thứ ở đây."
+      ></textarea>
+
+      <p class="hint">
+        Đưa các thành viên của bạn vào bằng mô tả ngắn về Không gian làm việc.
+      </p>
+
+      <button type="submit" [disabled]="!workspaceName || !workspaceType">
+        Tiếp tục
+      </button>
+    </form>
+  </div>
+
+  <div class="popup-right">
+    <img src="assets/images/workspace-illustration.png" alt="workspace preview" />
+  </div>
+</div>

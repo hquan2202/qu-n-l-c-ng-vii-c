@@ -7,21 +7,30 @@
   <div class="center">
     <div class="search-bar">
       <mat-icon class="search-icon">search</mat-icon>
-      <input type="text" placeholder="Tìm kiếm" class="search-input" />
+      <input type="text" placeholder="Search" class="search-input" />
     </div>
   </div>
 
   <div class="right">
     <mat-icon class="notification-icon">notifications</mat-icon>
 
-    <!-- ✅ Nếu có avatar thì hiển thị, ngược lại là icon account -->
+    <!-- ✅ Nếu có avatar thì hiển thị -->
     <img
       *ngIf="user"
       [src]="avatarUrl"
       class="avatar"
       alt="avatar"
-      (click)="logout()"
+      (click)="toggleAccountPopup()"
     />
+
+    <!-- ✅ Nếu chưa đăng nhập -->
     <mat-icon *ngIf="!user" class="avatar-icon">account_circle</mat-icon>
+
+    <!-- Popup tài khoản -->
+    <app-account-popup
+      [visible]="showAccountPopup"
+      [user]="user"
+      [onLogout]="logout.bind(this)"
+    ></app-account-popup>
   </div>
 </header>

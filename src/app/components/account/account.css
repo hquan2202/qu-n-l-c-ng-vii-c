@@ -1,0 +1,132 @@
+/* Overlay mờ phía sau */
+.popup-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.25);
+  z-index: 100;
+}
+
+/* Popup chính */
+.popup {
+  position: absolute;
+  top: 60px;
+  right: 50px;
+  border-radius: 12px;
+  width: 280px;
+  padding: 14px 16px;
+  z-index: 200;
+  animation: fadeIn 0.25s ease;
+  background: #fff;
+}
+
+/* Header user (avatar + info) */
+.popup-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.avatar {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.user-info {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.user-info h3 {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.user-info p {
+  margin: 2px 0 0;
+  font-size: 13px;
+  color: #777;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+hr {
+  margin: 10px 0;
+  border: none;
+  border-top: 0.5px solid rgba(0, 0, 0, 0.1); /* mảnh và nhẹ hơn */
+}
+
+
+/* ========== Nút menu & đăng xuất ========== */
+.popup-body {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.menu-btn,
+.logout-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;         /* căn giữa icon + text theo chiều dọc */
+  justify-content: flex-start; /* canh trái như Trello */
+  gap: 10px;
+  padding: 9px 12px;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+  background: transparent;
+  transition: background-color 0.2s ease;
+  line-height: 1;              /* giúp căn giữa chính xác */
+}
+
+.menu-btn:hover,
+.logout-btn:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.menu-icon {
+  font-size: 20px;             /* icon hơi lớn hơn text 1 chút */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  width: 20px;                 /* cố định chiều rộng icon để text luôn thẳng hàng */
+  height: 20px;
+}
+
+.back-btn:hover {
+  transform: translateX(-2px);
+}
+
+/* ========== Hiệu ứng ========== */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+

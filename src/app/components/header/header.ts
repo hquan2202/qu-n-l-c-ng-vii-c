@@ -2,16 +2,18 @@ import { Component, OnInit } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { NgIf } from '@angular/common';
 import { AuthService } from '../../services/auth/auth.service';
+import { AccountPopupComponent } from '../account/account';
 
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [MatIconModule, NgIf], // 🟢 Bổ sung MatIconModule
+  imports: [MatIconModule, NgIf, AccountPopupComponent],
   templateUrl: './header.html',
   styleUrls: ['./header.css'],
 })
 export class HeaderComponent implements OnInit {
   user: any = null;
+  showAccountPopup = false;
 
   constructor(private auth: AuthService) {}
 
@@ -21,6 +23,10 @@ export class HeaderComponent implements OnInit {
 
   get avatarUrl(): string {
     return this.user?.user_metadata?.avatar_url || 'assets/images/default-avatar.png';
+  }
+
+  toggleAccountPopup() {
+    this.showAccountPopup = !this.showAccountPopup;
   }
 
   async logout() {

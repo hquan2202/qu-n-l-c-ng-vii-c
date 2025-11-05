@@ -2,7 +2,7 @@
   <div class="popup-content">
     <div class="header">
       <div class="h3">
-        <h3>Tạo bảng</h3>
+        <h3>Create board</h3>
       </div>
       <mat-icon class="close-btn" (click)="closePicker()">close</mat-icon>
 
@@ -20,7 +20,7 @@
 
     <!-- Chọn nền -->
     <div class="section">
-      <label>Phông nền</label>
+      <label>Background</label>
 
       <!-- Hiển thị sẵn 4 ảnh nền nhanh -->
       <div class="background-options">
@@ -55,34 +55,34 @@
 
     <!-- Tiêu đề bảng -->
     <div class="section">
-      <label>Tiêu đề bảng <span class="required">*</span></label>
+      <label>Title <span class="required">*</span></label>
       <input
         type="text"
         [(ngModel)]="boardTitle"
-        placeholder="Nhập tiêu đề bảng..."
+        placeholder="Enter a table title..."
         required
         #titleInput="ngModel"
       />
       <!-- Hiển thị lỗi nếu trống -->
       <div class="error" *ngIf="titleInput.invalid && titleInput.touched">
-        Vui lòng nhập tiêu đề bảng.
+        Please enter a table title.
       </div>
     </div>
 
 
     <!-- Quyền xem -->
     <div class="section">
-      <label>Quyền xem</label>
+      <label>Viewing rights</label>
       <select>
-        <option>Không gian làm việc</option>
-        <option>Riêng tư</option>
+        <option>Workspace</option>
+        <option>Private</option>
       </select>
     </div>
 
     <!-- Nút hành động -->
     <div class="actions">
-      <button class="create-btn" (click)="onCreateBoard()">Tạo mới</button>
-      <button class="template-btn" (click)="close.emit()">Bắt đầu với Mẫu</button>
+      <button class="create-btn" (click)="onCreateBoard()">Create new</button>
+      <button class="template-btn" (click)="close.emit()">Start with Template</button>
     </div>
   </div>
 </div>
