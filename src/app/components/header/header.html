@@ -1,11 +1,9 @@
 <header class="header">
-  <!-- Logo -->
   <div class="left">
-    <img src="assets/images/tasklogo.png" alt="logo" class="logo-img">
+    <img src="assets/images/tasklogo.png" alt="logo" class="logo-img" />
     <span class="app-name">Task</span>
   </div>
 
-  <!-- Thanh tìm kiếm -->
   <div class="center">
     <div class="search-bar">
       <mat-icon class="search-icon">search</mat-icon>
@@ -13,9 +11,17 @@
     </div>
   </div>
 
-  <!-- Các nút bên phải -->
   <div class="right">
     <mat-icon class="notification-icon">notifications</mat-icon>
-    <mat-icon class="avatar-icon"(click)="openLoginPopup()">account_circle</mat-icon>
+
+    <!-- ✅ Nếu có avatar thì hiển thị, ngược lại là icon account -->
+    <img
+      *ngIf="user"
+      [src]="avatarUrl"
+      class="avatar"
+      alt="avatar"
+      (click)="logout()"
+    />
+    <mat-icon *ngIf="!user" class="avatar-icon">account_circle</mat-icon>
   </div>
 </header>

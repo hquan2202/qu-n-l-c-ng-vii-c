@@ -1,26 +1,18 @@
 <div class="sidebar-container">
-  <div
-    class="menu-item"
-    routerLink="/home"
-    routerLinkActive="active"
-    [routerLinkActiveOptions]="{ exact: false }"
-  >
+  <!-- Trang chủ -->
+  <a class="menu-item" routerLink="/home" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}">
     <mat-icon class="menu-icon">home</mat-icon>
     <span class="menu-text">Trang chủ</span>
-  </div>
+  </a>
 
-  <div class="menu-item"
-       routerLink="/board"
-       routerLinkActive="active">
+  <!-- Bảng (KHÔNG toggle, luôn show list) -->
+  <div class="menu-item board-header">
     <mat-icon class="menu-icon">dashboard</mat-icon>
     <span class="menu-text">Bảng</span>
   </div>
 
-  <div class="menu-item"
-       routerLink="/group"
-       routerLinkActive="active">
     <mat-icon class="menu-icon">group</mat-icon>
     <span class="menu-text">Nhóm</span>
-  </div>
+  </a>
 </div>
 

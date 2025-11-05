@@ -11,23 +11,32 @@
   font-weight: 600;
   flex-shrink: 0;
 }
-
-.navbar .left,
-.navbar .right {
+.left {
   display: flex;
-  align-items: center;
-  gap: 12px;
-}
+  align-items: center; /* Căn giữa theo chiều dọc */
+  height: 28px;
+  cursor: pointer;
 
-.navbar .logo-img {
-  height: 32px;
-  width: auto;
+  .logo-img {
+    width: 30px;
+    height: auto;
+    object-fit: cover;
+    margin-right: 8px;
+  }
+
+  .app-name {
+    font-size: 18px;
+    font-weight: bold;
+    color: #ffffff;
+    margin: 0;
+    text-align: center;
+  }
 }
 
 .navbar mat-icon {
   cursor: pointer;
   font-size: 24px;       /* Giống header */
-  padding: 6px;
+  padding: 10px;
   border-radius: 50%;
   transition: background-color 0.2s, color 0.2s;
 }
@@ -36,11 +45,82 @@
   color: lightgrey;
 }
 
-app-view-popup {
-  top: 60px; /* khoảng cách từ navbar xuống */
-  left: 120px; /* đẩy sang phải, tuỳ chỉnh cho vừa */
+/* -------------------------------------- */
+/* --- CẤU TRÚC FILTER DROPDOWN (MỚI) --- */
+/* -------------------------------------- */
+
+.filter-wrapper {
+  /* Đặt vị trí tương đối để menu thả xuống định vị tuyệt đối so với nó */
+  position: relative;
+  display: flex;
+  align-items: center;
+  /* Giữ nguyên khoảng cách 12px đã có trong .navbar .left */
+}
+
+/* Style cho icon filter khi nó đang active (mở menu hoặc đang lọc) */
+.filter-wrapper mat-icon.filter-active {
+  background-color: rgba(255, 255, 255, 0.2);
+  color: #ffc107; /* Màu nổi bật (vàng) */
+}
+.filter-wrapper mat-icon.filter-active:hover {
+  color: #ffd700; /* Vàng đậm hơn khi hover */
+}
+
+/* Menu thả xuống (Dropdown) */
+.filter-menu {
+  position: absolute;
+  top: 100%; /* Đổ xuống ngay dưới icon */
+  left: 0; /* Căn lề trái với icon */
   z-index: 1000;
+
+  /* Style của menu */
   background: white;
-  border-radius: 10px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  padding: 5px 0;
+  width: 200px; /* Độ rộng cố định */
+
+  /* Ẩn và hiệu ứng đổ xuống */
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease-out, opacity 0.3s ease-out;
+}
+
+/* Hiển thị Menu */
+.filter-menu.open {
+  max-height: 500px; /* Giá trị đủ lớn để chứa nội dung */
+  opacity: 1;
+  margin-top: 5px; /* Khoảng cách nhỏ với icon */
+}
+
+/* Điều chỉnh style cho các nút bên trong FilterComponent
+   (dùng để tạo gạch màu bên trái)
+*/
+.filter-options-list .btn-filter-option {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  text-align: left;
+  padding: 8px 15px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-size: 14px;
+  color: #333;
+  transition: background-color 0.2s;
+  /* Thêm gạch màu bên trái */
+  border-left: 3px solid transparent;
+}
+
+.filter-options-list .btn-filter-option:hover {
+  background: #f0f0f0;
+}
+
+.filter-options-list .btn-filter-option.active {
+  background: #e9e5ff; /* Nền tím nhạt khi active */
+  color: #524290;
+  font-weight: 600;
+  border-left: 3px solid #524290; /* Viền tím đậm khi active */
 }

@@ -1,5 +1,5 @@
 <div class="board-container">
-  <h2>BẢNG CÔNG VIỆC</h2>
+  <h2>{{ boardTitle }}</h2>
 
   <div class="column-actions">
     <input
@@ -10,6 +10,7 @@
     />
     <button class="btn btn-add-column" (click)="addColumn()">+ Thêm Cột</button>
   </div>
+
   <div class="board-columns">
     <div
       class="board-column"
@@ -27,6 +28,7 @@
           <mat-icon>delete_forever</mat-icon>
         </button>
       </div>
+
       <div
         class="card"
         *ngFor="let card of column.cards; let j = index"
@@ -34,14 +36,22 @@
         role="button"
         (click)="openEditor(i, j, $any(card))"
         aria-haspopup="dialog"
+
+        [class.highlighted]="shouldHighlight($any(card))"
+        [class.dimmed]="currentFilterStatus && !shouldHighlight($any(card))"
       >
+        <div
+          class="card-status-bar"
+          [style.background-color]="uiFilterService.getColor($any(card).status || 'To Do')"
+        ></div>
+
         <div class="title">{{ $any(card).title || card }}</div>
         <div class="meta">Assignee: {{ $any(card).assignee || '—' }}</div>
 
       </div>
 
       <div class="add-card">
-        <input type="text" [(ngModel)]="column.newCardName" placeholder="Nhập tên thẻ mới..." />
+        <input type="text" [(ngModel)]="column.newCardName" placeholder="Nhập tên bảng mới..." />
         <button (click)="addCard(i)">+ Thêm</button>
       </div>
     </div>
@@ -53,12 +63,12 @@
     <h3>Chỉnh sửa Thẻ</h3>
 
     <div class="field">
-      <label for="modal-title">Card title</label>
+      <label for="modal-title">Tiêu đề</label>
       <input id="modal-title" type="text" [(ngModel)]="editBuffer.title" />
     </div>
 
     <div class="field">
-      <label for="modal-status">Status</label>
+      <label for="modal-status">Trạng thái</label>
       <select id="modal-status" [(ngModel)]="editBuffer.status">
         <option>To Do</option>
         <option>In Progress</option>
@@ -68,13 +78,13 @@
     </div>
 
     <div class="field">
-      <label for="modal-assignee">Assignee</label>
-      <input id="modal-assignee" type="text" [(ngModel)]="editBuffer.assignee" placeholder="Assign to..." />
+      <label for="modal-assignee">Nhiệm vụ</label>
+      <input id="modal-assignee" type="text" [(ngModel)]="editBuffer.assignee" placeholder="Nhập nhiệm vụ..." />
     </div>
 
     <div class="field">
-      <label for="modal-desc">Notes</label>
-      <textarea id="modal-desc" [(ngModel)]="editBuffer.description" placeholder="Add more details..."></textarea>
+      <label for="modal-desc">Ghi chú</label>
+      <textarea id="modal-desc" [(ngModel)]="editBuffer.description" placeholder="Thêm ghi chú.."></textarea>
     </div>
 
     <div class="actions">

@@ -1,4 +1,3 @@
-
 .board-container {
   padding: 12px;
   font-family: Arial, sans-serif;
@@ -16,7 +15,44 @@ h2 {
   font-size: 20px;
 }
 
-/* --- COLUMN ACTIONS CONTAINER (Mới) --- */
+/* --- FILTER CONTROLS (MỚI) --- */
+/* Style cho thanh filter (trong app-filter component, nhưng cần bao bọc style này) */
+/* Đảm bảo style này áp dụng cho div bao bọc các nút filter bên trong <app-filter> */
+.filter-controls {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 20px;
+  padding: 10px 0;
+  border-bottom: 1px solid #e6eef4;
+}
+
+.btn-filter, .btn-clear-filter {
+  padding: 6px 10px;
+  border: 1px solid #cfe6ee;
+  background-color: #fff;
+  color: #5a4ea3;
+  cursor: pointer;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  transition: background-color 0.2s, box-shadow 0.2s;
+}
+
+.btn-filter.active {
+  background: #5a4ea3; /* Màu Tím khi được chọn */
+  color: white;
+  border-color: #5a4ea3;
+  font-weight: 600;
+}
+
+.btn-filter:hover:not(.active) {
+  background: #e9e5ff;
+}
+/* -------------------------------------- */
+
+
+/* --- COLUMN ACTIONS CONTAINER --- */
 .column-actions {
   display: flex;
   gap: 10px;
@@ -76,7 +112,7 @@ h2 {
   flex-shrink: 0;
 }
 
-/* Header Cột (Mới) */
+/* Header Cột */
 .column-header {
   display: flex;
   justify-content: space-between;
@@ -91,7 +127,7 @@ h2 {
   color: #102027;
 }
 
-/* Nút Xóa Cột (Mới) */
+/* Nút Xóa Cột */
 .btn-delete-column {
   background: none;
   border: none;
@@ -112,14 +148,13 @@ h2 {
 
 /* --- THẺ (CARD) --- */
 .card {
-  background: #fff;
-  border: 1px solid #e6eef4;
-  padding: 10px;
+  /* 🔥 THAY ĐỔI: Tăng padding-left để chừa chỗ cho gạch màu */
+  padding: 10px 10px 10px 18px;
   margin-bottom: 10px;
   border-radius: 6px;
   cursor: pointer;
   position: relative;
-  transition: box-shadow .12s ease, transform .08s ease;
+  transition: box-shadow .12s ease, transform .08s ease, opacity 0.3s, filter 0.3s; /* Thêm transition cho filter */
   outline: none;
   box-sizing: border-box;
 }
@@ -129,6 +164,37 @@ h2 {
   transform: translateY(-2px);
 }
 
+/* --- GẠCH MÀU TRẠNG THÁI (MỚI) --- */
+.card-status-bar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 6px; /* Chiều rộng gạch màu */
+  height: 100%;
+  border-top-left-radius: 6px; /* Dùng 6px để khớp với border-radius của card */
+  border-bottom-left-radius: 6px;
+}
+
+/* --- HIỆU ỨNG LỌC --- */
+
+/* 1. THẺ ĐƯỢC CHỌN (HIGHLIGHTED) */
+.card.highlighted {
+  opacity: 1;
+  box-shadow: 0 4px 12px rgba(10, 18, 28, 0.2); /* Tạo bóng rõ hơn */
+  border: 1px solid #5a4ea3; /* Viền nổi bật màu tím */
+  transform: scale(1.01);
+}
+
+/* 2. THẺ BỊ MỜ (DIMMED) */
+.card.dimmed {
+  opacity: 0.25; /* Mờ đi nhiều hơn để nhấn mạnh thẻ được chọn */
+  transform: scale(0.99); /* Hơi thu nhỏ */
+  filter: grayscale(80%); /* Giảm màu sắc mạnh */
+  cursor: default;
+  pointer-events: none; /* Không cho click vào thẻ mờ */
+}
+
+/* --- CARD CONTENT --- */
 .card .title {
   font-weight: 600;
   color: #0b3a45;
@@ -141,7 +207,8 @@ h2 {
   color: #64748b;
 }
 
-/* --- ADD CARD INPUT/BUTTON (Đã sửa lỗi tràn) --- */
+
+/* --- ADD CARD INPUT/BUTTON --- */
 .add-card {
   display: flex;
   gap: 8px;
@@ -249,12 +316,15 @@ textarea {
   margin-top: 8px;
 }
 
-/* Nút Xóa Thẻ (Mới) */
+/* Nút Xóa Thẻ */
 .btn-delete {
   background: #d32f2f; /* Màu đỏ */
   color: #fff;
   transition: background-color 0.2s;
   margin-right: auto; /* Đẩy sang trái */
+  border-radius: 2px;
+  border: none;
+  padding: 3px 12px;
 }
 .btn-delete:hover {
   background: #c62828;
@@ -264,6 +334,9 @@ textarea {
   background: #5a4ea3; /* Màu Tím */
   color: #fff;
   transition: background-color 0.2s;
+  border: none;
+  border-radius: 2px;
+  padding: 3px 12px;
 }
 
 .btn-save:hover {
@@ -271,10 +344,13 @@ textarea {
 }
 
 .btn-cancel {
-  background: transparent;
+  background: #e0e0e0;
   color: #0b3a45;
-  border: 1px solid #e6eef4;
+  border: none;
+  border-radius: 2px;
+  padding: 3px 12px;
 }
+
 
 /* --- RESPONSIVE TWEAK --- */
 @media (max-width: 860px) {
@@ -282,3 +358,5 @@ textarea {
     flex-wrap: wrap;
   }
 }
+
+
