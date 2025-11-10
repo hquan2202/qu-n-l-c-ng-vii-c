@@ -1,21 +1,34 @@
 <!-- Overlay mờ phía sau -->
-<div class="popup-overlay" *ngIf="visible" (click)="visible = false"></div>
+<div class="popup-overlay" *ngIf="visible" (click)="onCloseClick()"></div>
 
 <!-- Popup chính -->
-<div class="popup" *ngIf="visible" (click)="$event.stopPropagation()">
-  <!-- Header -->
-  <div class="popup-header">
-    <img [src]="avatarUrl" alt="avatar" class="avatar" />
+<!-- ngClass để đổi vị trí hiển thị giữa header / navbar -->
+<div
+  class="popup"
+  *ngIf="visible"
+  (click)="$event.stopPropagation()"
+>
+  <!-- Header user -->
+  <div class="popup-user">
+    <img
+      *ngIf="user"
+      [src]="avatarUrl"
+      class="avatar avatar--lg"
+      alt="avatar"
+      (click)="onCloseClick()"
+    />
+
     <div class="user-info">
       <h3>{{ user?.user_metadata?.full_name || 'Người dùng' }}</h3>
       <p>{{ user?.email }}</p>
     </div>
   </div>
+
   <hr />
 
   <!-- Nút tạo workspace -->
   <div class="popup-body">
-    <button class="menu-btn" (click)="onCreateWorkspace()">
+    <button class="menu-btn" (click)="onCreateWorkspaceClick()">
       <mat-icon class="menu-icon">group</mat-icon>
       <span>Create workspace</span>
     </button>
@@ -25,12 +38,9 @@
 
   <!-- Nút đăng xuất -->
   <div class="popup-body">
-    <button class="logout-btn" (click)="onLogout()">
+    <button class="logout-btn" (click)="onLogoutClick()">
       <mat-icon class="menu-icon">logout</mat-icon>
       <span>Log out</span>
     </button>
   </div>
 </div>
-
-<!-- Popup Create Workspace -->
-<app-create-workspace *ngIf="createWorkspaceVisible" (close)="createWorkspaceVisible = false"></app-create-workspace>

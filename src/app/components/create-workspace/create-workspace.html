@@ -1,51 +1,48 @@
 <div class="overlay" (click)="closePopup()"></div>
 
 <div class="workspace-popup" (click)="$event.stopPropagation()">
+  <!-- Left side: Form -->
   <div class="popup-left">
-    <h2>Hãy xây dựng một Không gian làm việc</h2>
+    <h2>Create workspace</h2>
     <p class="subtitle">
-      Tăng năng suất của bạn bằng cách giúp mọi người dễ dàng truy cập bảng ở một vị trí.
+      Increase your productivity by making it easy for everyone to access boards in one location.
     </p>
 
     <form (ngSubmit)="createWorkspace()">
-      <label for="name">Tên Không gian làm việc</label>
-      <input
-        id="name"
-        [(ngModel)]="workspaceName"
-        name="name"
-        placeholder="Công ty của bạn"
-        required
-      />
-      <p class="hint">Đây là tên của công ty, nhóm hoặc tổ chức của bạn.</p>
 
-      <label for="type">Loại Không gian làm việc</label>
-      <select id="type" [(ngModel)]="workspaceType" name="type" required>
-        <option value="" disabled selected>Chọn...</option>
-        <option>Công ty</option>
-        <option>Nhóm học tập</option>
-        <option>Dự án cá nhân</option>
-        <option>Tổ chức</option>
-      </select>
+      <!-- Workspace Name -->
+      <mat-form-field class="custom-form-field" appearance="fill">
+        <mat-label>Workspace Name</mat-label>
+        <input matInput [(ngModel)]="workspaceName" name="name" placeholder="Workspace Name" required />
+      </mat-form-field>
+      <!-- Workspace Type -->
+      <mat-form-field class="custom-form-field" appearance="fill">
+        <mat-label>Workspace Type</mat-label>
+        <mat-select [(ngModel)]="workspaceType" name="type" required>
+          <mat-option value="">Choose...</mat-option>
+          <mat-option value="company">Company</mat-option>
+          <mat-option value="study">Study</mat-option>
+          <mat-option value="personal">Personal</mat-option>
+        </mat-select>
+      </mat-form-field>
 
-      <label for="desc">Mô tả Không gian làm việc <span class="optional">Tùy chọn</span></label>
-      <textarea
-        id="desc"
-        [(ngModel)]="workspaceDesc"
-        name="desc"
-        placeholder="Nhóm của chúng tôi tổ chức mọi thứ ở đây."
-      ></textarea>
+      <!-- Workspace Description -->
+      <mat-form-field class="custom-form-field" appearance="fill">
+        <mat-label>Describe</mat-label>
+        <textarea matInput [(ngModel)]="workspaceDesc" name="desc" placeholder="Our team organizes everything here."></textarea>
+      </mat-form-field>
 
-      <p class="hint">
-        Đưa các thành viên của bạn vào bằng mô tả ngắn về Không gian làm việc.
-      </p>
-
-      <button type="submit" [disabled]="!workspaceName || !workspaceType">
-        Tiếp tục
+      <!-- Submit Button -->
+      <button mat-raised-button color="primary" type="submit" [disabled]="!workspaceName || !workspaceType">
+        Continue
       </button>
+
     </form>
   </div>
+    <!-- Right side: Image -->
+    <div class="popup-right">
+      <mat-icon class="close-btn" (click)="closePicker()">close</mat-icon>
+      <img src="assets/images/workspace.png" alt="workspace preview" />
+    </div>
 
-  <div class="popup-right">
-    <img src="assets/images/workspace-illustration.png" alt="workspace preview" />
-  </div>
 </div>

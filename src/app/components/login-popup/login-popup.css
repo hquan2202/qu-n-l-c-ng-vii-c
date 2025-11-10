@@ -10,9 +10,19 @@
   animation: fadeIn 0.3s ease;
 }*/
 
-:host ::ng-deep .popup,
-:host ::ng-deep .popup * {
-  color: #000 !important;
+:host {
+  display: block;
+  width: 380px;
+  max-height: 90vh;
+  background: #fff;
+  border-radius: 12px;
+  padding: 35px 20px;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+  position: relative;
+  text-align: left;
+  font-family: "Inter", sans-serif;
+  animation: slideUp 0.3s ease;
+  z-index: 3001;
 }
 
 

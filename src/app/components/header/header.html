@@ -1,3 +1,4 @@
+<!-- language: html -->
 <header class="header">
   <div class="left">
     <img src="assets/images/tasklogo.png" alt="logo" class="logo-img" />
@@ -7,30 +8,38 @@
   <div class="center">
     <div class="search-bar">
       <mat-icon class="search-icon">search</mat-icon>
-      <input type="text" placeholder="Search" class="search-input" />
+      <input type="text" placeholder="Tìm kiếm" class="search-input" />
     </div>
   </div>
 
   <div class="right">
     <mat-icon class="notification-icon">notifications</mat-icon>
 
-    <!-- ✅ Nếu có avatar thì hiển thị -->
     <img
-      *ngIf="user"
+      *ngIf="avatarUrl"
       [src]="avatarUrl"
       class="avatar"
       alt="avatar"
+      (error)="onAvatarError($event)"
       (click)="toggleAccountPopup()"
     />
 
-    <!-- ✅ Nếu chưa đăng nhập -->
-    <mat-icon *ngIf="!user" class="avatar-icon">account_circle</mat-icon>
+    <mat-icon *ngIf="!avatarUrl" class="avatar-icon" (click)="toggleAccountPopup()">account_circle</mat-icon>
 
-    <!-- Popup tài khoản -->
     <app-account-popup
-      [visible]="showAccountPopup"
+      [visible]="isPopupVisible"
+      [position]="'header'"
       [user]="user"
-      [onLogout]="logout.bind(this)"
+      [avatarUrl]="avatarUrl"
+      (onClose)="closePopup()"
+      (onLogout)="logout()"
+      (onCreateWorkspace)="openCreateWorkspace()"
     ></app-account-popup>
+
+    <app-create-workspace
+      *ngIf="headerCreateWorkspaceVisible"
+      (close)="headerCreateWorkspaceVisible = false"
+    ></app-create-workspace>
   </div>
+
 </header>

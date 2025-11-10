@@ -1,52 +1,35 @@
-import { Component, Input } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
-import { CreateWorkspaceComponent } from '../create-workspace/create-workspace';
-
 @Component({
   selector: 'app-account-popup',
   standalone: true,
-  imports: [CommonModule, MatIconModule, CreateWorkspaceComponent],
   templateUrl: './account.html',
+  imports: [
+    MatIconModule
+  ],
   styleUrls: ['./account.css']
 })
 export class AccountPopupComponent {
-  @Input() user: any;
-  @Input() visible = false;
-  @Input() onLogout!: () => void;
+  @Input() position: string = 'default';
+  @Input() visible: boolean = false;
+  @Input() user: any = null;
+  @Input() avatarUrl: string | null = null;
 
-  themeVisible = false; // popup phụ
-  theme: 'light' | 'dark' = 'light';
-  createWorkspaceVisible = false; // 👈 thêm dòng này
+  // outputs
+  @Output() onClose = new EventEmitter<void>();
+  @Output() onLogout = new EventEmitter<void>();
+  @Output() onCreateWorkspace = new EventEmitter<void>();
 
-  get avatarUrl(): string {
-    return (
-      this.user?.user_metadata?.avatar_url ||
-      this.user?.user_metadata?.picture ||
-      'assets/images/default-avatar.png'
-    );
+
+  onCloseClick(): void {
+    this.onClose.emit();
   }
 
-  toggleThemePopup() {
-    this.themeVisible = !this.themeVisible;
+  onLogoutClick(): void {
+    this.onLogout.emit();
   }
 
-  setTheme(mode: 'light' | 'dark') {
-    this.theme = mode;
-    document.body.setAttribute('data-theme', mode);
-    localStorage.setItem('theme', mode);
-    this.themeVisible = false;
-  }
-
-  ngOnInit() {
-    const saved = localStorage.getItem('theme');
-    if (saved === 'dark') {
-      this.theme = 'dark';
-      document.body.setAttribute('data-theme', 'dark');
-    }
-  }
-
-  onCreateWorkspace() {
-    this.createWorkspaceVisible = true; // mở popup workspace
+  onCreateWorkspaceClick(): void {
+    this.onCreateWorkspace.emit();
   }
 }

@@ -71,7 +71,7 @@
 }
 
 .center .search-input {
-  width: 50%;
+  width: 10%;
   height: 50%;
   background-color: #EEEEEE;
   border: none;
@@ -87,8 +87,8 @@
 .right {
   display: flex;
   width: 10%;
-  align-items: center;
   margin-right: 30px;
+  align-items: center;
   justify-content: flex-end;
   flex: none;
   gap: 10px;
