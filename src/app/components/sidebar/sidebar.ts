@@ -6,15 +6,22 @@ import {
   ChangeDetectorRef,
 } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
-import {NgIf, NgFor, NgStyle, NgClass} from '@angular/common';
+import { NgIf, NgFor, NgStyle, NgClass } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
+import { CreateWorkspaceComponent } from '../create-workspace/create-workspace';
 
 type Board = {
   id: string;
   title: string;
   color?: string;
-  background?: string; // có thể là màu hoặc URL ảnh (kể cả 'url(...)')
+  background?: string;
   tasks?: any[];
+};
+
+type Workspace = {
+  name: string;
+  type: string;
+  desc?: string;
 };
 
 const STORAGE_KEY = 'boards';
@@ -23,7 +30,7 @@ const CREATE_TITLE = 'Tạo bảng mới';
 @Component({
   selector: 'app-sidebar',
   standalone: true,
-  imports: [RouterLink, RouterLinkActive, MatIconModule, NgStyle, NgClass],
+  imports: [RouterLink, RouterLinkActive, MatIconModule, NgStyle, NgClass, CreateWorkspaceComponent, NgIf, NgFor],
   templateUrl: './sidebar.html',
   styleUrls: ['./sidebar.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -31,6 +38,8 @@ const CREATE_TITLE = 'Tạo bảng mới';
 export class SidebarComponent implements OnInit, OnDestroy {
   isBoardsOpen = true;
   myBoards: Board[] = [];
+  workspaces: { name: string; type: string; desc?: string }[] = [];
+  showCreatePopup = false;
 
   private onBoardsUpdatedBound = this.reload.bind(this);
   private onStorageBound = this.onStorageEvent.bind(this);
@@ -48,8 +57,17 @@ export class SidebarComponent implements OnInit, OnDestroy {
     window.removeEventListener('storage', this.onStorageBound);
   }
 
-  toggleBoards(): void {
-    this.isBoardsOpen = !this.isBoardsOpen;
+  addWorkspace(ws: { name: string; type: string; desc?: string }) {
+    this.workspaces.push(ws);
+  }
+  openCreatePopup(): void {
+    this.showCreatePopup = true;
+    this.cdr.markForCheck();
+  }
+
+  closeCreatePopup(): void {
+    this.showCreatePopup = false;
+    this.cdr.markForCheck();
   }
 
   private onStorageEvent(e: StorageEvent) {
@@ -58,7 +76,6 @@ export class SidebarComponent implements OnInit, OnDestroy {
 
   private reload() {
     const raw = this.safeParseArray(localStorage.getItem(STORAGE_KEY));
-    // chỉ lấy boards thật, bỏ “Tạo bảng mới”
     const boards: Board[] = raw
       .map((b: any, i: number): Board => ({
         id: String(b?.id ?? `b_${Date.now()}_${i}`),
@@ -83,48 +100,4 @@ export class SidebarComponent implements OnInit, OnDestroy {
     }
   }
 
-  trackById(_: number, b: Board) {
-    return b.id;
-  }
-
-  getInitial(title?: string): string {
-    const t = (title ?? '').trim();
-    return t ? t[0].toUpperCase() : 'B';
-  }
-
-  // Kiểm tra background là URL ảnh hoặc chuỗi 'url(...)'
-  isImage(bg?: string): boolean {
-    if (!bg) return false;
-    const v = bg.trim().toLowerCase();
-    return (
-      v.startsWith('http://') ||
-      v.startsWith('https://') ||
-      v.startsWith('data:image') ||
-      v.startsWith('url(') ||
-      v.endsWith('.png') ||
-      v.endsWith('.jpg') ||
-      v.endsWith('.jpeg') ||
-      v.endsWith('.webp') ||
-      v.endsWith('.gif') ||
-      v.endsWith('.svg')
-    );
-  }
-
-  // Style cho thumbnail
-  getThumbStyle(b: Board) {
-    const bg = (b.background ?? '').trim();
-    if (this.isImage(bg)) {
-      // hỗ trợ cả dạng 'url(...)' và URL thô
-      const url = bg.startsWith('url(') ? bg : `url("${bg}")`;
-      return {
-        'background-image': url,
-        'background-size': 'cover',
-        'background-position': 'center',
-      };
-    }
-    // xem như màu
-    return {
-      'background': bg || (b.color ?? '#eee'),
-    };
-  }
 }

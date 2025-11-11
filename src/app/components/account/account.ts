@@ -1,11 +1,14 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
+import {NgClass, NgIf} from '@angular/common';
 @Component({
   selector: 'app-account-popup',
   standalone: true,
   templateUrl: './account.html',
   imports: [
-    MatIconModule
+    MatIconModule,
+    NgIf,
+    NgClass
   ],
   styleUrls: ['./account.css']
 })

@@ -46,7 +46,9 @@ export class HeaderComponent implements OnInit {
 
   toggleAccountPopup(): void {
     this.isPopupVisible = !this.isPopupVisible;
+    console.log('Popup visible:', this.isPopupVisible);
   }
+
 
   closePopup(): void {
     this.isPopupVisible = false;

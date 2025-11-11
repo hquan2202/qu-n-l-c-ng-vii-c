@@ -1,5 +1,5 @@
+<!-- File: `src/app/pages/all-task/all-task.html` -->
 <div class="all-task-container">
-
   <div class="task-header">
     <div class="col title">Title</div>
     <div class="col list">List</div>
@@ -8,15 +8,15 @@
     <div class="col note">Note</div>
   </div>
 
-  <div class="task-row">
-    <div class="col title">Hôm nay tôi đến công ty</div>
-    <div class="col list">To Do</div>
+  <div class="task-row" *ngFor="let task of tasks$ | async">
+    <div class="col title">{{ task.title }}</div>
+    <div class="col list">{{ task.list }}</div>
     <div class="col member">
-      <div class="avatar">A</div>
+      <div class="avatar">{{ task.assignee ? (task.assignee[0] | uppercase) : '?' }}</div>
     </div>
     <div class="col status">
-      <button class="status-btn">Label</button>
+      <button class="status-btn">{{ task.status }}</button>
     </div>
-    <div class="col note"></div>
+    <div class="col note">{{ task.description }}</div>
   </div>
 </div>

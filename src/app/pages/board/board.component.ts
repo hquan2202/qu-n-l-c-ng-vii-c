@@ -1,3 +1,4 @@
+// typescript
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { NgForOf, NgIf } from '@angular/common';
@@ -6,6 +7,7 @@ import { UiFilterService } from '../../services/ui-filter/ui-filter.service';
 import { Subscription } from 'rxjs';
 import { BoardService, Column, Card } from '../../services/board/board.service';
 import { ActivatedRoute } from '@angular/router';
+import { TaskService } from '../../services/task/task.service';
 
 @Component({
   selector: 'app-board',
@@ -17,12 +19,12 @@ import { ActivatedRoute } from '@angular/router';
 export class BoardComponent implements OnInit, OnDestroy {
   boardId = '';
   boardTitle = 'BẢNG CÔNG VIỆC';
-
   currentFilterStatus: string | null = null;
   private filterSubscription!: Subscription;
   private boardSubscription!: Subscription;
   private routeSubscription!: Subscription;
 
+  // single columns declaration (use your BoardService Column type)
   columns: Column[] = [];
   editing: { i: number; j: number } | null = null;
   editBuffer: Card = { title: '', status: 'To Do', assignee: '', description: '' };
@@ -31,17 +33,17 @@ export class BoardComponent implements OnInit, OnDestroy {
   constructor(
     public uiFilterService: UiFilterService,
     private boardService: BoardService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private taskService: TaskService,
   ) {}
 
   ngOnInit(): void {
-    // 🔁 Quan trọng: lắng nghe thay đổi param :id để reload khi click board khác
+    // listen route :id changes
     this.routeSubscription = this.route.paramMap.subscribe((pm) => {
       const id = pm.get('id') ?? '';
       this.applyBoardId(id);
     });
 
-    // giữ logic filter/columns
     this.filterSubscription = this.uiFilterService.currentFilterStatus$.subscribe((status) => {
       this.currentFilterStatus = status;
     });
@@ -57,20 +59,17 @@ export class BoardComponent implements OnInit, OnDestroy {
     this.routeSubscription?.unsubscribe();
   }
 
-  // ========= CORE: đổi boardId thì cập nhật tiêu đề + nạp dữ liệu =========
   private applyBoardId(id: string) {
     if (!id || id === this.boardId) return;
 
     this.boardId = id;
-    this.editing = null; // reset editor khi đổi bảng
+    this.editing = null;
     this.editBuffer = { title: '', status: 'To Do', assignee: '', description: '' };
 
-    // 1) Ưu tiên title truyền qua navigation state
     const stateTitle = (history.state?.board?.title as string | undefined)?.trim();
     if (stateTitle) {
       this.boardTitle = stateTitle;
     } else {
-      // 2) Fallback đọc từ localStorage('boards')
       try {
         const raw = JSON.parse(localStorage.getItem('boards') ?? '[]') as Array<{ id?: string; title?: string }>;
         const found = Array.isArray(raw) ? raw.find((b) => String(b?.id) === String(this.boardId)) : undefined;
@@ -80,10 +79,7 @@ export class BoardComponent implements OnInit, OnDestroy {
       }
     }
 
-    // 3) Báo cho BoardService nạp dữ liệu theo boardId (nếu service có API); fallback an toàn
-    // Ưu tiên các hàm nếu chúng tồn tại trong service của bạn.
     try {
-      // ví dụ các tên hàm khả dụng tuỳ dự án của bạn:
       if (typeof (this.boardService as any).setActiveBoardId === 'function') {
         (this.boardService as any).setActiveBoardId(this.boardId);
       } else if (typeof (this.boardService as any).loadBoard === 'function') {
@@ -91,17 +87,14 @@ export class BoardComponent implements OnInit, OnDestroy {
       } else if (typeof (this.boardService as any).initBoardIfMissing === 'function') {
         (this.boardService as any).initBoardIfMissing(this.boardId);
       }
-      // nếu không có hàm nào, columns$ vẫn sẽ giữ giá trị cũ; bạn có thể
-      // bổ sung một API trong BoardService để lấy/nạp cột theo boardId.
     } catch {
-      // bỏ qua nếu service không hỗ trợ
+      // ignore
     }
   }
 
   shouldHighlight(card: Card | any): boolean {
     if (!this.currentFilterStatus) return true;
     return (card.status || 'To Do') === this.currentFilterStatus;
-    // lưu ý: nếu status bọc qua service, đảm bảo update đi qua service để push columns$
   }
 
   openEditor(i: number, j: number, card: Card | string) {
@@ -136,10 +129,26 @@ export class BoardComponent implements OnInit, OnDestroy {
   }
 
   addCard(i: number) {
-    const name = this.columns[i]?.newCardName;
+    const name = (this.columns[i] as any)?.newCardName?.trim();
     if (!name) return;
-    this.boardService.addCard(i, name);
-    if (this.columns[i]) this.columns[i].newCardName = '';
+
+    const newCard = {
+      title: name,
+      status: (this.columns[i] as any)?.title || 'To Do',
+      assignee: '',
+      description: '',
+    };
+
+    try {
+      // Board handles adding card to the column (and ideally should also sync tasks)
+      this.boardService.addCard(i, name);
+    } catch (e) {
+      console.error('BoardComponent.addCard -> boardService.addCard failed', e);
+    }
+
+    if (this.columns[i]) (this.columns[i] as any).newCardName = '';
+
+    // Removed duplicate call to taskService.addTask to avoid creating the same task twice.
   }
 
   addColumn() {
@@ -152,7 +161,7 @@ export class BoardComponent implements OnInit, OnDestroy {
   deleteColumn(i: number) {
     if (
       this.columns.length > 1 &&
-      confirm(`Bạn có chắc chắn muốn xóa cột "${this.columns[i].title}" không? Tất cả thẻ sẽ bị mất.`)
+      confirm(`Bạn có chắc chắn muốn xóa cột "${(this.columns[i] as any).title}" không? Tất cả thẻ sẽ bị mất.`)
     ) {
       this.boardService.deleteColumn(i);
       if (this.editing && this.editing.i === i) this.closeEditor();

@@ -8,7 +8,7 @@
 
 /* Popup chính */
 .popup {
-  position: fixed;
+  position: absolute;
   top: 60px;
   right: 50px;
   border-radius: 12px;
@@ -19,7 +19,6 @@
   background: #fff;
 }
 
-
 /* Header user (avatar + info) */
 .popup-user {
   display: flex;
@@ -29,10 +28,10 @@
 
 /* file: src/app/components/account/account.css */
 /* thay .avatar thành .popup-avatar để không xung đột */
-.popup-avatar {
+.avatar {
   width: 42px;
   height: 42px;
-  border-radius: 50%;
+  border-radius: 50% ;
   object-fit: cover;
   cursor: pointer;
 }

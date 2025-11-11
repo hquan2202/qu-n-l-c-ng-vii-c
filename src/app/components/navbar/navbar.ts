@@ -31,7 +31,6 @@ import { CreateWorkspaceComponent } from '../create-workspace/create-workspace';
 export class NavBarComponent implements OnInit {
   isSidebarOpen = false;
   isGridView = true;
-  isDarkBackground = false;
   isViewOpen = false;
 
   isDropdownOpen = false;
@@ -103,14 +102,6 @@ export class NavBarComponent implements OnInit {
 
   toggleDropdown(): void {
     this.isDropdownOpen = !this.isDropdownOpen;
-  }
-
-  closeDropdown(): void {
-    this.isDropdownOpen = false;
-  }
-
-  toggleSidebar(): void {
-    this.isSidebarOpen = !this.isSidebarOpen;
   }
 
   toggleView(): void {

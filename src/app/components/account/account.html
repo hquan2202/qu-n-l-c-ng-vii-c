@@ -5,6 +5,7 @@
 <!-- ngClass để đổi vị trí hiển thị giữa header / navbar -->
 <div
   class="popup"
+  [ngClass]="position === 'header' ? 'popup-header' : 'popup-navbar'"
   *ngIf="visible"
   (click)="$event.stopPropagation()"
 >

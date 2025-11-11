@@ -10,15 +10,14 @@
 
     <form (ngSubmit)="createWorkspace()">
 
-      <!-- Workspace Name -->
       <mat-form-field class="custom-form-field" appearance="fill">
         <mat-label>Workspace Name</mat-label>
-        <input matInput [(ngModel)]="workspaceName" name="name" placeholder="Workspace Name" required />
+        <input matInput [(ngModel)]="workspaceName" name="workspaceName" placeholder="Workspace Name" required />
       </mat-form-field>
-      <!-- Workspace Type -->
+
       <mat-form-field class="custom-form-field" appearance="fill">
         <mat-label>Workspace Type</mat-label>
-        <mat-select [(ngModel)]="workspaceType" name="type" required>
+        <mat-select [(ngModel)]="workspaceType" name="workspaceType" required>
           <mat-option value="">Choose...</mat-option>
           <mat-option value="company">Company</mat-option>
           <mat-option value="study">Study</mat-option>
@@ -26,23 +25,21 @@
         </mat-select>
       </mat-form-field>
 
-      <!-- Workspace Description -->
       <mat-form-field class="custom-form-field" appearance="fill">
         <mat-label>Describe</mat-label>
-        <textarea matInput [(ngModel)]="workspaceDesc" name="desc" placeholder="Our team organizes everything here."></textarea>
+        <textarea matInput [(ngModel)]="workspaceDesc" name="workspaceDesc" placeholder="Our team organizes everything here."></textarea>
       </mat-form-field>
 
-      <!-- Submit Button -->
       <button mat-raised-button color="primary" type="submit" [disabled]="!workspaceName || !workspaceType">
-        Continue
+        Create Workspace
       </button>
 
     </form>
   </div>
-    <!-- Right side: Image -->
-    <div class="popup-right">
-      <mat-icon class="close-btn" (click)="closePicker()">close</mat-icon>
-      <img src="assets/images/workspace.png" alt="workspace preview" />
-    </div>
 
+  <!-- Right side: Image -->
+  <div class="popup-right">
+    <mat-icon class="close-btn" (click)="closePicker()">close</mat-icon>
+    <img src="assets/images/workspace.png" alt="workspace preview" />
+  </div>
 </div>

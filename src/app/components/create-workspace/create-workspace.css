@@ -101,7 +101,7 @@ h2 {
   font-size: 13px !important;
 }
 .mat-mdc-form-field-appearance-fill.mat-mdc-focused {
-  box-shadow: 0 0 0 2px #b5a8f5;
+  box-shadow: 0 0 0 2px ;
 }
 
 /* Button */

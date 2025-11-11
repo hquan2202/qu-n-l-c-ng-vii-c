@@ -24,31 +24,7 @@
   </div>
 
   <div class="right">
-    <mat-icon class="notification-icon">notifications</mat-icon>
     <!-- ✅ Nếu có avatar thì hiển thị -->
-    <img
-      *ngIf="user"
-      [src]="avatarUrl"
-      class="avatar"
-      alt="avatar"
-      (click)="toggleAccountPopup()"
-    />
-
-    <mat-icon *ngIf="!user" class="avatar-icon">account_circle</mat-icon>
-    <app-account-popup
-      [visible]="isPopupVisible"
-      [position]="'navbar'"
-      [user]="user"
-      [avatarUrl]="avatarUrl"
-      (onClose)="closePopup()"
-      (onLogout)="logout()"
-      (onCreateWorkspace)="openCreateWorkspace()"
-    ></app-account-popup>
-
-    <app-create-workspace
-      *ngIf="navbarCreateWorkspaceVisible"
-      (close)="navbarCreateWorkspaceVisible = false"
-    ></app-create-workspace>
 
   </div>
 </nav>

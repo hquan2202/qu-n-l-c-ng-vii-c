@@ -1,4 +1,5 @@
 .board-container {
+  display: flex;
   padding: 12px;
   font-family: Arial, sans-serif;
   background: #f5f7fb;
