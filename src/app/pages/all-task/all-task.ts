@@ -1,7 +1,8 @@
-// File: `src/app/pages/all-task/all-task.ts`
+// typescript
 import { Component } from '@angular/core';
 import { NgForOf, UpperCasePipe, AsyncPipe } from '@angular/common';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { TaskService, Task } from '../../services/task/task.service';
 
 @Component({
@@ -15,22 +16,14 @@ export class AllTaskComponent {
   tasks$: Observable<Task[]>;
 
   constructor(private taskService: TaskService) {
-    this.tasks$ = this.taskService.tasks$;
+    this.tasks$ = this.taskService.tasks$.pipe(
+      map(tasks => tasks.filter(t => t.boardId))
+    );
   }
 
-  deleteTask(taskId: string | undefined): void {
+  onDelete(taskId: string): void {
     if (!taskId) return;
     if (!confirm('Delete this task?')) return;
     this.taskService.deleteTask(taskId);
-  }
-
-  deleteTasksWithoutBoard(): void {
-    if (!confirm('Delete tasks without board link (legacy)?')) return;
-    (this.taskService as any).deleteTasksWithoutBoard?.();
-  }
-
-  deleteAllTasks(): void {
-    if (!confirm('Delete ALL tasks? This cannot be undone.')) return;
-    (this.taskService as any).deleteAllTasks?.();
   }
 }

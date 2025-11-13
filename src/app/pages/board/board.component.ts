@@ -113,8 +113,11 @@ export class BoardComponent implements OnInit, OnDestroy {
     if (!this.editing) return;
     const { i, j } = this.editing;
     this.boardService.updateCard(i, j, { ...this.editBuffer });
+
+
     this.closeEditor();
   }
+
 
   deleteCard() {
     if (!this.editing) return;

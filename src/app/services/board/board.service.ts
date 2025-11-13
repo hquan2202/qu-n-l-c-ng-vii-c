@@ -52,11 +52,12 @@ export class BoardService {
       localStorage.setItem(key, JSON.stringify(cols));
     }
 
+    // ✅ giữ nguyên cards trong localStorage
     const cols = this.loadFromStorage(id).map(col => ({
       ...col,
-      cards: [],
       newCardName: '',
     }));
+
     this.columnsSubject.next(cols);
     this.persist(cols);
   }
@@ -90,7 +91,6 @@ export class BoardService {
       console.error('BoardService.deleteColumn -> taskService.deleteTask failed', e);
     }
   }
-
   addCard(columnIndex: number, cardTitle: string): void {
     if (!this.ensureActive() || !cardTitle?.trim()) return;
     const trimmedTitle = cardTitle.trim();
@@ -162,6 +162,36 @@ export class BoardService {
     }
   }
 
+  deleteBoard(boardId: string): void {
+    if (!boardId) return;
+    try {
+      // remove board from 'boards' list
+      try {
+        const raw = JSON.parse(localStorage.getItem('boards') ?? '[]');
+        const boards = Array.isArray(raw) ? raw.filter((b: any) => String(b?.id) !== String(boardId)) : [];
+        localStorage.setItem('boards', JSON.stringify(boards));
+      } catch (e) {
+        console.error('BoardService.deleteBoard -> failed to update boards list', e);
+      }
+
+      // remove per-board columns storage
+      localStorage.removeItem(this.keyFor(boardId));
+
+      // remove tasks associated with this board (direct typed call)
+      try {
+        // call the public method on TaskService so it's counted as used
+        (this.taskService as any).deleteTasksByBoardId
+          ? (this.taskService as any).deleteTasksByBoardId(boardId)
+          : void 0;
+      } catch (e) {
+        console.error('BoardService.deleteBoard -> taskService.deleteTasksByBoardId failed', e);
+      }
+
+      console.debug('BoardService.deleteBoard -> removed board', boardId);
+    } catch (e) {
+      console.error('BoardService.deleteBoard failed', e);
+    }
+  }
   private loadFromStorage(boardId: string): Column[] {
     const key = this.keyFor(boardId);
     return this.safeParseColumns(localStorage.getItem(key)) ?? this.defaultColumns();

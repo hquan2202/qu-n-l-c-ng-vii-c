@@ -1,5 +1,5 @@
-<!-- File: `src/app/pages/all-task/all-task.html` -->
 <div class="all-task-container">
+
   <div class="task-header">
     <div class="col title">Title</div>
     <div class="col list">List</div>
@@ -10,7 +10,7 @@
 
   <div class="task-row" *ngFor="let task of tasks$ | async">
     <div class="col title">{{ task.title }}</div>
-    <div class="col list">{{ task.list }}</div>
+    <div class="col list">{{ task.list || '—' }}</div>
     <div class="col member">
       <div class="avatar">{{ task.assignee ? (task.assignee[0] | uppercase) : '?' }}</div>
     </div>
