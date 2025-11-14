@@ -4,12 +4,12 @@ import { HomeComponent } from './pages/home/home.component';
 import { BoardComponent } from './pages/board/board.component';
 import { LoginComponent } from './pages/login/login';
 import { AllTaskComponent} from './pages/all-task/all-task';
-
+import { WorkspaceComponent } from './pages/workspace/workspace';
 export const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
   { path: 'login', component: LoginComponent },
   { path: 'home', component: HomeComponent },
-
+  { path: 'workspace', component: WorkspaceComponent },
   // ✅ khi bấm menu “Bảng” trong sidebar => ra list board
   { path: 'board', component: HomeComponent },
 

@@ -9,11 +9,37 @@
   display: flex;
   flex-direction: column;
 }
-
-h2 {
-  margin: 0 0 12px 0;
-  color: #263238;
-  font-size: 20px;
+.board-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+/* Title display */
+.board-title h2 {
+  height: 30px;
+  margin: 10px 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+  line-height: 1.2;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background-color 120ms ease, color 120ms ease;
+}
+.board-title h2:hover {
+  background-color: rgba(0,0,0,0.04);
+}
+/* Inline edit input */
+.title-edit input {
+  width: 90px;
+  margin: 10px 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+  padding: 6px 8px;
+  border-radius: 4px;
+  outline: none;
+  box-sizing: border-box;
+}
+.title-edit input:focus {
 }
 
 /* --- FILTER CONTROLS (MỚI) --- */
@@ -359,5 +385,3 @@ textarea {
     flex-wrap: wrap;
   }
 }
-
-

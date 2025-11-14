@@ -22,8 +22,6 @@ import { CreateWorkspaceComponent } from '../create-workspace/create-workspace';
     NgIf,
     AsyncPipe,
     ViewPopupComponent,
-    AccountPopupComponent,
-    CreateWorkspaceComponent
   ],
   templateUrl: './navbar.html',
   styleUrls: ['./navbar.css']

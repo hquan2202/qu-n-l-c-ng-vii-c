@@ -23,15 +23,5 @@
   </div>
 
 
-  <!-- Phần workspace, chỉ hiển thị khi có workspace -->
-  <div *ngIf="workspaces.length > 0" class="workspace-section">
-    <p class="workspace-title">Các Không gian làm việc</p>
-    <ul>
-      <li *ngFor="let ws of workspaces">
-        <span class="workspace-icon">{{ ws.name.charAt(0).toUpperCase() }}</span>
-        {{ ws.name }}
-      </li>
-    </ul>
-  </div>
 
 </div>

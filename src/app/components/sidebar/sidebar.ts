@@ -1,3 +1,4 @@
+// src/app/components/sidebar/sidebar.ts
 import {
   Component,
   ChangeDetectionStrategy,
@@ -9,6 +10,8 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
 import { NgIf, NgFor, NgStyle, NgClass } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { CreateWorkspaceComponent } from '../create-workspace/create-workspace';
+import { InviteMemberComponent } from '../invite-member/invite-member';
+import { MatButtonModule } from '@angular/material/button';
 
 type Board = {
   id: string;
@@ -19,6 +22,7 @@ type Board = {
 };
 
 type Workspace = {
+  id: string;
   name: string;
   type: string;
   desc?: string;
@@ -30,7 +34,13 @@ const CREATE_TITLE = 'Tạo bảng mới';
 @Component({
   selector: 'app-sidebar',
   standalone: true,
-  imports: [RouterLink, RouterLinkActive, MatIconModule, NgStyle, NgClass, CreateWorkspaceComponent, NgIf, NgFor],
+  imports: [
+    RouterLink,
+    RouterLinkActive,
+    MatIconModule,
+    MatButtonModule,
+    NgIf,
+  ],
   templateUrl: './sidebar.html',
   styleUrls: ['./sidebar.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -38,14 +48,25 @@ const CREATE_TITLE = 'Tạo bảng mới';
 export class SidebarComponent implements OnInit, OnDestroy {
   isBoardsOpen = true;
   myBoards: Board[] = [];
-  workspaces: { name: string; type: string; desc?: string }[] = [];
+
+  // danh sách workspace người dùng tạo
+  workspaces: Workspace[] = [];
+
+  // popup
   showCreatePopup = false;
+  showInvitePopup = false;
+
+  // link mời thành viên
+  inviteLink: string = '';
 
   private onBoardsUpdatedBound = this.reload.bind(this);
   private onStorageBound = this.onStorageEvent.bind(this);
 
   constructor(private cdr: ChangeDetectorRef) {}
 
+  // -------------------------------------------------
+  // LIFECYCLE
+  // -------------------------------------------------
   ngOnInit(): void {
     this.reload();
     window.addEventListener('boards:updated', this.onBoardsUpdatedBound as EventListener);
@@ -57,9 +78,21 @@ export class SidebarComponent implements OnInit, OnDestroy {
     window.removeEventListener('storage', this.onStorageBound);
   }
 
+  // -------------------------------------------------
+  // WORKSPACE
+  // -------------------------------------------------
   addWorkspace(ws: { name: string; type: string; desc?: string }) {
-    this.workspaces.push(ws);
+    const workspace: Workspace = {
+      id: 'ws_' + Date.now(),
+      name: ws.name,
+      type: ws.type,
+      desc: ws.desc,
+    };
+
+    this.workspaces.push(workspace);
+    this.cdr.markForCheck();
   }
+
   openCreatePopup(): void {
     this.showCreatePopup = true;
     this.cdr.markForCheck();
@@ -70,10 +103,22 @@ export class SidebarComponent implements OnInit, OnDestroy {
     this.cdr.markForCheck();
   }
 
-  private onStorageEvent(e: StorageEvent) {
-    if (e.key === STORAGE_KEY) this.reload();
+  // nhận link từ CreateWorkspaceComponent
+  openInvitePopup(link: string) {
+    this.inviteLink = link;
+    this.showInvitePopup = true;
+    this.cdr.markForCheck();
   }
 
+  closeInvitePopup() {
+    this.inviteLink = '';
+    this.showInvitePopup = false;
+    this.cdr.markForCheck();
+  }
+
+  // -------------------------------------------------
+  // BOARDS
+  // -------------------------------------------------
   private reload() {
     const raw = this.safeParseArray(localStorage.getItem(STORAGE_KEY));
     const boards: Board[] = raw
@@ -90,6 +135,10 @@ export class SidebarComponent implements OnInit, OnDestroy {
     this.cdr.markForCheck();
   }
 
+  private onStorageEvent(e: StorageEvent) {
+    if (e.key === STORAGE_KEY) this.reload();
+  }
+
   private safeParseArray(json: string | null): any[] {
     if (!json) return [];
     try {
@@ -99,5 +148,4 @@ export class SidebarComponent implements OnInit, OnDestroy {
       return [];
     }
   }
-
 }
