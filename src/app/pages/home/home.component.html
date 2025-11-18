@@ -1,8 +1,11 @@
+<app-header (search)="onSearch($event)"></app-header>
+
+
 <div class="home-container">
   <h2>KHÔNG GIAN LÀM VIỆC</h2>
 
   <div class="home-stats">
-    <ng-container *ngFor="let c of cards; let i = index">
+    <ng-container *ngFor="let c of filteredCards; let i = index">
       <!-- Nút Tạo bảng mới -->
       <div *ngIf="normalizeTitle(c.title) === CREATE_TITLE; else normalCard"
            class="create-board"

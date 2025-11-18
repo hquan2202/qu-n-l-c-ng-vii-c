@@ -4,6 +4,7 @@ import { CommonModule, NgClass, NgFor, NgIf } from '@angular/common';
 import { Router } from '@angular/router';
 import { TaskDescriptionComponent } from '../../components/task-description/task-description';
 import { CardComponent } from '../../components/card/card';
+import {HeaderComponent} from '../../components/header/header';
 
 type Board = {
   id?: string;
@@ -20,7 +21,7 @@ const CREATE_TITLE = 'Tạo bảng mới';
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, NgFor, NgIf, TaskDescriptionComponent, CardComponent],
+  imports: [CommonModule, NgFor, NgIf, TaskDescriptionComponent, CardComponent, HeaderComponent],
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css']
 })
@@ -29,24 +30,42 @@ export class HomeComponent implements OnInit, OnDestroy {
   selectedBoard?: Board;
   cards: Board[] = [];
 
+  filteredCards: Board[] = [];
+
   private onStorageBound = this.onStorageChange.bind(this);
   private onCustomUpdateBound = this.onCustomBoardsUpdated.bind(this);
 
   constructor(private router: Router) {
+
     this.cards = this.loadBoards();
   }
 
+  onSearch(keyword: string) {
+    keyword = keyword.toLowerCase().trim();
+    this.filteredCards = this.cards.filter(c =>
+      c.title.toLowerCase().includes(keyword)
+    );
+  }
+
+
   ngOnInit(): void {
+    // lọc ban đầu
+    this.filteredCards = this.cards;
+
     // listen for storage changes (other tabs/windows)
     window.addEventListener('storage', this.onStorageBound);
-    // listen for custom in-app event when other components update boards
+
+    // listen for custom in-app event
     window.addEventListener('boards:updated', this.onCustomUpdateBound as EventListener);
   }
+
+
 
   ngOnDestroy(): void {
     window.removeEventListener('storage', this.onStorageBound);
     window.removeEventListener('boards:updated', this.onCustomUpdateBound as EventListener);
   }
+
 
   // --- Popup ---
   openPopup(): void { this.showPopup = true; }

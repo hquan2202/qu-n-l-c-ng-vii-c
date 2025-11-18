@@ -7,14 +7,33 @@
   <div class="center">
     <div class="search-bar">
       <mat-icon class="search-icon">search</mat-icon>
-      <input type="text" placeholder="Tìm kiếm" class="search-input" />
+      <input
+        type="text"
+        placeholder="Tìm kiếm"
+        class="search-input"
+        [(ngModel)]="searchText"
+        (keyup.enter)="onSearch()"
+      />
+
+
     </div>
   </div>
 
   <div class="right">
-    <mat-icon class="notification-icon">notifications</mat-icon>
+    <mat-icon class="notification-icon" (click)="toggleNotification()">
+      notifications
+    </mat-icon>
 
-    <!-- ✅ Nếu có avatar thì hiển thị, ngược lại là icon account -->
+    <!-- POPUP THÔNG BÁO -->
+    <div class="notification-popup" *ngIf="showNotification">
+      <p *ngFor="let n of notifications">{{ n }}</p>
+
+      <p *ngIf="notifications.length === 0" class="empty">
+        Không có thông báo
+      </p>
+    </div>
+
+    <!-- Avatar -->
     <img
       *ngIf="user"
       [src]="avatarUrl"
@@ -24,4 +43,3 @@
     />
     <mat-icon *ngIf="!user" class="avatar-icon">account_circle</mat-icon>
   </div>
-</header>
