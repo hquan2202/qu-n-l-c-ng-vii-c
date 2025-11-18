@@ -1,15 +1,16 @@
 .navbar {
+  position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 55px;
-  background-color: #524290;
+  background-color: var(--h-header-bg);
   display: flex;
   align-items: center;
   padding: 0 20px;
   z-index: 1000;
   justify-content: space-between;
-  color: white;
+  color: var(--h-header-bg);
   box-sizing: border-box;
   font-weight: 600;
   flex-shrink: 0;
@@ -37,11 +38,11 @@
 }
 
 .navbar mat-icon {
+  color: #ffffff;
   cursor: pointer;
   font-size: 24px;       /* Giống header */
   padding: 10px;
-  gap: 8px;
-  border-radius: 50%;
+  gap: 10px;
   transition: background-color 0.2s, color 0.2s;
 }
 
@@ -49,25 +50,19 @@
   color: lightgrey;
 }
 
-/* -------------------------------------- */
-/* --- CẤU TRÚC FILTER DROPDOWN (MỚI) --- */
-/* -------------------------------------- */
 
 .filter-wrapper {
   /* Đặt vị trí tương đối để menu thả xuống định vị tuyệt đối so với nó */
   position: relative;
   display: flex;
   align-items: center;
-  /* Giữ nguyên khoảng cách 12px đã có trong .navbar .left */
 }
 
 /* Style cho icon filter khi nó đang active (mở menu hoặc đang lọc) */
 .filter-wrapper mat-icon.filter-active {
-  background-color: rgba(255, 255, 255, 0.2);
-  color: #ffc107; /* Màu nổi bật (vàng) */
+  color: #ffffff;            /* Màu icon trắng */
 }
 .filter-wrapper mat-icon.filter-active:hover {
-  color: #ffd700; /* Vàng đậm hơn khi hover */
 }
 
 /* Menu thả xuống (Dropdown) */
@@ -99,9 +94,6 @@
   margin-top: 5px; /* Khoảng cách nhỏ với icon */
 }
 
-/* Điều chỉnh style cho các nút bên trong FilterComponent
-   (dùng để tạo gạch màu bên trái)
-*/
 .filter-options-list .btn-filter-option {
   display: flex;
   align-items: center;

@@ -1,15 +1,28 @@
+/* --- DARK THEME VARIABLES (Sử dụng lại từ file trước) --- */
+:host {
+  --h-header-bg: var(--header-bg, #1E1E1E); /* Nền tổng thể/header tối */
+  --h-text-color: var(--text-color, #F0F0F0); /* Màu chữ sáng */
+  --h-search-bg: var(--search-bg, #333333); /* Nền input, filter */
+  --h-muted: var(--muted, #777777); /* Màu chữ/icon mờ */
+  --h-hover-bg: rgba(255, 255, 255, 0.1); /* Hover sáng nhẹ */
+  --h-accent: var(--accent, #1abc9c); /* Màu nhấn chính (Xanh Lá Mạ) */
+}
+
+/* --- POPUP CONTAINER --- */
 .popup-container {
   position: fixed;
   bottom: 30px;
   right: 450px;
   width: 290px;
-  background: #f4f5f7;
+  background: #252525; /* Nền popup tối */
+  color: var(--h-text-color); /* Chữ sáng */
   display: flex;
   flex-direction: column;
   padding: 20px;
   z-index: 1000;
   animation: slideIn 0.3s ease;
   border-radius: 10px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4); /* Bóng tối mạnh hơn */
 }
 
 @keyframes slideIn {
@@ -22,7 +35,9 @@
   font-size: 20px;
   font-weight: 600;
   text-align: center;
+  color: var(--h-text-color);
 }
+
 .header{
   display: grid;
   grid-template-columns: 1fr auto;
@@ -34,16 +49,21 @@
   align-items: center;
 }
 mat-icon.close-btn {
-  padding: 0;             /* bỏ padding để không thấy nền */
+  padding: 0;
   border: none;
-  border-radius: 0;       /* bỏ bo tròn */
+  border-radius: 0;
   cursor: pointer;
-  background: none ;  /* override nếu Material set sẵn */
-  box-shadow: none;       /* loại shadow nếu có */
-  color: #666;            /* màu chữ */
+  background: none;
+  box-shadow: none;
+  color: var(--h-muted); /* Màu mờ */
   font-size: 20px;
   align-items: center;
+  transition: color 0.2s;
 }
+mat-icon.close-btn:hover {
+  color: var(--h-text-color); /* Sáng lên khi hover */
+}
+
 .preview {
   width: 100%;
   height: 120px;
@@ -51,6 +71,7 @@ mat-icon.close-btn {
   background-size: cover;
   background-position: center;
   margin-bottom: 16px;
+  border: 1px solid #444444; /* Viền nhẹ cho preview */
 }
 
 .section {
@@ -61,6 +82,7 @@ mat-icon.close-btn {
   display: block;
   margin-bottom: 6px;
   font-weight: 500;
+  color: var(--h-text-color);
 }
 
 .background-options {
@@ -77,8 +99,9 @@ mat-icon.close-btn {
   border: 2px solid transparent;
 }
 
+/* Selected border dùng màu Accent (Xanh Lá Mạ) */
 .background-options img.selected {
-  border-color: #fff;
+  border-color: var(--h-accent);
 }
 .background-options img:hover {
   transform: scale(1.07);
@@ -104,35 +127,37 @@ mat-icon.close-btn {
   transform: scale(1.07);
 }
 
+/* Selected border dùng màu Accent (Xanh Lá Mạ) */
 .gradient-tile.selected {
-  border-color: #fff;
+  border-color: var(--h-accent);
 }
 
 .more-tile {
-  background-color: #d3d3d3;
+  background-color: #333333; /* Nền tối */
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #333;
+  color: var(--h-muted); /* Chữ mờ */
   font-weight: bold;
 }
 
 input, select {
   width: 100%;
   padding: 8px;
-  border: none;
+  border: 1px solid #444444; /* Viền tối */
   border-radius: 6px;
   outline: none;
-  background: #EEEEEE;
-  box-sizing: border-box; /* ✅ đảm bảo tính cả padding vào width */
+  background: var(--h-search-bg); /* Nền 333333 */
+  color: var(--h-text-color); /* Chữ sáng */
+  box-sizing: border-box;
 }
 
 .required {
-  color: red;
+  color: #ff9800; /* Vàng cam cho dark theme */
 }
 
 .error {
-  color: #e74c3c;
+  color: #FF5252; /* Đỏ sáng */
   font-size: 13px;
   margin-top: 4px;
 }
@@ -144,8 +169,10 @@ input, select {
   margin-top: auto;
 }
 
-.create-btn, .template-btn {
-  background: #EEEEEE;
+/* Nút chính dùng màu Accent (Xanh Lá Mạ) */
+.create-btn {
+  background: var(--h-accent);
+  color: #1E1E1E; /* Chữ tối trên nền sáng */
   border: none;
   border-radius: 6px;
   padding: 10px;
@@ -154,6 +181,20 @@ input, select {
   transition: 0.2s;
 }
 
-.create-btn:hover, .template-btn:hover {
-  background: #e0e0e0;
+.template-btn {
+  background: #333333; /* Nền tối */
+  color: var(--h-text-color); /* Chữ sáng */
+  border: 1px solid #444444; /* Viền nhẹ */
+  border-radius: 6px;
+  padding: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.create-btn:hover {
+  background: #27ae96; /* Hover Xanh Lá Mạ nhẹ hơn */
+}
+.template-btn:hover {
+  background: #444444; /* Hover tối hơn */
 }

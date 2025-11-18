@@ -1,13 +1,19 @@
+:host {
+  --h-header-bg: var(--header-bg, #1E1E1E); /* Nền tổng thể/header tối */
+  --h-text-color: var(--text-color, #F0F0F0); /* Màu chữ sáng */
+  --h-search-bg: var(--search-bg, #333333); /* Nền input, filter */
+  --h-muted: var(--muted, #777777); /* Màu chữ/icon mờ */
+  --h-hover-bg: rgba(255, 255, 255, 0.1); /* Hover sáng nhẹ */
+  --h-accent: var(--accent, #1abc9c); /* Màu nhấn chính (Xanh Lá Mạ) */
+}
 .board-container {
   display: flex;
-  padding: 12px;
+  width: 100%;
+  padding: 60px 12px;
   font-family: Arial, sans-serif;
-  background: #f5f7fb;
-  min-width: 100%;
-
   box-sizing: border-box;
-  display: flex;
   flex-direction: column;
+  color: var(--h-text-color);
 }
 .board-title {
   display: flex;
@@ -26,7 +32,7 @@
   transition: background-color 120ms ease, color 120ms ease;
 }
 .board-title h2:hover {
-  background-color: rgba(0,0,0,0.04);
+  background-color: rgba(255, 255, 255, 0.08);
 }
 /* Inline edit input */
 .title-edit input {
@@ -38,27 +44,28 @@
   border-radius: 4px;
   outline: none;
   box-sizing: border-box;
+  background: var(--h-search-bg);
+  border: 1px solid #444444;
+  color: var(--h-text-color);
 }
 .title-edit input:focus {
 }
 
-/* --- FILTER CONTROLS (MỚI) --- */
-/* Style cho thanh filter (trong app-filter component, nhưng cần bao bọc style này) */
-/* Đảm bảo style này áp dụng cho div bao bọc các nút filter bên trong <app-filter> */
+/* --- FILTER CONTROLS --- */
 .filter-controls {
   display: flex;
   gap: 10px;
   align-items: center;
   margin-bottom: 20px;
   padding: 10px 0;
-  border-bottom: 1px solid #e6eef4;
+  border-bottom: 1px solid #3A3A3A;
 }
 
 .btn-filter, .btn-clear-filter {
   padding: 6px 10px;
-  border: 1px solid #cfe6ee;
-  background-color: #fff;
-  color: #5a4ea3;
+  border: 1px solid #444444;
+  background-color: var(--h-search-bg);
+  color: var(--h-accent); /* Màu chữ Xanh Lá Mạ */
   cursor: pointer;
   border-radius: 6px;
   font-size: 13px;
@@ -67,14 +74,14 @@
 }
 
 .btn-filter.active {
-  background: #5a4ea3; /* Màu Tím khi được chọn */
-  color: white;
-  border-color: #5a4ea3;
+  background: var(--h-accent); /* Màu Xanh Lá Mạ khi được chọn */
+  color: #1E1E1E;
+  border-color: var(--h-accent);
   font-weight: 600;
 }
 
 .btn-filter:hover:not(.active) {
-  background: #e9e5ff;
+  background: #252525;
 }
 /* -------------------------------------- */
 
@@ -91,16 +98,17 @@
   flex-grow: 1;
   padding: 8px 10px;
   border-radius: 6px;
-  border: 1px solid #cfe6ee;
-  background: #fff;
+  border: 1px solid #444444;
+  background: #252525;
   font-size: 14px;
   max-width: 250px;
   box-sizing: border-box;
+  color: var(--h-text-color);
 }
 
 .btn-add-column {
-  background: #5a4ea3; /* Màu Tím */
-  color: #fff;
+  background: var(--h-accent); /* Màu Xanh Lá Mạ */
+  color: #1E1E1E;
   padding: 8px 12px;
   border-radius: 6px;
   border: none;
@@ -111,7 +119,7 @@
 }
 
 .btn-add-column:hover {
-  background: #6d60bc; /* Hover Tím */
+  background: #27ae96; /* Hover Xanh Lá Mạ */
 }
 /* -------------------------------------- */
 
@@ -120,19 +128,19 @@
   display: flex;
   gap: 16px;
   align-items: flex-start;
-  flex-wrap: nowrap;
-  overflow-x: auto;
+  flex-wrap: wrap; /* Tự động xuống dòng */
+  overflow-x: hidden; /* Ẩn cuộn ngang nếu đã wrap */
   overflow-y: visible;
-  width: max-content;
+  width: 100%; /* Chiếm 100% chiều rộng */
 }
 
 /* --- CỘT (BOARD COLUMN) --- */
 .board-column {
-  background: #fff;
+  background: #252525; /* Nền cột tối */
   padding: 8px 12px;
   border-radius: 8px;
   width: 320px;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, .06);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, .2);
   box-sizing: border-box;
   position: relative;
   overflow: visible;
@@ -151,14 +159,14 @@
   margin: 0;
   padding: 0;
   font-size: 16px;
-  color: #102027;
+  color: var(--h-text-color); /* Màu chữ sáng */
 }
 
 /* Nút Xóa Cột */
 .btn-delete-column {
   background: none;
   border: none;
-  color: #c62828;
+  color: #FF5252; /* Đỏ sáng cho Dark Theme */
   cursor: pointer;
   padding: 4px;
   border-radius: 4px;
@@ -166,7 +174,7 @@
 }
 
 .btn-delete-column:hover {
-  background: #fbe6e6;
+  background: #3A3A3A;
 }
 .btn-delete-column mat-icon {
   font-size: 20px;
@@ -175,20 +183,21 @@
 
 /* --- THẺ (CARD) --- */
 .card {
-  /* 🔥 THAY ĐỔI: Tăng padding-left để chừa chỗ cho gạch màu */
+  background: #333333; /* Nền thẻ tối */
   padding: 10px 10px 10px 18px;
   margin-bottom: 10px;
   border-radius: 6px;
   cursor: pointer;
   position: relative;
-  transition: box-shadow .12s ease, transform .08s ease, opacity 0.3s, filter 0.3s; /* Thêm transition cho filter */
+  transition: box-shadow .12s ease, transform .08s ease, opacity 0.3s, filter 0.3s;
   outline: none;
   box-sizing: border-box;
 }
 
 .card:hover {
-  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.08);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
   transform: translateY(-2px);
+  background: #3A3A3A; /* Hover sáng hơn một chút */
 }
 
 /* --- GẠCH MÀU TRẠNG THÁI (MỚI) --- */
@@ -196,9 +205,9 @@
   position: absolute;
   top: 0;
   left: 0;
-  width: 6px; /* Chiều rộng gạch màu */
+  width: 6px;
   height: 100%;
-  border-top-left-radius: 6px; /* Dùng 6px để khớp với border-radius của card */
+  border-top-left-radius: 6px;
   border-bottom-left-radius: 6px;
 }
 
@@ -207,31 +216,31 @@
 /* 1. THẺ ĐƯỢC CHỌN (HIGHLIGHTED) */
 .card.highlighted {
   opacity: 1;
-  box-shadow: 0 4px 12px rgba(10, 18, 28, 0.2); /* Tạo bóng rõ hơn */
-  border: 1px solid #5a4ea3; /* Viền nổi bật màu tím */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  border: 1px solid var(--h-accent); /* Viền nổi bật màu Xanh Lá Mạ */
   transform: scale(1.01);
 }
 
 /* 2. THẺ BỊ MỜ (DIMMED) */
 .card.dimmed {
-  opacity: 0.25; /* Mờ đi nhiều hơn để nhấn mạnh thẻ được chọn */
-  transform: scale(0.99); /* Hơi thu nhỏ */
-  filter: grayscale(80%); /* Giảm màu sắc mạnh */
+  opacity: 0.25;
+  transform: scale(0.99);
+  filter: grayscale(80%);
   cursor: default;
-  pointer-events: none; /* Không cho click vào thẻ mờ */
+  pointer-events: none;
 }
 
 /* --- CARD CONTENT --- */
 .card .title {
   font-weight: 600;
-  color: #0b3a45;
+  color: var(--h-text-color);
   margin-bottom: 6px;
   word-break: break-word;
 }
 
 .card .meta {
   font-size: 12px;
-  color: #64748b;
+  color: var(--h-muted);
 }
 
 
@@ -249,10 +258,10 @@
   flex-basis: auto;
   padding: 7px 8px;
   border-radius: 6px;
-  border: 1px solid #cfe6ee;
-  background: #fff;
+  border: 1px solid #444444;
+  background: #252525;
   font-size: 14px;
-  color: #093241;
+  color: var(--h-text-color);
   box-sizing: border-box;
 }
 
@@ -261,8 +270,8 @@
   padding: 8px 12px;
   border-radius: 6px;
   border: none;
-  background: #5a4ea3; /* Màu Tím */
-  color: #fff;
+  background: var(--h-accent); /* Màu Xanh Lá Mạ */
+  color: #1E1E1E;
   cursor: pointer;
   font-weight: 600;
   font-size: 13px;
@@ -270,7 +279,7 @@
 }
 
 .add-card button:hover {
-  background: #6d60bc; /* Hover Tím */
+  background: #27ae96;
 }
 
 /* --- MODAL DIALOG STYLE --- */
@@ -281,7 +290,7 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.7); /* Nền overlay tối hơn */
   display: flex;
   justify-content: center;
   align-items: center;
@@ -289,20 +298,21 @@
 }
 
 .modal-dialog {
-  background: white;
+  background: #252525;
   padding: 24px;
   border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(10, 18, 28, 0.15);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
   max-width: 500px;
   width: 90%;
   max-height: 90vh;
   overflow-y: auto;
+  color: var(--h-text-color);
 }
 
 .modal-dialog h3 {
   margin-top: 0;
   font-size: 20px;
-  color: #263238;
+  color: var(--h-text-color);
   margin-bottom: 15px;
 }
 
@@ -314,7 +324,7 @@
 label {
   display: block;
   font-size: 12px;
-  color: #294047;
+  color: var(--h-muted);
   margin-bottom: 6px;
 }
 
@@ -324,10 +334,10 @@ select {
   width: 100%;
   padding: 8px 10px;
   border-radius: 6px;
-  border: 1px solid #cfe6ee;
-  background: #fbfeff;
+  border: 1px solid #444444;
+  background: #333333;
   font-size: 14px;
-  color: #093241;
+  color: var(--h-text-color);
   box-sizing: border-box;
 }
 
@@ -345,21 +355,21 @@ textarea {
 
 /* Nút Xóa Thẻ */
 .btn-delete {
-  background: #d32f2f; /* Màu đỏ */
+  background: #FF5252;
   color: #fff;
   transition: background-color 0.2s;
-  margin-right: auto; /* Đẩy sang trái */
+  margin-right: auto;
   border-radius: 2px;
   border: none;
   padding: 3px 12px;
 }
 .btn-delete:hover {
-  background: #c62828;
+  background: #E53935;
 }
 
 .btn-save {
-  background: #5a4ea3; /* Màu Tím */
-  color: #fff;
+  background: var(--h-accent);
+  color: #1E1E1E;
   transition: background-color 0.2s;
   border: none;
   border-radius: 2px;
@@ -367,21 +377,18 @@ textarea {
 }
 
 .btn-save:hover {
-  background: #6d60bc; /* Hover Tím */
+  background: #27ae96;
 }
 
 .btn-cancel {
-  background: #e0e0e0;
-  color: #0b3a45;
+  background: #444444; /* Xám đậm */
+  color: var(--h-text-color);
   border: none;
   border-radius: 2px;
   padding: 3px 12px;
 }
-
-
-/* --- RESPONSIVE TWEAK --- */
-@media (max-width: 860px) {
-  .board-columns {
-    flex-wrap: wrap;
-  }
+.btn-cancel:hover {
+  background: #555555;
 }
+
+

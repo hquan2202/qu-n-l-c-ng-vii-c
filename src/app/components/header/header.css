@@ -1,17 +1,44 @@
+:host {
+  --h-header-bg: var(--header-bg, #1F1F21);
+  --h-text-color: var(--text-color, #ffffff);
+  --h-search-bg: var(--search-bg, #EEEEEE);
+  --h-muted: var(--muted, #49454F);
+  --h-hover-bg: rgba(0,0,0,0.06);
+  --h-accent: var(--accent, #64a0ff);
+}
+
+/* Header container */
 .header {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 55px;
-  background-color: #524290;
+  background-color: var(--h-header-bg);
+  color: var(--h-text-color);
   display: flex;
   align-items: center;
   padding: 0 20px;
   z-index: 1000;
+  border-bottom: 1px solid var(--header-bg);
+  transition: background-color 0.2s, color 0.2s;
 }
 
-/* Logo bên trái */
+/* Theme toggle button */
+.theme-toggle {
+  background: transparent;
+  border: none;
+  color: var(--h-text-color);
+  cursor: pointer;
+  font-size: 16px;
+  padding: 6px;
+  border-radius: 6px;
+}
+.theme-toggle:hover {
+  background: var(--h-hover-bg);
+}
+
+/* Logo left */
 .left {
   display: flex;
   align-items: center;
@@ -29,12 +56,12 @@
 .left .app-name {
   font-size: 18px;
   font-weight: bold;
-  color: #ffffff;
+  color: var(--h-text-color);
   margin: 0;
   text-align: center;
 }
 
-/* Thanh tìm kiếm ở giữa */
+/* Center search */
 .center {
   display: flex;
   align-items: center;
@@ -46,18 +73,21 @@
 
 .center .search-bar {
   display: flex;
-  width: 50%;
-  height: 50%;
   align-items: center;
-  background-color: #EEEEEE;
+  width: 50%;
+  max-width: 720px;
+  min-width: 220px;
+  height: 60%;
+  background-color: var(--h-search-bg);
   border-radius: 50px;
   padding: 4px 8px;
+  transition: background-color 0.2s;
 }
 
 .center .search-icon {
   background: none;
   border: none;
-  color: #49454F;
+  color: var(--h-muted);
   cursor: pointer;
   font-size: 20px;
   margin-left: 3px;
@@ -67,26 +97,30 @@
 }
 
 .center .search-icon:hover {
-  color: black;
+  color: var(--h-text-color);
 }
 
 .center .search-input {
-  width: 10%;
-  height: 50%;
-  background-color: #EEEEEE;
+  flex: 1;
+  height: 100%;
+  background: transparent;
   border: none;
   outline: none;
-  left: 13px;
-  padding: 10px 8px;
-  color: black;
+  padding: 6px 12px;
   border-radius: 4px;
   font-size: 14px;
 }
 
-/* Các icon bên phải */
+/* Placeholder color (works in modern browsers) */
+.center .search-input::placeholder {
+  color: var(--h-muted);
+  opacity: 0.9;
+}
+
+/* Right icons */
 .right {
   display: flex;
-  width: 10%;
+  width: auto;
   margin-right: 30px;
   align-items: center;
   justify-content: flex-end;
@@ -98,24 +132,24 @@
 .avatar-icon {
   cursor: pointer;
   font-size: 24px;
-  color: #EEEEEE;
-  transition: color 0.2s;
+  color: var(--h-muted);
+  transition: color 0.2s, transform 0.12s;
 }
 
-.notification-icon:hover {
-  color: white;
-}
-
+.notification-icon:hover,
 .avatar-icon:hover {
-  color: darkgrey;
+  color: var(--h-text-color);
+  transform: translateY(-1px);
 }
-.avatar{
+
+.avatar {
   width: 28px;
   height: 28px;
   border-radius: 50%;
   cursor: pointer;
   object-fit: cover;
   transition: transform 0.2s;
+  border: 1px solid rgba(255,255,255,0.06);
 }
 
 .avatar-img:hover {

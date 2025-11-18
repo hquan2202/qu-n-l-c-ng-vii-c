@@ -18,11 +18,14 @@ export class HeaderComponent implements OnInit {
   user: User | null = null; // type Supabase User
   isPopupVisible = false;
   headerCreateWorkspaceVisible = false;
-
+  isDark = false;
   constructor(private authService: AuthService, private cdr: ChangeDetectorRef) {}
 
   async ngOnInit(): Promise<void> {
     await this.loadUser();
+    const saved = localStorage.getItem('theme');
+    this.isDark = saved === 'dark' || (!saved && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    this.applyTheme();
   }
 
   private async loadUser(): Promise<void> {
@@ -30,6 +33,18 @@ export class HeaderComponent implements OnInit {
     this.cdr.detectChanges();
   }
 
+  toggleTheme(): void {
+    this.isDark = !this.isDark;
+    localStorage.setItem('theme', this.isDark ? 'dark' : 'light');
+    this.applyTheme();
+  }
+  private applyTheme(): void {
+    if (this.isDark) {
+      document.documentElement.classList.add('dark-theme');
+    } else {
+      document.documentElement.classList.remove('dark-theme');
+    }
+  }
   // avatar giống Navbar
   get avatarUrl(): string {
     // dùng ['avatar_url'] vì user_metadata là index signature

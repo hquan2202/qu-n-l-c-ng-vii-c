@@ -1,28 +1,86 @@
-
-.sidebar-container {
-  width: 280px;
-  height: 100%;
-  background-color: #6d60bc;
-  color: white;
-  display: flex;
-  flex-direction: column;
-  box-sizing: border-box;
-  padding: 0px 50px 20px 20px;
+/* file: src/app/components/sidebar/sidebar.css */
+:host {
+  --h-header-bg: var(--header-bg, #1F1F21);
+  --h-text-color: var(--text-color, #ffffff);
+  --h-search-bg: var(--search-bg, #EEEEEE);
+  --h-muted: var(--muted, #343439);
+  --h-hover-bg: rgba(0,0,0,0.06);
+  --h-accent-contrast: var(--accent-contrast, #ffffff);
+  --s-width: var(--sidebar-width, 280px);
+  --header-h: var(--header-height, 55px);
 }
 
+/* container fixed under header */
+.sidebar-container {
+  width: var(--s-width);
+  min-width: var(--s-width);
+  height: calc(100vh - var(--header-h));
+  position: fixed;
+  top: var(--header-h);
+  left: 0;
+  background-color: var(--h-header-bg);
+  color: var(--h-text-color);
+  padding: 16px;
+  box-sizing: border-box;
+  overflow-y: auto;
+  z-index: 900; /* optional soft corners like screenshot */
+}
+
+/* menu item: full width, icon + label layout */
 .menu-item {
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 10px 10px;
+  padding: 10px 14px;
   cursor: pointer;
-  width: 260px;
-  margin-left: -20px;
-  transition: background-color 0.2s;
+  width: 100%;
+  box-sizing: border-box;
+  margin: 8px 0;
+  transition: background-color 0.18s, transform 0.12s;
+  border-radius: 999px; /* pill shape */
 }
 
-.menu-item:hover,
-.menu-item.active {
+/* icon area */
+.menu-item .icon {
+  width: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+}
 
-  background-color: #5a4ea3;
+/* label */
+.menu-item .label {
+  font-weight: 600;
+  color: inherit;
+}
+
+/* hover feedback (no width change) */
+.menu-item:hover {
+  background-color: var(--h-hover-bg);
+  transform: translateY(-1px);
+}
+
+/* active/picked item: pill background, strong contrast */
+.menu-item.active {
+  background-color: var(--h-muted);
+  color: var(--h-accent-contrast);
+}
+
+/* responsive: stack under header on small screens */
+@media (max-width: 800px) {
+  .sidebar-container {
+    position: static;
+    width: 100%;
+    min-width: auto;
+    height: auto;
+    padding: 8px 12px;
+    border-right: none;
+    border-bottom: 1px solid var(--divider);
+    border-radius: 0;
+  }
+
+  .menu-item {
+    margin: 6px 0;
+  }
 }

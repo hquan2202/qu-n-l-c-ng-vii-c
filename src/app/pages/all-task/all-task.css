@@ -1,6 +1,18 @@
+/* --- DARK THEME VARIABLES --- */
+:host {
+  --h-header-bg: var(--header-bg, #1E1E1E); /* Nền tổng thể/header tối */
+  --h-text-color: var(--text-color, #F0F0F0); /* Màu chữ sáng */
+  --h-search-bg: var(--search-bg, #333333); /* Nền input, filter */
+  --h-muted: var(--muted, #777777); /* Màu chữ/icon mờ */
+  --h-hover-bg: rgba(255, 255, 255, 0.1); /* Hover sáng nhẹ */
+  --h-accent: var(--accent, #1abc9c); /* Màu nhấn chính (Xanh Lá Mạ) */
+}
+
 .all-task-container {
   min-height: 100vh;
   font-family: "Inter", sans-serif;
+  color: var(--h-text-color);
+  padding: 20px; /* Thêm padding để không bị dính vào mép */
 }
 
 .page-title {
@@ -8,6 +20,7 @@
   font-weight: 600;
   text-align: center;
   margin-bottom: 40px;
+  color: var(--h-text-color);
 }
 
 .task-header,
@@ -20,21 +33,25 @@
 }
 
 .task-header {
-  background-color: transparent;
+  background-color: #252525; /* Nền header cột tối hơn */
   font-weight: 600;
   font-size: 16px;
-  color: #111;
-  border-bottom: 1px solid #e5e7eb;
+  color: var(--h-muted); /* Chữ hơi mờ */
+  border-bottom: 1px solid #3A3A3A; /* Đường kẻ tối */
   margin-bottom: 12px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 .task-row {
-  background-color: #f8fdfa;
-  transition: background-color 0.2s ease;
+  background-color: #1E1E1E; /* Nền hàng tối */
+  transition: background-color 0.2s ease, box-shadow 0.2s ease;
+  margin-bottom: 8px;
+  border: 1px solid #333333; /* Viền nhẹ cho hàng */
 }
 
 .task-row:hover {
-  background-color: #eefaf4;
+  background-color: #2c2c2c; /* Hover tối nhẹ */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
 
 .col {
@@ -45,11 +62,13 @@
 .col.title {
   font-size: 16px;
   font-weight: 600;
+  color: var(--h-text-color);
 }
 
 .avatar {
-  background-color: #b9f0e3;
-  color: #0b3b36;
+  /* Điều chỉnh màu Avatar để nổi bật trên nền tối */
+  background-color: #0d473e; /* Nền xanh đậm */
+  color: #a7ffeb; /* Chữ xanh nhạt */
   font-weight: 600;
   font-size: 16px;
   width: 42px;
@@ -61,8 +80,10 @@
 }
 
 .status-btn {
-  background-color: white;
-  border: 1px solid #cfd8dc;
+  /* Điều chỉnh Status Button */
+  background-color: #333333; /* Nền tối */
+  border: 1px solid #444444; /* Viền tối */
+  color: var(--h-accent); /* Chữ Xanh Lá Mạ */
   border-radius: 8px;
   padding: 6px 14px;
   font-size: 16px;
@@ -72,6 +93,6 @@
 }
 
 .status-btn:hover {
-  background-color: #e0f2f1;
-  border-color: #80cbc4;
+  background-color: #444444; /* Hover tối hơn một chút */
+  border-color: var(--h-accent); /* Viền chuyển sang màu nhấn */
 }
