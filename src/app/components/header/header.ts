@@ -1,32 +1,12 @@
-// File: src/app/components/header/header.ts
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
-import { NgIf } from '@angular/common';
-import { MatIconModule } from '@angular/material/icon';
-import { AccountPopupComponent } from '../account/account';
-import { CreateWorkspaceComponent } from '../create-workspace/create-workspace';
-import { AuthService } from '../../services/auth/auth.service';
-import { User } from '@supabase/auth-js'; // dùng Supabase User trực tiếp
 
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [NgIf, MatIconModule, AccountPopupComponent, CreateWorkspaceComponent],
   templateUrl: './header.html',
   styleUrls: ['./header.css']
 })
 export class HeaderComponent implements OnInit {
-  user: User | null = null; // type Supabase User
-  isPopupVisible = false;
-  headerCreateWorkspaceVisible = false;
-  isDark = false;
-  constructor(private authService: AuthService, private cdr: ChangeDetectorRef) {}
 
-  async ngOnInit(): Promise<void> {
-    await this.loadUser();
-    const saved = localStorage.getItem('theme');
-    this.isDark = saved === 'dark' || (!saved && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
-    this.applyTheme();
-  }
 
   private async loadUser(): Promise<void> {
     this.user = await this.authService.getCurrentUser();
@@ -79,4 +59,17 @@ export class HeaderComponent implements OnInit {
     this.closePopup();
     window.location.href = '/login';
   }
+
+  onSearch() {
+    this.search.emit(this.searchText);
+  }
+
+  toggleNotification() {
+    this.showNotification = !this.showNotification;
+  }
 }
+
+
+
+
+

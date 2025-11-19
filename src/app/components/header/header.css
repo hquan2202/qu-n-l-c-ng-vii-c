@@ -155,3 +155,51 @@
 .avatar-img:hover {
   transform: scale(1.05);
 }
+
+/* Icon chuông */
+.notification-icon {
+  cursor: pointer;
+  font-size: 28px;
+  position: relative; /* để badge nếu cần */
+}
+
+/* Popup */
+.notification-popup {
+  position: absolute;
+  top: 60px;       /* cách icon một chút */
+  right: 0;        /* sát icon bên phải */
+  width: 30vw;
+  height: 50vh;
+  overflow-y: auto; /* nếu nhiều thông báo */
+  background: #fff;
+  border-radius: 8px;
+  padding: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  z-index: 9999;
+}
+
+/* Nội dung từng thông báo */
+.notification-popup p {
+  margin: 8px 0;
+  font-size: 14px;
+  cursor: default;
+  color: #111111;
+}
+
+/* Khi rỗng */
+.notification-popup .empty {
+  text-align: center;
+  font-style: italic;
+  color: #999;
+}
+
+/* Hiệu ứng */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-5px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Đặt header làm relative để popup đúng vị trí */
+header {
+  position: relative;
+}
