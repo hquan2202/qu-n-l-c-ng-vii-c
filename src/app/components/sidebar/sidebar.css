@@ -1,127 +1,86 @@
-/* ==== BASELINE (giữ đúng thông số của bạn) ==== */
-.sidebar-container {
-  width: 280px;
-  height: 100%;
-  background-color: #6d60bc;
-  color: #fff;
-  display: flex;
-  flex-direction: column;
-  box-sizing: border-box;
-  padding: 0 50px 20px 20px;           /* L=20, R=50 */
-  --pad-left: 20px;
-  --pad-right: 50px;
-  --hover: #5a4ea3;
-  position: relative;
-  overflow-x: hidden;                  /* tránh scroll ngang */
+/* file: src/app/components/sidebar/sidebar.css */
+:host {
+  --h-header-bg: var(--header-bg, #1F1F21);
+  --h-text-color: var(--text-color, #ffffff);
+  --h-search-bg: var(--search-bg, #EEEEEE);
+  --h-muted: var(--muted, #343439);
+  --h-hover-bg: rgba(0,0,0,0.06);
+  --h-accent-contrast: var(--accent-contrast, #ffffff);
+  --s-width: var(--sidebar-width, 280px);
+  --header-h: var(--header-height, 55px);
 }
 
-/* ==== ITEM CHUNG (Trang chủ/Bảng/Nhóm + board con) ==== */
-.menu-item,
-.submenu-item,
-.board-item,
-.board-header {
+/* container fixed under header */
+.sidebar-container {
+  width: var(--s-width);
+  min-width: var(--s-width);
+  height: calc(100vh - var(--header-h));
+  position: fixed;
+  top: var(--header-h);
+  left: 0;
+  background-color: var(--h-header-bg);
+  color: var(--h-text-color);
+  padding: 16px;
+  box-sizing: border-box;
+  overflow-y: auto;
+  z-index: 900; /* optional soft corners like screenshot */
+}
+
+/* menu item: full width, icon + label layout */
+.menu-item {
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 10px 10px;
+  padding: 10px 14px;
   cursor: pointer;
+  width: 100%;
+  box-sizing: border-box;
+  margin: 8px 0;
+  transition: background-color 0.18s, transform 0.12s;
+  border-radius: 999px; /* pill shape */
+}
 
-  /* giữ layout content như cũ */
-  width: 260px;
-  margin-left: -20px;
+/* icon area */
+.menu-item .icon {
+  width: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+}
 
-  text-decoration: none;
+/* label */
+.menu-item .label {
+  font-weight: 600;
   color: inherit;
-  background: transparent;
-  border: none;
-  outline: none;
-
-  border-radius: 8px;
-  position: relative;                 /* để vẽ nền full-width bằng ::before */
-  z-index: 0;
 }
 
-/* NỀN HOVER/ACTIVE PHỦ FULL 280px mà KHÔNG đổi width/margin */
-.menu-item::before,
-.submenu-item::before,
-.board-item::before,
-.board-header::before {
-  content: "";
-  position: absolute;
-  top: 0; bottom: 0;
-  left: calc(-1 * var(--pad-left));    /* phủ hết padding trái */
-  right: calc(-1 * var(--pad-right));  /* phủ hết padding phải */
-  border-radius: 8px;
-  background: transparent;
-  z-index: -1;
-  transition: background-color .2s;
+/* hover feedback (no width change) */
+.menu-item:hover {
+  background-color: var(--h-hover-bg);
+  transform: translateY(-1px);
 }
 
-/* Hover/Active: đổi màu tấm nền */
-.menu-item:hover::before,
-.menu-item.active::before,
-.submenu-item:hover::before,
-.submenu-item.active::before,
-.board-item:hover::before,
-.board-item.active::before,
-.board-header:hover::before,
-.board-header.active::before {
-  background: var(--hover);
+/* active/picked item: pill background, strong contrast */
+.menu-item.active {
+  background-color: var(--h-muted);
+  color: var(--h-accent-contrast);
 }
 
-/* Focus bằng phím (viền trên content, không ảnh hưởng nền full) */
-.menu-item:focus-visible,
-.submenu-item:focus-visible,
-.board-item:focus-visible,
-.board-header:focus-visible {
-  outline: 2px solid #cfd8ff;
-  outline-offset: 2px;
-}
+/* responsive: stack under header on small screens */
+@media (max-width: 800px) {
+  .sidebar-container {
+    position: static;
+    width: 100%;
+    min-width: auto;
+    height: auto;
+    padding: 8px 12px;
+    border-right: none;
+    border-bottom: 1px solid var(--divider);
+    border-radius: 0;
+  }
 
-/* ===== KHU VỰC “BẢNG” ===== */
-.board-header { justify-content: flex-start; }
-.boards-list {
-  display: flex;
-  flex-direction: column;
-  padding-left: 0;       /* để nền ::before vẫn phủ full */
-  padding-top: 5px;
-}
-
-/* ===== BOARD ITEM (thụt nội dung, nền vẫn full vì dùng ::before) ===== */
-.board-item { padding-left: 30px; gap: 10px; }
-
-/* ===== THUMBNAIL ===== */
-.board-thumb {
-  width: 28px; height: 28px; flex: 0 0 28px;
-  border-radius: 6px;
-  overflow: hidden;
-  display: grid; place-items: center;
-  background: #eee;
-}
-
-.board-initial { font-size: 12px; font-weight: 700; color: #111; line-height: 1; }
-.truncate     { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-
-/* icon material đồng màu chữ */
-.mat-icon, .menu-icon { color: inherit; }
-/* Board được chọn (đang ở /card/:id) */
-.board-item.active::before {
-  background: var(--hover);           /* nền full-bleed giống hover */
-}
-
-/* dải chỉ báo bên trái (nhẹ, optional) */
-.board-item.active::after {
-  content: "";
-  position: absolute;
-  left: calc(-1 * var(--pad-left));
-  top: 8px;
-  bottom: 8px;
-  width: 4px;
-  border-radius: 2px;
-  background: rgba(255,255,255,.85);
-}
-
-/* nếu thumbnail là màu phẳng, tăng viền cho nổi hơn khi active (optional) */
-.board-item.active .board-thumb {
-  box-shadow: 0 0 0 2px rgba(255,255,255,.35) inset;
+  .menu-item {
+    margin: 6px 0;
+  }
 }

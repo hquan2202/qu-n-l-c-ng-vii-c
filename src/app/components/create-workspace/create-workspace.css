@@ -1,0 +1,124 @@
+/* Overlay */
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  z-index: 100;
+}
+
+/* Popup */
+.workspace-popup {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  width: 800px;
+  max-width: 90%;
+  background: #f4f5f7;
+  border-radius: 12px;
+  overflow: hidden;
+  z-index: 200;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+}
+
+/* Left / Right */
+.popup-left {
+  flex:1;
+  padding: 40px 48px;
+}
+.popup-right {
+  flex:1;
+  background: #e3e1fc;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+}
+.popup-right img {
+  width:100%;
+  max-width:500px;
+}
+.popup {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.popup-right {
+  position: relative;
+}
+
+.popup-right img {
+  width: 100%;
+  height: auto;
+  border-radius: 10px;
+}
+
+/* Nút close */
+.close-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  font-size: 24px;
+  color: #444;
+  padding: 4px;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+/* Title & subtitle */
+h2 {
+  font-size: 20px;
+  font-weight:600;
+  color:#333;
+  margin:0;
+}
+.subtitle {
+  font-size:13px;
+  margin:8px 0 20px;
+  line-height:1.4;
+}
+
+/* Material Form Field Custom */
+.custom-form-field {
+  width: 100%;
+  height: 80px;
+  margin-top: 8px;
+  font-size: 13px;
+}
+
+
+/* Input / textarea chữ nhỏ */
+.mat-mdc-input-element {
+  font-size: 13px !important;
+  color:#333;
+  padding: 10px 12px;
+}
+
+/* Select option chữ nhỏ */
+.mat-mdc-option {
+  font-size: 13px !important;
+}
+.mat-mdc-form-field-appearance-fill.mat-mdc-focused {
+  box-shadow: 0 0 0 2px ;
+}
+
+/* Button */
+button[mat-raised-button] {
+  width: 100%;
+  border-radius:6px;
+  margin-top:24px;
+  font-size:14px;
+  font-weight:600;
+  background:#524290 !important;
+  color:#fff !important;
+}
+
+button[mat-raised-button]:hover {
+  background: #5a4ea3;
+}
+button[mat-raised-button]:disabled {
+  background:#6d60bc !important;
+  cursor:not-allowed;
+}

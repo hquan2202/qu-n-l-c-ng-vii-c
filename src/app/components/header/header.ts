@@ -1,41 +1,62 @@
-import { Component, OnInit } from '@angular/core';
-import { MatIconModule } from '@angular/material/icon';
-import { NgIf, NgForOf } from '@angular/common';
-import { AuthService } from '../../services/auth/auth.service';
-import {FormsModule} from '@angular/forms';
-import { Output, EventEmitter } from '@angular/core';
-
 
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [MatIconModule, NgIf, FormsModule, NgForOf], // 🟢 Bổ sung MatIconModule
   templateUrl: './header.html',
-  styleUrls: ['./header.css'],
+  styleUrls: ['./header.css']
 })
 export class HeaderComponent implements OnInit {
-  user: any = null;
-  searchText: string = '';
-  @Output() search = new EventEmitter<string>();
-  showNotification = false;
 
-  notifications: string[] = [
-    "Bạn có nhiệm vụ mới",
-    "Có người vừa thêm bạn vào bảng",
-    "Hạn chót công việc sắp đến"
-  ];
-  constructor(private auth: AuthService) {}
 
-  async ngOnInit() {
-    this.user = await this.auth.getCurrentUser();
+  private async loadUser(): Promise<void> {
+    this.user = await this.authService.getCurrentUser();
+    this.cdr.detectChanges();
   }
 
+  toggleTheme(): void {
+    this.isDark = !this.isDark;
+    localStorage.setItem('theme', this.isDark ? 'dark' : 'light');
+    this.applyTheme();
+  }
+  private applyTheme(): void {
+    if (this.isDark) {
+      document.documentElement.classList.add('dark-theme');
+    } else {
+      document.documentElement.classList.remove('dark-theme');
+    }
+  }
+  // avatar giống Navbar
   get avatarUrl(): string {
-    return this.user?.user_metadata?.avatar_url || 'assets/images/default-avatar.png';
+    // dùng ['avatar_url'] vì user_metadata là index signature
+    return this.user?.user_metadata?.['avatar_url'] || 'assets/images/default-avatar.png';
   }
 
-  async logout() {
-    await this.auth.signOut();
+  onAvatarError(_: Event): void {
+    // fallback avatar
+    if (this.user && this.user.user_metadata) {
+      this.user.user_metadata['avatar_url'] = 'assets/images/default-avatar.png';
+    }
+    this.cdr.detectChanges();
+  }
+
+  toggleAccountPopup(): void {
+    this.isPopupVisible = !this.isPopupVisible;
+    console.log('Popup visible:', this.isPopupVisible);
+  }
+
+
+  closePopup(): void {
+    this.isPopupVisible = false;
+  }
+
+  openCreateWorkspace(): void {
+    this.headerCreateWorkspaceVisible = true;
+  }
+
+  async logout(): Promise<void> {
+    await this.authService.signOut();
+    this.user = null;
+    this.closePopup();
     window.location.href = '/login';
   }
 

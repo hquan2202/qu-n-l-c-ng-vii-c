@@ -1,85 +1,120 @@
-import { Component, OnInit, HostListener, ElementRef } from '@angular/core'; // 🔥 THÊM HostListener, ElementRef
+// TypeScript
+// file: `src/app/components/navbar/navbar.ts`
+import { Component, OnInit, HostListener, ElementRef } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-// import { LoginComponent } from '../../pages/login/login';
 import { FilterComponent } from '../filter/filter';
 import { UiFilterService } from '../../services/ui-filter/ui-filter.service';
 import { AsyncPipe, NgIf } from '@angular/common';
 import { Observable } from 'rxjs';
-import {ViewPopupComponent} from '../view-popup/view-popup'; // đường dẫn tùy bạn
+import { ViewPopupComponent } from '../view-popup/view-popup';
+import { AuthService } from '../../services/auth/auth.service';
+import { AccountPopupComponent } from '../account/account';
+import { CreateWorkspaceComponent } from '../create-workspace/create-workspace';
 
 @Component({
   selector: 'app-navbar',
   standalone: true,
-  imports: [MatIconModule, MatDialogModule, FilterComponent, NgIf, AsyncPipe, ViewPopupComponent],
+  imports: [
+    MatIconModule,
+    MatDialogModule,
+    FilterComponent,
+    NgIf,
+    AsyncPipe,
+    ViewPopupComponent,
+  ],
   templateUrl: './navbar.html',
   styleUrls: ['./navbar.css']
 })
 export class NavBarComponent implements OnInit {
   isSidebarOpen = false;
   isGridView = true;
-  isDarkBackground = false;
-  isViewOpen = false; // 🔹 thêm dòng này
+  isViewOpen = false;
 
-  isDropdownOpen: boolean = false;
+  isDropdownOpen = false;
   currentFilterStatus$: Observable<string | null>;
 
-  // 🔥 Inject ElementRef, MatDialog VÀ UiFilterService
+  user: any = null;
+  showAccountPopup = false;
+  navbarCreateWorkspaceVisible = false;
+
   constructor(
     private dialog: MatDialog,
     private uiFilterService: UiFilterService,
-    private el: ElementRef // Inject ElementRef để truy cập DOM
+    private el: ElementRef,
+    private authService: AuthService
   ) {
     this.currentFilterStatus$ = this.uiFilterService.currentFilterStatus$;
   }
 
-  ngOnInit(): void {}
+  async ngOnInit(): Promise<void> {
+    this.user = await this.authService.getCurrentUser();
+  }
 
-  /**
-   * 🔥 LOGIC CLICK OUT: Xử lý sự kiện click chuột trên toàn bộ document.
-   * Nếu click xảy ra bên ngoài filter-wrapper VÀ dropdown đang mở, đóng dropdown.
-   */
+  get avatarUrl(): string {
+    return this.user?.user_metadata?.avatar_url || 'assets/images/default-avatar.png';
+  }
+
+  // match template bindings
+  get isPopupVisible(): boolean {
+    return this.showAccountPopup;
+  }
+
+  closePopup(): void {
+    this.showAccountPopup = false;
+  }
+
+  openCreateWorkspace(): void {
+    this.navbarCreateWorkspaceVisible = true;
+    this.dialog.open(CreateWorkspaceComponent);
+  }
+
   @HostListener('document:click', ['$event'])
   clickout(event: Event) {
-    // 1. Chỉ thực hiện nếu dropdown đang mở
-    if (!this.isDropdownOpen) return;
-
-    // 2. Tìm phần tử chứa filter (filter-wrapper) bên trong component này
     const filterWrapper = this.el.nativeElement.querySelector('.filter-wrapper');
+    const accountPopup = this.el.nativeElement.querySelector('app-account-popup');
+    const viewPopup = this.el.nativeElement.querySelector('app-view-popup');
 
-    // 3. Kiểm tra xem sự kiện click có nằm trong filterWrapper không
-    // Nếu click nằm NGOÀI vùng filterWrapper, đóng dropdown.
-    if (filterWrapper && !filterWrapper.contains(event.target)) {
+    if (this.isDropdownOpen && filterWrapper && !filterWrapper.contains(event.target)) {
       this.isDropdownOpen = false;
+    }
+
+    if (
+      this.showAccountPopup &&
+      accountPopup &&
+      !accountPopup.contains(event.target) &&
+      !(event.target as HTMLElement).classList.contains('avatar')
+    ) {
+      this.showAccountPopup = false;
+    }
+
+    if (
+      this.isViewOpen &&
+      viewPopup &&
+      !viewPopup.contains(event.target) &&
+      !(event.target as HTMLElement).classList.contains('view-icon')
+    ) {
+      this.isViewOpen = false;
     }
   }
 
-  // Chuyển đổi trạng thái mở/đóng dropdown
   toggleDropdown(): void {
     this.isDropdownOpen = !this.isDropdownOpen;
   }
 
-  // Đóng dropdown (dùng khi FilterComponent phát sự kiện chọn xong)
-  closeDropdown(): void {
-    this.isDropdownOpen = false;
-  }
-
-  toggleSidebar(): void {
-    this.isSidebarOpen = !this.isSidebarOpen;
-    console.log('Sidebar toggled:', this.isSidebarOpen);
-  }
-
-
   toggleView(): void {
     this.isGridView = !this.isGridView;
-    this.isViewOpen = !this.isViewOpen; // 🔹 bật/tắt popup
-    console.log('View mode toggled:', this.isGridView ? 'Grid' : 'List');
+    this.isViewOpen = !this.isViewOpen;
   }
 
-
-  toggleBackground(): void {
-    this.isDarkBackground = !this.isDarkBackground;
-    console.log('Background toggled:', this.isDarkBackground ? 'Dark' : 'Light');
+  toggleAccountPopup(): void {
+    this.showAccountPopup = !this.showAccountPopup;
   }
 
+  async logout() {
+    await this.authService.signOut();
+    this.user = null;
+    this.showAccountPopup = false;
+    window.location.href = '/login';
+  }
 }

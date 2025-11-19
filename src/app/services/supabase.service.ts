@@ -11,6 +11,20 @@ export class SupabaseService {
       'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRkdW1xa2pxaXVoZXBwZ2R2aGl5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjAxMzQ0MjcsImV4cCI6MjA3NTcxMDQyN30.kU7Uz5tdb7M91WDtkwm3-Qgdc4QlHV3YirxqnnL6NFk'
     );
   }
+  async getUserAvatar(userId: string): Promise<string | null> {
+    const { data, error } = await this.supabase
+      .from('profiles') // bảng profile hoặc users
+      .select('avatar_url')
+      .eq('id', userId)
+      .single();
+
+    if (error) {
+      console.error(error);
+      return null;
+    }
+
+    return data.avatar_url; // URL trực tiếp ảnh lưu trên Supabase Storage
+  }
 
   // 🟩 Lấy danh sách board
   async getBoards(): Promise<{ data: any[] | null; error: any }> {

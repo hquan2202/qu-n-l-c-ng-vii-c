@@ -1,0 +1,16 @@
+<div class="overlay" (click)="close.emit()"></div>
+
+<div class="invite-popup" (click)="$event.stopPropagation()">
+  <h2>Invite your team</h2>
+  <p>Share this link so others can join your workspace.</p>
+
+  <div class="invite-box">
+    <input type="text" [value]="inviteLink" readonly />
+    <button (click)="copyLink()">Copy</button>
+  </div>
+
+  <div class="actions">
+    <button mat-button (click)="close.emit()">Skip</button>
+    <button mat-raised-button color="primary">Invite Members</button>
+  </div>
+</div>

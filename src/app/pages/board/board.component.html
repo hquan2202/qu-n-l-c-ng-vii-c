@@ -1,14 +1,29 @@
 <div class="board-container">
-  <h2>{{ boardTitle }}</h2>
+
+  <div class="board-title">
+    <h2 *ngIf="!editingTitle" (click)="startEditTitle()" title="Click to edit">{{ boardTitle }}</h2>
+
+    <div *ngIf="editingTitle" class="title-edit">
+      <input
+        type="text"
+        [(ngModel)]="titleBuffer"
+        (keydown.enter)="saveTitle()"
+        (keydown.escape)="cancelEditTitle()"
+        (blur)="cancelEditTitle()"
+        autofocus
+        aria-label="Edit board title"
+      />
+    </div>
+  </div>
 
   <div class="column-actions">
     <input
       type="text"
-      placeholder="Tên cột mới..."
+      placeholder="New list name..."
       [(ngModel)]="newColumnName"
       class="new-column-input"
     />
-    <button class="btn btn-add-column" (click)="addColumn()">+ Thêm Cột</button>
+    <button class="btn btn-add-column" (click)="addColumn()">Add list</button>
   </div>
 
   <div class="board-columns">
@@ -23,7 +38,7 @@
           *ngIf="columns.length > 1"
           class="btn-delete-column"
           (click)="deleteColumn(i)"
-          title="Xóa cột này"
+          title="Delete list"
         >
           <mat-icon>delete_forever</mat-icon>
         </button>
@@ -51,8 +66,8 @@
       </div>
 
       <div class="add-card">
-        <input type="text" [(ngModel)]="column.newCardName" placeholder="Nhập tên bảng mới..." />
-        <button (click)="addCard(i)">+ Thêm</button>
+        <input type="text" [(ngModel)]="column.newCardName" placeholder="Add card..." />
+        <button (click)="addCard(i)">+ Add</button>
       </div>
     </div>
   </div>
@@ -60,15 +75,15 @@
 
 <div class="modal-overlay" *ngIf="editing" (click)="closeEditor()">
   <div class="modal-dialog" role="dialog" aria-modal="true" (click)="$event.stopPropagation()">
-    <h3>Chỉnh sửa Thẻ</h3>
+    <h3>Card</h3>
 
     <div class="field">
-      <label for="modal-title">Tiêu đề</label>
+      <label for="modal-title">Title</label>
       <input id="modal-title" type="text" [(ngModel)]="editBuffer.title" />
     </div>
 
     <div class="field">
-      <label for="modal-status">Trạng thái</label>
+      <label for="modal-status">Status</label>
       <select id="modal-status" [(ngModel)]="editBuffer.status">
         <option>To Do</option>
         <option>In Progress</option>
@@ -78,20 +93,20 @@
     </div>
 
     <div class="field">
-      <label for="modal-assignee">Nhiệm vụ</label>
-      <input id="modal-assignee" type="text" [(ngModel)]="editBuffer.assignee" placeholder="Nhập nhiệm vụ..." />
+      <label for="modal-assignee">Assignee</label>
+      <input id="modal-assignee" type="text" [(ngModel)]="editBuffer.assignee" placeholder="Add assignee ..." />
     </div>
 
     <div class="field">
-      <label for="modal-desc">Ghi chú</label>
-      <textarea id="modal-desc" [(ngModel)]="editBuffer.description" placeholder="Thêm ghi chú.."></textarea>
+      <label for="modal-desc">Note</label>
+      <textarea id="modal-desc" [(ngModel)]="editBuffer.description" placeholder="Add more detail description..."></textarea>
     </div>
 
     <div class="actions">
-      <button class="btn btn-delete" type="button" (click)="deleteCard()">Xóa</button>
+      <button class="btn btn-delete" type="button" (click)="deleteCard()">Delete</button>
 
-      <div style="flex: 1;"></div> <button class="btn btn-cancel" type="button" (click)="closeEditor()">Đóng</button>
-      <button class="btn btn-save" type="button" (click)="save()">Lưu</button>
+      <div style="flex: 1;"></div> <button class="btn btn-cancel" type="button" (click)="closeEditor()">Cancel</button>
+      <button class="btn btn-save" type="button" (click)="save()">Save</button>
     </div>
   </div>
 </div>

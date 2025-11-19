@@ -1,0 +1,157 @@
+/* --- DARK THEME VARIABLES --- */
+:host {
+  --h-header-bg: var(--header-bg, #1E1E1E);
+  --h-text-color: var(--text-color, #F0F0F0);
+  --h-search-bg: var(--search-bg, #333333);
+  --h-muted: var(--muted, #AAAAAA); /* Màu chữ/icon mờ, sáng hơn 777777 một chút */
+  --h-hover-bg: rgba(255, 255, 255, 0.08); /* Hover sáng nhẹ */
+  --h-accent: var(--accent, #1abc9c); /* Màu nhấn chính (Xanh Lá Mạ) */
+  --h-popup-bg: #252525; /* Nền popup chính */
+}
+
+/* Overlay mờ phía sau */
+.popup-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7); /* Tối hơn để làm nổi bật popup */
+  z-index: 100;
+}
+
+/* Popup chính */
+.popup {
+  position: absolute;
+  top: 60px;
+  right: 50px;
+  border-radius: 12px;
+  width: 280px;
+  padding: 14px 16px;
+  z-index: 200;
+  animation: fadeIn 0.25s ease;
+  background: var(--h-popup-bg); /* Nền tối */
+  color: var(--h-text-color); /* Chữ sáng */
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4); /* Bóng tối rõ ràng */
+}
+
+/* Header user (avatar + info) */
+.popup-user {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* file: src/app/components/account/account.css */
+/* thay .avatar thành .popup-avatar để không xung đột */
+.avatar {
+  width: 42px;
+  height: 42px;
+  border-radius: 50% ;
+  object-fit: cover;
+  cursor: pointer;
+  /* Thêm viền nhẹ để avatar nổi bật trên nền tối */
+  border: 2px solid #444444;
+}
+
+
+.user-info {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.user-info h3 {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  color: var(--h-text-color);
+}
+
+.user-info p {
+  margin: 2px 0 0;
+  font-size: 13px;
+  color: var(--h-muted); /* Email dùng màu mờ */
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+hr {
+  margin: 10px 0;
+  border: none;
+  border-top: 0.5px solid #444444; /* Đường kẻ tối */
+}
+
+
+/* ========== Nút menu & đăng xuất ========== */
+.popup-body {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.menu-btn,
+.logout-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 10px;
+  padding: 9px 12px;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+  background: transparent;
+  transition: background-color 0.2s ease;
+  line-height: 1;
+  color: var(--h-text-color); /* Màu chữ sáng */
+}
+
+.menu-btn:hover,
+.logout-btn:hover {
+  background-color: var(--h-hover-bg); /* Hover sáng nhẹ */
+}
+
+.menu-icon {
+  font-size: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  width: 20px;
+  height: 20px;
+  color: var(--h-muted); /* Icon dùng màu mờ */
+}
+
+/* Đổi màu icon khi hover để tạo điểm nhấn */
+.menu-btn:hover .menu-icon {
+  color: var(--h-text-color);
+}
+
+.back-btn:hover {
+  transform: translateX(-2px);
+}
+
+/* ========== Hiệu ứng ========== */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}

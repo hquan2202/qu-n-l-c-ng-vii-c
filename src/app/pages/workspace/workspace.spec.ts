@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { Group } from './group';
+import { Workspace } from './workspace';
 
-describe('Group', () => {
-  let component: Group;
-  let fixture: ComponentFixture<Group>;
+describe('Workspace', () => {
+  let component: Workspace;
+  let fixture: ComponentFixture<Workspace>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [Group]
+      imports: [Workspace]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(Group);
+    fixture = TestBed.createComponent(Workspace);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

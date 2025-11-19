@@ -1,3 +1,4 @@
+<!-- language: html -->
 <header class="header">
   <div class="left">
     <img src="assets/images/tasklogo.png" alt="logo" class="logo-img" />
@@ -17,6 +18,7 @@
 
 
     </div>
+
   </div>
 
   <div class="right">
@@ -32,14 +34,29 @@
         Không có thông báo
       </p>
     </div>
-
-    <!-- Avatar -->
     <img
-      *ngIf="user"
+      *ngIf="avatarUrl"
       [src]="avatarUrl"
       class="avatar"
       alt="avatar"
-      (click)="logout()"
+      (error)="onAvatarError($event)"
+      (click)="toggleAccountPopup()"
     />
-    <mat-icon *ngIf="!user" class="avatar-icon">account_circle</mat-icon>
+
+    <mat-icon *ngIf="!avatarUrl" class="avatar-icon" (click)="toggleAccountPopup()">account_circle</mat-icon>
+
+    <app-account-popup
+      [visible]="isPopupVisible"
+      [position]="'header'"
+      [user]="user"
+      [avatarUrl]="avatarUrl"
+      (onClose)="closePopup()"
+      (onLogout)="logout()"
+      (onCreateWorkspace)="openCreateWorkspace()"
+    ></app-account-popup>
+
+    <app-create-workspace
+      *ngIf="headerCreateWorkspaceVisible"
+      (close)="headerCreateWorkspaceVisible = false"
+    ></app-create-workspace>
   </div>
