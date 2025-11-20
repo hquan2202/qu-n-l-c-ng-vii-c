@@ -1,79 +1,105 @@
-/* --- DARK THEME VARIABLES (Sử dụng lại từ file trước) --- */
+/* --- VARIABLES --- */
 :host {
-  --h-header-bg: var(--header-bg, #1E1E1E); /* Nền tổng thể/header tối */
-  --h-text-color: var(--text-color, #F0F0F0); /* Màu chữ sáng */
-  --h-search-bg: var(--search-bg, #333333); /* Nền input, filter */
-  --h-muted: var(--muted, #777777); /* Màu chữ/icon mờ */
-  --h-hover-bg: rgba(255, 255, 255, 0.1); /* Hover sáng nhẹ */
-  --h-accent: var(--accent, #1abc9c); /* Màu nhấn chính (Xanh Lá Mạ) */
+  --h-bg: #252525;
+  --h-text: #F0F0F0;
+  --h-input-bg: #333333;
+  --h-border: #444444;
+  --h-accent: #1abc9c;
+  --h-muted: #777777;
+  --h-danger: #FF5252;
 }
 
-/* --- POPUP CONTAINER --- */
+/* --- CONTAINER --- */
 .popup-container {
   position: fixed;
-  bottom: 30px;
-  right: 450px;
-  width: 290px;
-  background: #252525; /* Nền popup tối */
-  color: var(--h-text-color); /* Chữ sáng */
+  /* Căn giữa màn hình để không bị lệch layout ở các trang khác nhau */
+  top: 53%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+
+  width: 320px; /* Tăng độ rộng một chút */
+  background: var(--h-bg);
+  color: var(--h-text);
   display: flex;
   flex-direction: column;
   padding: 20px;
-  z-index: 1000;
-  animation: slideIn 0.3s ease;
+
+  /* --- [FIX] Z-INDEX CAO HƠN HEADER/SIDEBAR --- */
+  z-index: 3000;
+
   border-radius: 10px;
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4); /* Bóng tối mạnh hơn */
+  box-shadow: 0 8px 24px rgba(0,0,0,0.6); /* Bóng đậm hơn để nổi bật */
+
+  /* --- [FIX] THANH CUỘN (SCROLLBAR) --- */
+  max-height: 85vh; /* Chiều cao tối đa bằng 85% màn hình */
+  overflow-y: auto; /* Tự động hiện thanh cuộn nếu nội dung dài */
+
+  /* Animation nhẹ nhàng khi hiện ra */
+  animation: fadeInScale 0.2s ease-out;
 }
 
-@keyframes slideIn {
-  from { transform: translateX(100%); }
-  to { transform: translateX(0); }
+/* Animation mới phù hợp với việc căn giữa */
+@keyframes fadeInScale {
+  from { opacity: 0; transform: translate(-50%, -48%) scale(0.95); }
+  to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
 }
 
-.popup-content h2 {
-  margin: 0 0 5px 0;
-  font-size: 20px;
+/* --- TÙY CHỈNH THANH CUỘN CHO ĐẸP (WEBKIT) --- */
+.popup-container::-webkit-scrollbar {
+  width: 6px;
+}
+.popup-container::-webkit-scrollbar-track {
+  background: transparent;
+}
+.popup-container::-webkit-scrollbar-thumb {
+  background-color: #555;
+  border-radius: 10px;
+}
+.popup-container::-webkit-scrollbar-thumb:hover {
+  background-color: #777;
+}
+
+
+/* --- HEADER & PREVIEW --- */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+  position: sticky; /* Giữ tiêu đề luôn ở trên cùng khi cuộn */
+  top: -20px; /* Bù trừ padding của container */
+  background: var(--h-bg); /* Nền che nội dung trôi qua */
+  padding: 10px 0;
+  z-index: 10;
+  margin-top: -10px; /* Căn chỉnh lại vị trí */
+}
+
+.header h3 {
+  margin: 0;
+  font-size: 18px;
   font-weight: 600;
-  text-align: center;
-  color: var(--h-text-color);
 }
-
-.header{
-  display: grid;
-  grid-template-columns: 1fr auto;
-  align-items: center;
-  justify-items: center;
-}
-.h3{
-  justify-items: center;
-  align-items: center;
-}
-mat-icon.close-btn {
-  padding: 0;
-  border: none;
-  border-radius: 0;
+.close-btn {
   cursor: pointer;
-  background: none;
-  box-shadow: none;
-  color: var(--h-muted); /* Màu mờ */
-  font-size: 20px;
-  align-items: center;
-  transition: color 0.2s;
+  color: var(--h-muted);
+  transition: 0.2s;
 }
-mat-icon.close-btn:hover {
-  color: var(--h-text-color); /* Sáng lên khi hover */
+.close-btn:hover {
+  color: var(--h-text);
 }
 
 .preview {
   width: 100%;
-  height: 120px;
+  height: 100px;
   border-radius: 8px;
   background-size: cover;
   background-position: center;
   margin-bottom: 16px;
-  border: 1px solid #444444; /* Viền nhẹ cho preview */
+  border: 1px solid var(--h-border);
+  flex-shrink: 0; /* Không bị co lại khi màn hình nhỏ */
 }
 
+/* --- SECTION GENERAL --- */
 .section {
   margin-bottom: 16px;
 }
@@ -82,119 +108,235 @@ mat-icon.close-btn:hover {
   display: block;
   margin-bottom: 6px;
   font-weight: 500;
-  color: var(--h-text-color);
-}
-
-.background-options {
-  display: flex;
-  gap: 4px;
-  grid-template-columns: repeat(4, 1fr);
-}
-
-.background-options img {
-  width: 69px;
-  height: 43px;
-  border-radius: 6px;
-  cursor: pointer;
-  border: 2px solid transparent;
-}
-
-/* Selected border dùng màu Accent (Xanh Lá Mạ) */
-.background-options img.selected {
-  border-color: var(--h-accent);
-}
-.background-options img:hover {
-  transform: scale(1.07);
-  transition: transform 0.15s ease;
-}
-.gradient-options {
-  display: flex;
-  gap: 4px;
-  margin-top: 8px;
-  justify-content: space-between;
-}
-
-.gradient-tile {
-  width: 40px;
-  height: 25px;
-  border-radius: 6px;
-  cursor: pointer;
-  border: 2px solid transparent;
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
-}
-
-.gradient-tile:hover {
-  transform: scale(1.07);
-}
-
-/* Selected border dùng màu Accent (Xanh Lá Mạ) */
-.gradient-tile.selected {
-  border-color: var(--h-accent);
-}
-
-.more-tile {
-  background-color: #333333; /* Nền tối */
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--h-muted); /* Chữ mờ */
-  font-weight: bold;
-}
-
-input, select {
-  width: 100%;
-  padding: 8px;
-  border: 1px solid #444444; /* Viền tối */
-  border-radius: 6px;
-  outline: none;
-  background: var(--h-search-bg); /* Nền 333333 */
-  color: var(--h-text-color); /* Chữ sáng */
-  box-sizing: border-box;
+  font-size: 14px;
 }
 
 .required {
-  color: #ff9800; /* Vàng cam cho dark theme */
+  color: #ff9800;
 }
 
-.error {
-  color: #FF5252; /* Đỏ sáng */
-  font-size: 13px;
-  margin-top: 4px;
+/* --- BACKGROUNDS --- */
+.background-options, .gradient-options {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 6px;
 }
 
-.actions {
+.background-options img, .gradient-tile {
+  width: 65px;
+  height: 35px;
+  border-radius: 4px;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: transform 0.1s;
+}
+
+.background-options img:hover, .gradient-tile:hover {
+  transform: scale(1.05);
+}
+
+
+.more-tile {
+  background: var(--h-input-bg);
+  display: flex; align-items: center;
+  justify-content: center; color: var(--h-muted);
+}
+
+/* --- INPUTS --- */
+input, select {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid var(--h-border);
+  border-radius: 4px;
+  background: var(--h-input-bg);
+  color: var(--h-text);
+  outline: none;
+  box-sizing: border-box; font-size: 14px;
+}
+input:focus, select:focus {
+  border-color: var(--h-accent);
+}
+
+.input-error {
+  border-color: var(--h-danger);
+}
+
+/* --- INVITE SECTION STYLES --- */
+.invite-link-box {
+  background: rgba(255,255,255,0.03);
+  border: 1px dashed var(--h-muted);
+  border-radius: 6px; padding: 6px 10px;
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 10px;
+}
+
+.link-content {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  overflow: hidden;
+}
+
+.link-icon {
+  font-size: 16px;
+  width: 16px;
+  height: 16px;
+  color: var(--h-accent);
+}
+
+.link-text {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  margin-top: auto;
 }
 
-/* Nút chính dùng màu Accent (Xanh Lá Mạ) */
-.create-btn {
+.link-text span {
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.link-text small {
+  font-size: 10px;
+  color: var(--h-muted);
+  white-space: nowrap;
+}
+
+.copy-btn {
+  background: transparent;
+  border: 1px solid var(--h-border);
+  color: var(--h-text);
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.copy-btn:hover {
+  background: rgba(255,255,255,0.1);
+}
+
+/* Inputs Group */
+.add-member-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.or-divider {
+  font-size: 10px;
+  text-align: center;
+  color: var(--h-muted);
+  margin: -2px 0;
+}
+
+.email-input-group {
+  display: flex;
+  gap: 4px;
+}
+
+.email-input-group input {
+  border-radius: 4px 0 0 4px;
+  border-right: none;
+}
+
+.add-btn {
+  background: #444;
+  color: white;
+  border: 1px solid var(--h-border);
+  border-left: none;
+  border-radius: 0 4px 4px 0;
+  cursor: pointer;
+  padding: 0 10px;
+  font-size: 12px;
+}
+.add-btn:hover:not(:disabled) {
   background: var(--h-accent);
-  color: #1E1E1E; /* Chữ tối trên nền sáng */
+  color: #1E1E1E;
+}
+
+.add-btn:disabled {
+  opacity: 0.5;
+}
+
+/* Chips */
+.selected-members-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 10px;
+}
+.member-chip {
+  display: flex;
+  align-items: center;
+  background: #3a3a3a;
+  padding: 3px 8px 3px 3px;
+  border-radius: 16px;
+  font-size: 12px;
+  border: 1px solid #555;
+}
+.member-chip.is-email {
+  background: #2c3e50;
+  border-color: #34495e;
+}
+
+.member-chip .avatar {
+  width: 20px;
+  height: 20px;
+  background: #555;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 10px;
+  margin-right: 6px;
+}
+
+.member-chip .avatar mat-icon {
+  font-size: 12px;
+  width: 12px;
+  height: 12px;
+}
+.member-chip .remove-icon {
+  font-size: 14px;
+  width: 14px;
+  height: 14px;
+  margin-left: 4px;
+  cursor: pointer;
+  color: var(--h-muted);
+}
+
+.member-chip .remove-icon:hover {
+  color: var(--h-danger);
+}
+
+/* --- ACTION BUTTON --- */
+.actions {
+  margin-top: auto;
+  padding-top: 10px;
+  position: sticky; /* Giữ nút Create luôn ở đáy khi cuộn */
+  bottom: -20px;
+  background: var(--h-bg);
+  margin-bottom: -20px;
+  padding-bottom: 20px;
+  z-index: 10;
+}
+
+.create-btn {
+  width: 100%;
+  background: var(--h-accent);
+  color: #1E1E1E;
   border: none;
-  border-radius: 6px;
   padding: 10px;
-  font-weight: 600;
+  border-radius: 6px;
+  font-weight: bold;
   cursor: pointer;
   transition: 0.2s;
 }
-
-.template-btn {
-  background: #333333; /* Nền tối */
-  color: var(--h-text-color); /* Chữ sáng */
-  border: 1px solid #444444; /* Viền nhẹ */
-  border-radius: 6px;
-  padding: 10px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: 0.2s;
+.create-btn:disabled {
+  background: #444;
+  color: #888;
+  cursor: not-allowed;
 }
-
-.create-btn:hover {
-  background: #27ae96; /* Hover Xanh Lá Mạ nhẹ hơn */
-}
-.template-btn:hover {
-  background: #444444; /* Hover tối hơn */
+.create-btn:hover:not(:disabled) {
+  background: #27ae96;
 }

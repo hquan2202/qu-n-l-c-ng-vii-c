@@ -1,3 +1,12 @@
+:host {
+  --h-header-bg: var(--header-bg, #1E1E1E);
+  --h-text-color: var(--text-color, #F0F0F0);
+  --h-search-bg: var(--search-bg, #333333);
+  --h-muted: var(--muted, #AAAAAA); /* Màu chữ/icon mờ, sáng hơn 777777 một chút */
+  --h-hover-bg: rgba(255, 255, 255, 0.08); /* Hover sáng nhẹ */
+  --h-accent: var(--accent, #1abc9c); /* Màu nhấn chính (Xanh Lá Mạ) */
+  --h-popup-bg: rgba(37, 37, 37, 0.68); /* Nền popup chính */
+}
 .overlay {
   position: fixed;
   inset: 0;
@@ -9,10 +18,10 @@
   position: absolute;
   top: 55px;
   left: 160px;
-  background: #f3f3f3;
-  color: #de6f81;
+  background-color: var(--h-search-bg);
+  color: var(--h-text-color);
   border-radius: 10px;
-  width: 260px;
+  width: 230px;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
   padding: 10px 0 15px;
   z-index: 10;
@@ -33,7 +42,7 @@
   margin: 0;
   font-size: 16px;
   font-weight: 600;
-  color: #000;
+  color: var(--h-text-color);
 }
 
 .close-icon {
@@ -55,11 +64,23 @@
   transition: 0.2s;
   font-weight: 500;
   gap: 10px;
-  color: #000;
+  color: var(--h-text-color);
 }
 
 .view-option:hover {
-  background: #e0e0e0;
+  background-color: var(--h-hover-bg) !important;
+  color: var(--h-text-color) !important;
+
+}
+
+.view-option.active {
+  background-color: var(--h-accent) !important;
+  color: var(--h-header-bg) !important;
+}
+
+.lock-icon {
+  margin-left: auto;
+  font-size: 18px;
 }
 
 .divider {

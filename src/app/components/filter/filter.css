@@ -1,8 +1,12 @@
-/* ===============================
-   🎯 FILTER OPTION LIST - DỌC (ỔN ĐỊNH)
-   =============================== */
-
-/* Container chính của danh sách các nút filter */
+:host {
+  --h-header-bg: var(--header-bg, #1E1E1E);
+  --h-text-color: var(--text-color, #F0F0F0);
+  --h-search-bg: var(--search-bg, #333333);
+  --h-muted: var(--muted, #AAAAAA); /* Màu chữ/icon mờ, sáng hơn 777777 một chút */
+  --h-hover-bg: rgba(255, 255, 255, 0.08); /* Hover sáng nhẹ */
+  --h-accent: var(--accent, #1abc9c); /* Màu nhấn chính (Xanh Lá Mạ) */
+  --h-popup-bg: rgba(37, 37, 37, 0.68); /* Nền popup chính */
+}
 .filter-menu .filter-options-list {
   display: flex !important;
   flex-direction: column !important;  /* xếp dọc */
@@ -11,47 +15,51 @@
   width: 100%;
   padding: 5px 0;
   box-sizing: border-box;
+  background: var(--h-popup-bg); /* Nền tối */
+  color: var(--h-text-color); /* Chữ sáng */
 }
-
-/* ===============================
-   🟣 NÚT FILTER CƠ BẢN (GHI ĐÈ FRAMEWORK)
-   =============================== */
+:root {
+  --accent: #1abc9c; /* ensure accent is green/teal globally */
+}
+:host {
+  --h-accent: #1abc9c; /* force component accent regardless of global --accent */
+}
+.filter-menu .btn-filter-option.active {
+  background-color: var(--h-accent, #1abc9c) !important; /* fallback to hex if var is blue */
+  color: var(--h-header-bg) !important;
+}
 .filter-menu .btn-filter-option,
 .filter-menu .filter-options-list button {
   display: block !important;           /* ép dọc, chặn inline/inline-block */
   width: 100% !important;
   box-sizing: border-box;
-
   text-align: left;
   padding: 8px 15px;
   cursor: pointer;
-
   /* reset viền/nền từ Bootstrap/Material nếu có */
   background: none !important;
   border: none !important;
   border-left: 3px solid transparent !important;
-
   border-radius: 4px 0 0 4px;
   font-size: 14px;
-  color: #333;
+  color: var(--h-text-color, #333) !important;
   font-weight: 500;
-
   transition: background-color .2s, color .2s, border-left .2s, box-shadow .2s;
 }
 
 /* Hover */
 .filter-menu .btn-filter-option:hover {
-  background-color: #f3f3f3 !important;
-  color: #000 !important;
+  background-color: var(--h-hover-bg) !important;
+  color: var(--h-text-color) !important;
+
 }
 
 /* Active – màu viền trái lấy từ [style.border-left-color] trong template */
 .filter-menu .btn-filter-option.active {
-  background-color: #e9e5ff !important;
-  color: #524290 !important;
+  background-color: var(--h-accent) !important;
+  color: var(--h-header-bg) !important;
   font-weight: 600;
   border-left-style: solid !important;
-  box-shadow: inset 2px 0 0 #52429033;
 }
 
 /* Phòng hờ nếu có float/inline từ nơi khác */

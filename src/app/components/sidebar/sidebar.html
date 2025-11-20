@@ -1,18 +1,96 @@
 <div class="sidebar-container">
-  <div
-    class="menu-item"
-    routerLink="/home"
-    routerLinkActive="active"
-    [routerLinkActiveOptions]="{ exact: false }"
-  >
-    <mat-icon class="menu-icon">home</mat-icon>
-    <span class="menu-text">Home</span>
+
+  <div class="nav-group">
+    <div class="menu-item" routerLink="/home" routerLinkActive="active">
+      <div class="icon"><mat-icon>home</mat-icon></div>
+      <span class="label">Home</span>
+    </div>
+    <div class="menu-item" routerLink="/all-task" routerLinkActive="active">
+      <div class="icon"><mat-icon>check_circle_outline</mat-icon></div>
+      <span class="label">My Tasks</span>
+    </div>
   </div>
-  <div class="menu-item"
-       routerLink="/board"
-       routerLinkActive="active">
-    <mat-icon class="menu-icon">dashboard</mat-icon>
-    <span class="menu-text">Board</span>
+
+  <div class="divider"></div>
+
+  <div class="board-section">
+    <div class="section-header" (click)="toggleSection('personal')">
+      <span class="section-title">Personal Boards</span>
+      <mat-icon class="arrow-icon">
+        {{ isPersonalExpanded ? 'expand_more' : 'chevron_right' }}
+      </mat-icon>
+    </div>
+
+    <div class="board-list" [class.expanded]="isPersonalExpanded">
+      <div class="menu-item board-item"
+           *ngFor="let board of personalBoards"
+           [routerLink]="['/board', board.id]"
+           routerLinkActive="active">
+
+        <div class="board-content">
+          <div class="icon">
+            <div class="board-dot" [style.background]="board.background"></div>
+          </div>
+          <span class="label">{{ board.title }}</span>
+        </div>
+
+        <div class="board-actions" (click)="$event.stopPropagation()">
+          <button class="action-btn" [matMenuTriggerFor]="menuPersonal">
+            <mat-icon>more_horiz</mat-icon>
+          </button>
+          <mat-menu #menuPersonal="matMenu">
+            <button mat-menu-item (click)="deleteBoard(board)">
+              <mat-icon>delete</mat-icon><span>Delete</span>
+            </button>
+          </mat-menu>
+        </div>
+      </div>
+
+      <div class="menu-item create-item" (click)="openCreateBoard('personal')">
+        <div class="icon"><mat-icon>add</mat-icon></div>
+        <span class="label">Create Personal Board</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="board-section">
+    <div class="section-header" (click)="toggleSection('workspace')">
+      <span class="section-title">Workspace</span>
+      <mat-icon class="arrow-icon">
+        {{ isWorkspaceExpanded ? 'expand_more' : 'chevron_right' }}
+      </mat-icon>
+    </div>
+
+    <div class="board-list" [class.expanded]="isWorkspaceExpanded">
+      <div class="menu-item board-item"
+           *ngFor="let board of workspaceBoards"
+           [routerLink]="['/board', board.id]"
+           routerLinkActive="active">
+
+        <div class="board-content">
+          <div class="icon">
+            <div class="board-dot" [style.background]="board.background"></div>
+          </div>
+          <span class="label">{{ board.title }}</span>
+        </div>
+
+        <div class="board-actions" (click)="$event.stopPropagation()">
+          <button class="action-btn" [matMenuTriggerFor]="menuWorkspace">
+            <mat-icon>more_horiz</mat-icon>
+          </button>
+          <mat-menu #menuWorkspace="matMenu">
+            <button mat-menu-item (click)="deleteBoard(board)">
+              <mat-icon>delete</mat-icon><span>Delete</span>
+            </button>
+          </mat-menu>
+        </div>
+      </div>
+
+      <div class="menu-item create-item" (click)="openCreateBoard('workspace')">
+        <div class="icon"><mat-icon>add</mat-icon></div>
+        <span class="label">Create Workspace Board</span>
+      </div>
+    </div>
   </div>
 
 </div>

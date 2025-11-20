@@ -1,9 +1,8 @@
-// typescript
-// File: `src/app/services/board/board.service.ts`
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { TaskService } from '../task/task.service';
 
+// --- INTERFACES ---
 export interface Card {
   title: string;
   status?: string;
@@ -18,217 +17,192 @@ export interface Column {
   newCardName?: string;
 }
 
-@Injectable({ providedIn: 'root' })
-export class BoardService {
-  private static readonly STORAGE_PREFIX = 'my_app_columns::';
+export interface Board {
+  id: string;
+  title: string;
+  background: string;
+  color?: string;
+  type: 'personal' | 'workspace';
+  columns: Column[];
+}
 
-  private activeBoardId: string | null = null;
+@Injectable({
+  providedIn: 'root'
+})
+export class BoardService {
+  private readonly STORAGE_KEY = 'boards_db_temp';
+
+  // 🟢 SỬA Ở ĐÂY: Để mảng rỗng để app bắt đầu sạch sẽ
+  private initialBoards: Board[] = [];
+
+  // State
+  private boardsSubject = new BehaviorSubject<Board[]>([]);
+  public readonly boards$ = this.boardsSubject.asObservable();
+
   private columnsSubject = new BehaviorSubject<Column[]>([]);
   public readonly columns$ = this.columnsSubject.asObservable();
 
+  private activeBoardId: string | null = null;
+
   constructor(private taskService: TaskService) {
-    window.addEventListener('storage', (e: StorageEvent) => {
-      if (!this.activeBoardId) return;
-      if (e.key === this.keyFor(this.activeBoardId)) {
-        this.columnsSubject.next(this.safeParseColumns(e.newValue) ?? this.defaultColumns());
-      }
-    });
+    this.loadFromStorage();
   }
 
-  setActiveBoardId(id: string): void {
-    if (!id || id === this.activeBoardId) return;
-    this.activeBoardId = id;
-    this.initBoardIfMissing(id);
+  // --- HELPER: STORAGE ---
+  private saveToStorage(boards: Board[]) {
+    localStorage.setItem(this.STORAGE_KEY, JSON.stringify(boards));
   }
+
+  private loadFromStorage() {
+    const data = localStorage.getItem(this.STORAGE_KEY);
+    if (data) {
+      this.boardsSubject.next(JSON.parse(data));
+    } else {
+      // Nếu chưa có dữ liệu thì dùng mảng rỗng ban đầu
+      this.boardsSubject.next(this.initialBoards);
+    }
+  }
+
+  // --- LOGIC BOARD ---
 
   loadBoard(id: string): void {
     this.setActiveBoardId(id);
   }
 
-  initBoardIfMissing(id: string): void {
-    const key = this.keyFor(id);
-    if (!localStorage.getItem(key)) {
-      const cols = this.defaultColumns();
-      localStorage.setItem(key, JSON.stringify(cols));
+  setActiveBoardId(id: string): void {
+    this.activeBoardId = id;
+    const board = this.boardsSubject.value.find(b => b.id === id);
+    if (board) {
+      // Load columns của bảng đó
+      this.columnsSubject.next(board.columns || []);
+    } else {
+      this.columnsSubject.next([]);
+    }
+  }
+
+  getBoardsValue(): Board[] {
+    return this.boardsSubject.value;
+  }
+
+  addBoard(newBoard: Board) {
+    // 🟢 QUAN TRỌNG: Tự động thêm cột mặc định nếu bảng mới chưa có
+    if (!newBoard.columns || newBoard.columns.length === 0) {
+      newBoard.columns = this.defaultColumns();
     }
 
-    // ✅ giữ nguyên cards trong localStorage
-    const cols = this.loadFromStorage(id).map(col => ({
-      ...col,
-      newCardName: '',
-    }));
+    const currentBoards = this.boardsSubject.value;
+    const newBoardsList = [...currentBoards, newBoard];
 
-    this.columnsSubject.next(cols);
-    this.persist(cols);
+    this.boardsSubject.next(newBoardsList);
+    this.saveToStorage(newBoardsList);
+  }
+
+  deleteBoard(boardId: string) {
+    const currentBoards = this.boardsSubject.value;
+    const updatedBoards = currentBoards.filter(b => b.id !== boardId);
+
+    this.boardsSubject.next(updatedBoards);
+    this.saveToStorage(updatedBoards);
+
+    if (this.activeBoardId === boardId) {
+      this.columnsSubject.next([]);
+      this.activeBoardId = null;
+    }
+  }
+
+  // --- LOGIC COLUMN & CARD ---
+
+  private updateActiveBoardState(newColumns: Column[]) {
+    if (!this.activeBoardId) return;
+    this.columnsSubject.next(newColumns);
+
+    const allBoards = this.boardsSubject.value;
+    const boardIndex = allBoards.findIndex(b => b.id === this.activeBoardId);
+
+    if (boardIndex !== -1) {
+      const updatedBoard = { ...allBoards[boardIndex], columns: newColumns };
+      const newAllBoards = [...allBoards];
+      newAllBoards[boardIndex] = updatedBoard;
+
+      this.boardsSubject.next(newAllBoards);
+      this.saveToStorage(newAllBoards);
+    }
   }
 
   addColumn(title: string): void {
     if (!this.ensureActive() || !title?.trim()) return;
-    const cols = [...this.columnsSubject.value, { title: title.trim(), cards: [], newCardName: '' }];
-    this.columnsSubject.next(cols);
-    this.persist(cols);
+    const newCols = [...this.columnsSubject.value, { title: title.trim(), cards: [], newCardName: '' }];
+    this.updateActiveBoardState(newCols);
   }
 
   deleteColumn(index: number): void {
     if (!this.ensureActive()) return;
-    const cols = this.columnsSubject.value.slice();
+    const cols = [...this.columnsSubject.value];
     if (index < 0 || index >= cols.length) return;
 
-    // capture taskIds before mutating
     const taskIds = (cols[index]?.cards ?? []).map(c => c.taskId).filter(Boolean) as string[];
+    taskIds.forEach(id => { if(id) this.taskService.deleteTask(id); });
 
-    // remove column locally
     cols.splice(index, 1);
-    this.columnsSubject.next(cols);
-    this.persist(cols);
-
-    // delete corresponding tasks so All Tasks page removes them
-    try {
-      taskIds.forEach(id => {
-        if (id) this.taskService.deleteTask(id);
-      });
-    } catch (e) {
-      console.error('BoardService.deleteColumn -> taskService.deleteTask failed', e);
-    }
+    this.updateActiveBoardState(cols);
   }
+
   addCard(columnIndex: number, cardTitle: string): void {
     if (!this.ensureActive() || !cardTitle?.trim()) return;
     const trimmedTitle = cardTitle.trim();
+    const taskId = this.generateId();
+    const currentCols = this.columnsSubject.value;
 
-    const taskId =
-      (typeof crypto !== 'undefined' && typeof (crypto as any).randomUUID === 'function')
-        ? (crypto as any).randomUUID()
-        : String(Date.now());
-
-    const cols = this.columnsSubject.value.map((c, idx) =>
+    const newCols = currentCols.map((c, idx) =>
       idx === columnIndex
-        ? {
-          ...c,
-          cards: [...c.cards, { title: trimmedTitle, status: 'To Do', assignee: '', description: '', taskId }],
-          newCardName: '',
-        }
+        ? { ...c, cards: [...c.cards, { title: trimmedTitle, status: 'To Do', assignee: '', taskId }], newCardName: '' }
         : c
     );
+    this.updateActiveBoardState(newCols);
 
-    this.columnsSubject.next(cols);
-    this.persist(cols);
-
-    const columnName = cols[columnIndex]?.title ?? 'Unknown';
-    this.taskService.addTask({
-      id: taskId,
-      title: trimmedTitle,
-      status: 'To Do',
-      assignee: '',
-      description: '',
-      list: columnName,
-      boardId: this.activeBoardId ?? undefined,
-    });
+    const colName = currentCols[columnIndex]?.title || 'Unknown';
+    this.taskService.addTask({ id: taskId, title: trimmedTitle, status: 'To Do', list: colName, boardId: this.activeBoardId || undefined });
   }
 
   updateCard(columnIndex: number, cardIndex: number, card: Card): void {
     if (!this.ensureActive()) return;
-
     const cols = this.columnsSubject.value.map((c, ci) => {
       if (ci !== columnIndex) return c;
       const cards = [...c.cards];
-      if (cardIndex < 0 || cardIndex >= cards.length) return c;
-      cards[cardIndex] = { ...card };
+      if (cardIndex >= 0 && cardIndex < cards.length) cards[cardIndex] = { ...card };
       return { ...c, cards };
     });
-
-    this.columnsSubject.next(cols);
-    this.persist(cols);
+    this.updateActiveBoardState(cols);
   }
 
   deleteCard(columnIndex: number, cardIndex: number): void {
     if (!this.ensureActive()) return;
+    const currentCols = this.columnsSubject.value;
+    const cardToRemove = currentCols[columnIndex]?.cards?.[cardIndex];
 
-    const existingCols = this.columnsSubject.value;
-    const cardToRemove = existingCols[columnIndex]?.cards?.[cardIndex];
-    // remove card first from board state
-    const cols = existingCols.map((c, ci) =>
-      ci === columnIndex ? { ...c, cards: c.cards.filter((_, idx) => idx !== cardIndex) } : { ...c, cards: [...c.cards] }
+    const newCols = currentCols.map((c, ci) =>
+      ci === columnIndex
+        ? { ...c, cards: c.cards.filter((_, idx) => idx !== cardIndex) }
+        : c
     );
-
-    this.columnsSubject.next(cols);
-    this.persist(cols);
-
-    // then delete the linked task so All Tasks page also removes it
-    try {
-      const id = cardToRemove?.taskId;
-      if (id) this.taskService.deleteTask(id);
-    } catch (e) {
-      console.error('BoardService.deleteCard -> taskService.deleteTask failed', e);
-    }
+    this.updateActiveBoardState(newCols);
+    if (cardToRemove?.taskId) this.taskService.deleteTask(cardToRemove.taskId);
   }
 
-  deleteBoard(boardId: string): void {
-    if (!boardId) return;
-    try {
-      // remove board from 'boards' list
-      try {
-        const raw = JSON.parse(localStorage.getItem('boards') ?? '[]');
-        const boards = Array.isArray(raw) ? raw.filter((b: any) => String(b?.id) !== String(boardId)) : [];
-        localStorage.setItem('boards', JSON.stringify(boards));
-      } catch (e) {
-        console.error('BoardService.deleteBoard -> failed to update boards list', e);
-      }
-
-      // remove per-board columns storage
-      localStorage.removeItem(this.keyFor(boardId));
-
-      // remove tasks associated with this board (direct typed call)
-      try {
-        // call the public method on TaskService so it's counted as used
-        (this.taskService as any).deleteTasksByBoardId
-          ? (this.taskService as any).deleteTasksByBoardId(boardId)
-          : void 0;
-      } catch (e) {
-        console.error('BoardService.deleteBoard -> taskService.deleteTasksByBoardId failed', e);
-      }
-
-      console.debug('BoardService.deleteBoard -> removed board', boardId);
-    } catch (e) {
-      console.error('BoardService.deleteBoard failed', e);
-    }
-  }
-  private loadFromStorage(boardId: string): Column[] {
-    const key = this.keyFor(boardId);
-    return this.safeParseColumns(localStorage.getItem(key)) ?? this.defaultColumns();
-  }
-
-  private persist(cols: Column[]): void {
-    if (!this.activeBoardId) return;
-    localStorage.setItem(this.keyFor(this.activeBoardId), JSON.stringify(cols));
-  }
-
-  private safeParseColumns(json: string | null): Column[] | null {
-    if (!json) return null;
-    try {
-      const parsed = JSON.parse(json);
-      return Array.isArray(parsed) ? (parsed as Column[]) : null;
-    } catch {
-      return null;
-    }
-  }
-
+  // 🟢 HÀM NÀY QUAN TRỌNG: Tạo cấu trúc cột mặc định cho bảng mới
   private defaultColumns(): Column[] {
     return [
-      { title: 'To Do', cards: [], newCardName: '' },
-      { title: 'In Progress', cards: [], newCardName: '' },
-      { title: 'Done', cards: [], newCardName: '' },
+      { title: 'To Do', cards: [] },
+      { title: 'In Progress', cards: [] },
+      { title: 'Done', cards: [] }
     ];
   }
 
-  private keyFor(boardId: string): string {
-    return `${BoardService.STORAGE_PREFIX}${boardId}`;
+  private ensureActive(): boolean {
+    return !!this.activeBoardId;
   }
 
-  private ensureActive(): boolean {
-    if (!this.activeBoardId) {
-      console.warn('BoardService: no activeBoardId. Call setActiveBoardId(id) first.');
-      return false;
-    }
-    return true;
+  private generateId(): string {
+    return (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') ? crypto.randomUUID() : String(Date.now());
   }
 }

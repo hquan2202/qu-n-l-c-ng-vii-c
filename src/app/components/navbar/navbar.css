@@ -1,138 +1,213 @@
+/* --- VARIABLES --- */
+:host {
+  --h-header-bg: var(--header-bg, #1F1F21); /* Nền tối */
+  --h-text-color: var(--text-color, #ffffff);
+  --h-search-bg: var(--search-bg, #EEEEEE);
+  --h-muted: var(--muted, #474747);
+  --h-hover-bg: rgba(255, 255, 255, 0.15); /* Hover sáng cho nền tối */
+  --h-accent: var(--accent, #64a0ff);
+  --btn-share-bg: rgba(255, 255, 255, 0.12); /* Nền nút share trong suốt */
+}
+
+/* --- NAVBAR CONTAINER --- */
 .navbar {
   position: fixed;
-  top: 0;
-  left: 0;
+  top: 0; left: 0;
   width: 100%;
   height: 55px;
   background-color: var(--h-header-bg);
   display: flex;
   align-items: center;
-  padding: 0 20px;
+  padding: 0 16px; /* Padding chuẩn */
   z-index: 1000;
   justify-content: space-between;
-  color: var(--h-header-bg);
+  color: var(--h-text-color);
   box-sizing: border-box;
-  font-weight: 600;
+  font-weight: 500;
   flex-shrink: 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1); /* Viền nhẹ ngăn cách */
 }
+
+/* --- LEFT SECTION --- */
 .left {
   display: flex;
-  align-items: center; /* Căn giữa theo chiều dọc */
-  height: 28px;
+  align-items: center;
+  height: 100%; /* Chiều cao theo navbar */
+  gap: 12px; /* Tạo khoảng cách đều giữa Logo, Filter, View, Share */
+}
+
+/* Logo */
+.logo-img {
+  width: 24px; /* Size logo gọn hơn */
+  height: auto;
+  object-fit: cover;
+}
+
+.app-name {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--h-text-color);
+  margin-right: 8px; /* Cách icon đầu tiên ra một chút */
+  white-space: nowrap;
   cursor: pointer;
-
-  .logo-img {
-    width: 30px;
-    height: auto;
-    object-fit: cover;
-    margin-right: 8px;
-  }
-
-  .app-name {
-    font-size: 18px;
-    font-weight: bold;
-    color: #ffffff;
-    margin: 0;
-    text-align: center;
-  }
+  opacity: 0.9;
 }
+.app-name:hover { opacity: 1; }
 
-.navbar mat-icon {
-  color: #ffffff;
+/* --- ICONS CHUNG (Filter, View) --- */
+/* Chỉ tác động đến mat-icon nằm trực tiếp trong navbar hoặc wrapper, TRỪ icon trong nút share */
+.navbar > mat-icon,
+.filter-wrapper > mat-icon,
+.view-wrapper > mat-icon {
+  color: var(--h-text-color);
   cursor: pointer;
-  font-size: 24px;       /* Giống header */
-  padding: 10px;
-  gap: 10px;
-  transition: background-color 0.2s, color 0.2s;
+  font-size: 22px;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+  padding: 0; /* Reset padding thừa */
 }
 
-.navbar mat-icon:hover {
-  color: lightgrey;
+.navbar mat-icon:hover,
+.filter-wrapper > mat-icon:hover,
+.view-wrapper > mat-icon:hover {
+  background-color: var(--h-hover-bg);
 }
 
+/* --- SHARE BUTTON (THEME TỐI) --- */
+.share-wrapper {
+  display: flex;
+  align-items: center;
+}
 
-.filter-wrapper {
-  /* Đặt vị trí tương đối để menu thả xuống định vị tuyệt đối so với nó */
+.share-btn {
+  /* Màu nền kính mờ sang trọng cho nền tối */
+  background-color: var(--btn-share-bg);
+  color: var(--h-text-color);
+
+  /* Border & Shape */
+  border: none;
+  border-radius: 4px;
+  height: 32px;
+  padding: 0 12px; /* Padding 2 bên cho nút chữ */
+
+  /* Layout */
+  display: flex;
+  align-items: center;
+  gap: 6px;
+
+  /* Text & Font */
+  font-weight: 500;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+/* Icon bên trong nút Share */
+.share-btn .share-icon {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: inherit; /* Ăn theo màu chữ nút */
+  padding: 0; /* Reset padding global */
+}
+
+/* Hover Effect cho nút Share */
+.share-btn:hover {
+  background-color: rgba(255, 255, 255, 0.25); /* Sáng hơn khi hover */
+}
+
+/* Active/Click Effect */
+.share-btn:active {
+  transform: translateY(1px);
+}
+
+/* --- WRAPPERS --- */
+.filter-wrapper, .view-wrapper {
   position: relative;
   display: flex;
   align-items: center;
 }
 
-/* Style cho icon filter khi nó đang active (mở menu hoặc đang lọc) */
-.filter-wrapper mat-icon.filter-active {
-  color: #ffffff;            /* Màu icon trắng */
-}
-.filter-wrapper mat-icon.filter-active:hover {
+/* Icon Filter khi Active */
+.filter-active {
+  background-color: var(--h-hover-bg);
+  color: var(--h-accent) !important; /* Màu xanh khi đang lọc */
 }
 
-/* Menu thả xuống (Dropdown) */
+/* --- DROPDOWN MENU --- */
 .filter-menu {
   position: absolute;
-  top: 100%; /* Đổ xuống ngay dưới icon */
-  left: 0; /* Căn lề trái với icon */
-  z-index: 1000;
-
-  /* Style của menu */
-  background: white;
-  border: 1px solid #ccc;
+  top: 40px; /* Đẩy xuống một chút */
+  left: 0;
+  z-index: 1100;
+  background: #282E33; /* Nền menu tối */
+  border: 1px solid #3C454D;
   border-radius: 6px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
   padding: 5px 0;
-  width: 200px; /* Độ rộng cố định */
+  width: 220px;
 
-  /* Ẩn và hiệu ứng đổ xuống */
   max-height: 0;
   opacity: 0;
-  overflow: hidden;
-  transition: max-height 0.3s ease-out, opacity 0.3s ease-out;
+  visibility: hidden; /* Thêm visibility để tránh click nhầm */
+  transform: translateY(-10px);
+  transition: all 0.2s ease-out;
 }
 
-/* Hiển thị Menu */
 .filter-menu.open {
-  max-height: 500px; /* Giá trị đủ lớn để chứa nội dung */
+  max-height: 500px;
   opacity: 1;
-  margin-top: 5px; /* Khoảng cách nhỏ với icon */
+  visibility: visible;
+  transform: translateY(0);
 }
 
+/* Option trong menu */
 .filter-options-list .btn-filter-option {
   display: flex;
   align-items: center;
   width: 100%;
   text-align: left;
-  padding: 8px 15px;
+  padding: 10px 15px;
   border: none;
-  background: none;
+  background: transparent;
   cursor: pointer;
   font-size: 14px;
-  color: #333;
+  color: #B6C2CF; /* Màu chữ sáng nhẹ */
   transition: background-color 0.2s;
-  /* Thêm gạch màu bên trái */
   border-left: 3px solid transparent;
 }
 
 .filter-options-list .btn-filter-option:hover {
-  background: #f0f0f0;
+  background-color: rgba(255, 255, 255, 0.08);
+  color: #ffffff;
 }
 
-.filter-options-list .btn-filter-option.active {
-  background: #e9e5ff; /* Nền tím nhạt khi active */
-  color: #524290;
-  font-weight: 600;
-  border-left: 3px solid #524290; /* Viền tím đậm khi active */
-}
-
-.navbar .right {
+/* --- RIGHT SECTION (AVATAR) --- */
+.right {
   display: flex;
-  align-items: center; /* Căn giữa theo chiều dọc */
-  height: 28px;
-  cursor: pointer;      /* tránh flex-shrink ảnh hưởng */
+  align-items: center;
+  height: 100%;
+  gap: 10px;
 }
 
-.navbar .avatar,
-.navbar .avatar-icon {
+.avatar {
   width: 32px;
   height: 32px;
   border-radius: 50%;
   object-fit: cover;
   cursor: pointer;
+  border: 2px solid transparent;
+  transition: border-color 0.2s;
+}
+
+.avatar:hover {
+  border-color: var(--h-hover-bg);
 }

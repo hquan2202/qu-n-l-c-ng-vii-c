@@ -4,7 +4,7 @@
   --h-search-bg: var(--search-bg, #EEEEEE);
   --h-muted: var(--muted, #49454F);
   --h-hover-bg: rgba(0,0,0,0.06);
-  --h-accent: var(--accent, #64a0ff);
+  --h-accent: var(--accent, #1abc9c); /* Màu nhấn chính (Xanh Lá Mạ) */
 }
 
 /* Header container */
@@ -22,6 +22,7 @@
   z-index: 1000;
   border-bottom: 1px solid var(--header-bg);
   transition: background-color 0.2s, color 0.2s;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1); /* Viền nhẹ ngăn cách */
 }
 
 /* Theme toggle button */
@@ -132,7 +133,7 @@
 .avatar-icon {
   cursor: pointer;
   font-size: 24px;
-  color: var(--h-muted);
+  color: var(--);
   transition: color 0.2s, transform 0.12s;
 }
 

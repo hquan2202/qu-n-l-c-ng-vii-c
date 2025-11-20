@@ -1,22 +1,20 @@
 <div class="overlay" (click)="closePopup()"></div>
 
-
-<div class="popup">
+<div class="popup" (click)="$event.stopPropagation()">
   <div class="popup-header">
-    <p class="title">Chế độ xem</p>
+    <p class="title">View</p>
     <mat-icon class="close-icon" (click)="closePopup()">close</mat-icon>
   </div>
 
-  <div class="view-option" *ngFor="let view of views">
+  <!-- View List -->
+  <div
+    class="view-option"
+    *ngFor="let view of views"
+    [class.active]="view.name === currentView"
+    [class.locked]="view.locked"
+    (click)="selectView(view)"
+  >
     <mat-icon>{{ view.icon }}</mat-icon>
     <span>{{ view.name }}</span>
   </div>
-
-  <div class="divider"></div>
-
-  <p class="desc">
-    Xem công việc của bạn theo những cách mới.
-    Quản lý tiến độ, lịch trình và dữ liệu trực tiếp từ bảng của bạn.
-  </p>
-
 </div>

@@ -99,7 +99,10 @@
 
     <div class="field">
       <label for="modal-desc">Note</label>
-      <textarea id="modal-desc" [(ngModel)]="editBuffer.description" placeholder="Add more detail description..."></textarea>
+      <textarea id="modal-desc" [(ngModel)]="editBuffer.description" placeholder="Add more detail description..."maxlength="200"></textarea>
+      <div class="note-counter">
+        {{ (editBuffer.description?.length || 0) }} / 200
+      </div>
     </div>
 
     <div class="actions">

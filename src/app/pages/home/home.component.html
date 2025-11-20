@@ -1,37 +1,35 @@
 <app-header (search)="onSearch($event)"></app-header>
 
-
 <div class="home-container">
-  <h2>KHÔNG GIAN LÀM VIỆC</h2>
+  <h2 class="section-title">YOUR WORKSPACES</h2>
 
   <div class="home-stats">
-    <ng-container *ngFor="let c of filteredCards; let i = index">
-      <!-- Nút Tạo bảng mới -->
-      <div *ngIf="normalizeTitle(c.title) === CREATE_TITLE; else normalCard"
-           class="create-board"
+    <ng-container *ngFor="let c of displayBoards; let i = index">
+
+      <div *ngIf="c.id === CREATE_BOARD_ID; else normalCard"
+           class="create-board-card"
            (click)="openPopup()">
         <span>Create new board</span>
       </div>
 
-      <!-- Card bình thường -->
       <ng-template #normalCard>
         <div class="card-wrapper">
           <app-card
             [title]="c.title"
             [color]="c.color"
-            [background]="c.background ?? ''"
-            (cardClick)="onCardClick(c, i)"
-            (delete)="deleteCard(i)">
+            [background]="c.background"
+            (cardClick)="onCardClick(c)"
+            (delete)="deleteCard(c)">
           </app-card>
         </div>
       </ng-template>
+
     </ng-container>
   </div>
 
-
-  <!-- popup create board -->
   <app-task-description
     *ngIf="showPopup"
+    [defaultType]="'workspace'"
     (close)="closePopup()"
     (addBoard)="addNewBoard($event)">
   </app-task-description>

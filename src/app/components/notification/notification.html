@@ -1,0 +1,35 @@
+<!-- Overlay mờ -->
+<div class="overlay" *ngIf="visible" (click)="onCloseClick()"></div>
+
+<div class="notif-container" *ngIf="visible" (click)="$event.stopPropagation()" (scroll)="onScroll($event)">
+  <p class="notif-title">Notifications</p>
+
+  <mat-list>
+    <!-- Không có thông báo -->
+    <div *ngIf="notiArray.length === 0" class="no-notifications">
+      <img src="assets/images/noti.png" alt="No notifications" class="no-noti-img" />
+      <p class="no-notifications-message">No notifications yet</p>
+    </div>
+
+    <!-- Danh sách thông báo -->
+    <mat-list-item *ngFor="let noti of notiArray" class="notif-item">
+      <mat-icon matListItemIcon>
+        {{ noti.type === 'invite_board' ? 'group_add' : 'info' }}
+      </mat-icon>
+      <div matLine>
+        {{ noti.message }}
+      </div>
+      <div matLine class="time">{{ noti.createdAt | date:'short' }}</div>
+
+      <!-- Nếu là invite_board -->
+      <div class="btns" *ngIf="noti.type === 'invite_board'">
+        <button mat-stroked-button color="warn" (click)="rejectInvitation(noti.id)">
+          Decline
+        </button>
+        <button mat-flat-button color="primary" (click)="acceptInvitation(noti.id, noti.boardId, noti.senderId)">
+          Accept
+        </button>
+      </div>
+    </mat-list-item>
+  </mat-list>
+</div>

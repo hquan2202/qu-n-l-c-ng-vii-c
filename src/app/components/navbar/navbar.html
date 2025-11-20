@@ -1,4 +1,3 @@
-<!-- ================= NAVBAR ================= -->
 <nav class="navbar">
   <div class="left">
     <img src="assets/images/tasklogo.png" alt="logo" class="logo-img" />
@@ -19,12 +18,23 @@
       </div>
     </div>
 
-    <mat-icon class="view-icon" (click)="toggleView()">view_module</mat-icon>
-    <app-view-popup *ngIf="isViewOpen" (close)="isViewOpen = false"></app-view-popup>
+    <div class="view-wrapper">
+      <mat-icon class="view-icon" (click)="toggleView()">view_module</mat-icon>
+      <app-view-popup *ngIf="isViewOpen" (close)="isViewOpen = false"></app-view-popup>
+    </div>
+
+    <div class="share-wrapper">
+      <button class="share-btn" (click)="toggleShare()">
+        <mat-icon class="share-icon">person_add</mat-icon>
+        <span>Share</span>
+      </button>
+
+      <app-share-popup
+        *ngIf="isShareOpen"
+        (close)="isShareOpen = false">
+      </app-share-popup>
+    </div>
+
   </div>
 
-  <div class="right">
-    <!-- ✅ Nếu có avatar thì hiển thị -->
-
-  </div>
 </nav>

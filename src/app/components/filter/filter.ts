@@ -5,7 +5,7 @@ import {
   ViewEncapsulation,
   DestroyRef,
   ElementRef,
-  HostListener,
+  HostListener, Output, EventEmitter,
 } from '@angular/core';
 import { AsyncPipe, NgForOf, NgIf } from '@angular/common';
 import { Observable } from 'rxjs';
@@ -24,7 +24,6 @@ export class FilterComponent implements OnInit {
   availableStatuses: string[] = ['To Do', 'In Progress', 'Review', 'Done'];
   currentFilterStatus$: Observable<string | null>;
   currentStatus: string | null = null;
-
   constructor(
     public uiFilterService: UiFilterService,
     private destroyRef: DestroyRef,
@@ -39,7 +38,6 @@ export class FilterComponent implements OnInit {
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((status: string | null) => (this.currentStatus = status));
   }
-
   // ✅ Chọn filter: KHÔNG đóng menu (không emit ra ngoài)
   handleFilter(status: string): void {
     const next: string | null = this.currentStatus === status ? null : status;
@@ -56,6 +54,7 @@ export class FilterComponent implements OnInit {
       this.uiFilterService.setFilter(null);
     }
   }
+
 }
 
 export class Filter {

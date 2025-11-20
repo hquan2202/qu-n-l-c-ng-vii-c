@@ -315,6 +315,14 @@
   color: var(--h-text-color);
   margin-bottom: 15px;
 }
+.note-counter {
+  text-align: right;
+  color: #bbbbbb;
+  font-size: 12px;
+  margin-top: 4px;
+  margin-bottom: 8px;
+  opacity: 0.8;
+}
 
 /* --- MODAL FORM ELEMENTS --- */
 .field {

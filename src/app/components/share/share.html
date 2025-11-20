@@ -1,0 +1,48 @@
+<div class="share-container">
+  <div class="header">
+    <h3>Share board</h3>
+    <mat-icon class="close-btn" (click)="closePopup()">close</mat-icon>
+  </div>
+
+  <div class="section invite-link-box">
+    <div class="link-content">
+      <mat-icon class="link-icon">link</mat-icon>
+      <div class="link-text">
+        <span>Anyone with the link can join</span>
+        <small class="link-url">Copy link to share</small>
+      </div>
+    </div>
+    <button class="copy-btn" (click)="copyLink()">
+      {{ isLinkCopied ? 'Copied!' : 'Copy link' }}
+    </button>
+  </div>
+
+  <div class="section input-section">
+    <div class="input-wrapper">
+      <input
+        type="email"
+        [(ngModel)]="emailInput"
+        placeholder="Email address or name..."
+        (keydown.enter)="addEmail()"
+      />
+      <select class="quick-select" (change)="selectUser($event)">
+        <option value="" disabled selected>Choose...</option>
+        <option *ngFor="let u of availableUsers" [value]="u.id">{{ u.name }}</option>
+      </select>
+    </div>
+    <button class="invite-btn" [disabled]="!emailInput" (click)="addEmail()">Share</button>
+  </div>
+
+  <div class="section member-list">
+    <div class="member-item" *ngFor="let member of currentMembers">
+      <div class="avatar-circle">{{ member.avatar }}</div>
+      <div class="member-info">
+        <span class="name">{{ member.name }}</span>
+        <span class="role">Member</span>
+      </div>
+      <button class="remove-btn" *ngIf="member.name !== 'You (Admin)'" (click)="removeMember(member)">
+        Remove
+      </button>
+    </div>
+  </div>
+</div>

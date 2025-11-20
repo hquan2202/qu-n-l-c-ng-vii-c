@@ -1,88 +1,110 @@
+:host {
+  --h-header-bg: #1F1F21;
+  --h-text-color: #ffffff;
+  --h-search-bg: #2a2a2d;
+  --h-muted: #3b3b3f;
+  --h-hover-bg: rgba(255,255,255,0.08);
+}
+
+:host ::ng-deep * {
+  color: #ffffff;
+}
+
+.muted, .text-muted {
+  color: #b5b5b5 !important;
+}
+
 .card {
   width: 220px;
   height: 120px;
-  border-radius: 8px;
+  border-radius: 10px;
   overflow: hidden;
   cursor: pointer;
   position: relative;
-  transition: transform 0.2s ease;
+
+  background: #2e2e31;
+  border: 1px solid #3a3a3d;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.4);
+
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .card:hover {
   transform: scale(1.03);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.55);
 }
 
-
+/* nền ảnh trong card */
 .card-bg {
-  flex: 1.2; /* 🔹 chiếm nhiều không gian hơn (tăng từ 1 lên 1.2) */
+  flex: 1.2;
 }
 
 .card-title {
-  background: #e0e0e0;
+  background: var(--h-search-bg);
   text-align: center;
-  font-weight: bold;
+  font-weight: 600;
   font-size: 15px;
-  color: #333;
-  height: 30px; /* 🔹 thanh trắng nhỏ hơn */
+  height: 32px;
+
   display: flex;
   align-items: center;
   justify-content: center;
-  border-top: 1px solid rgba(0, 0, 0, 0.1);
+
+  color: #f1f1f1;
+  border-top: 1px solid rgba(255,255,255,0.07);
 }
-/* 🎯 card đặc biệt: "+ Tạo bảng mới" */
+
+.card:hover .card-title {
+  background: rgba(255,255,255,0.10);
+  color: white;
+}
 .create-card {
-  border: 2px;
-  background: #fff;
+  background: #2d2d30;
+  border: 2px dashed #555;
+  color: #e4e4e4;
+
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
+.create-card:hover {
+  background: #3b3b3f;
+  border-color: #777;
+}
+
 .create-card .card-bg {
-  display: none; /* không cần nền ảnh */
+  display: none;
 }
 
 .create-card .card-title {
   background: none;
-  color: black;
-  font-weight: 500;
-  font-size: 15px;
-  text-align: center;
-}
-
-.create-card:hover {
-  background: lightgray;
-  border-color: lightgrey;
-}
-.card {
-  position: relative;
-  width: 220px;
-  height: 120px;
-  border-radius: 12px;
-  overflow: hidden;
-  cursor: pointer;
+  color: #dcdcdc;
 }
 
 .card-delete-btn {
   position: absolute;
-  top: 4px;
-  right: 4px;
-  background: transparent; /* không nền */
-  border: none;            /* không viền */
-  border-radius: 0;        /* không bo tròn */
-  padding: 0;              /* bỏ padding thừa */
+  top: 6px;
+  right: 6px;
+  background: transparent;
+  border: none;
+  padding: 0;
   cursor: pointer;
-  color: gray;          /* màu đỏ mặc định */
-  display: flex;
-  align-items: center;
-  justify-content: center;
+
+  color: #c7c7c7;
+  transition: color .15s ease;
 }
 
 .card-delete-btn:hover {
-  color: #d32f2f;          /* đỏ đậm khi hover */
-  background: transparent; /* vẫn không nền */
-  box-shadow: none;        /* bỏ mọi shadow */
+  color: #ff5f5f;
+  background: transparent;
+  box-shadow: none;
+}
+
+.card:hover .card-title {
+  background: rgba(255,255,255,0.1);
 }

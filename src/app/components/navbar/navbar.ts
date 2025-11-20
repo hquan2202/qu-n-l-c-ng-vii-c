@@ -1,16 +1,21 @@
-// TypeScript
-// file: `src/app/components/navbar/navbar.ts`
 import { Component, OnInit, HostListener, ElementRef } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { FilterComponent } from '../filter/filter';
-import { UiFilterService } from '../../services/ui-filter/ui-filter.service';
 import { AsyncPipe, NgIf } from '@angular/common';
 import { Observable } from 'rxjs';
+
+// Các components hiện có
+import { FilterComponent } from '../filter/filter';
 import { ViewPopupComponent } from '../view-popup/view-popup';
-import { AuthService } from '../../services/auth/auth.service';
-import { AccountPopupComponent } from '../account/account';
+import { AccountPopupComponent } from '../account/account'; // Nếu bạn dùng
 import { CreateWorkspaceComponent } from '../create-workspace/create-workspace';
+
+// Services
+import { UiFilterService } from '../../services/ui-filter/ui-filter.service';
+import { AuthService } from '../../services/auth/auth.service';
+
+// [NEW] Import Component Share vừa tạo
+import { SharePopupComponent } from '../share/share';
 
 @Component({
   selector: 'app-navbar',
@@ -22,6 +27,7 @@ import { CreateWorkspaceComponent } from '../create-workspace/create-workspace';
     NgIf,
     AsyncPipe,
     ViewPopupComponent,
+    SharePopupComponent // <--- Đừng quên thêm vào imports
   ],
   templateUrl: './navbar.html',
   styleUrls: ['./navbar.css']
@@ -29,9 +35,12 @@ import { CreateWorkspaceComponent } from '../create-workspace/create-workspace';
 export class NavBarComponent implements OnInit {
   isSidebarOpen = false;
   isGridView = true;
-  isViewOpen = false;
 
-  isDropdownOpen = false;
+  // Trạng thái các popup
+  isViewOpen = false;
+  isDropdownOpen = false; // Filter
+  isShareOpen = false;    // [NEW] Share
+
   currentFilterStatus$: Observable<string | null>;
 
   user: any = null;
@@ -51,64 +60,85 @@ export class NavBarComponent implements OnInit {
     this.user = await this.authService.getCurrentUser();
   }
 
+  // --- TOGGLE FUNCTIONS ---
+
+  toggleDropdown(): void {
+    this.isDropdownOpen = !this.isDropdownOpen;
+    if (this.isDropdownOpen) this.closeOtherPopups('filter');
+  }
+
+  toggleView(): void {
+    this.isViewOpen = !this.isViewOpen;
+    if (this.isViewOpen) this.closeOtherPopups('view');
+  }
+
+  // [NEW] Toggle Share
+  toggleShare(): void {
+    this.isShareOpen = !this.isShareOpen;
+    if (this.isShareOpen) this.closeOtherPopups('share');
+  }
+
+  toggleAccountPopup(): void {
+    this.showAccountPopup = !this.showAccountPopup;
+    if (this.showAccountPopup) this.closeOtherPopups('account');
+  }
+
+  // Hàm phụ trợ để đóng các popup khác khi mở 1 cái mới (UX tốt hơn)
+  closeOtherPopups(except: string) {
+    if (except !== 'filter') this.isDropdownOpen = false;
+    if (except !== 'view') this.isViewOpen = false;
+    if (except !== 'share') this.isShareOpen = false;
+    if (except !== 'account') this.showAccountPopup = false;
+  }
+
+  // --- LOGIC CLICK OUTSIDE ---
+
+  @HostListener('document:click', ['$event'])
+  clickout(event: Event) {
+    const target = event.target as HTMLElement;
+
+    // 1. Filter
+    const filterWrapper = this.el.nativeElement.querySelector('.filter-wrapper');
+    if (this.isDropdownOpen && filterWrapper && !filterWrapper.contains(target)) {
+      this.isDropdownOpen = false;
+    }
+
+    // 2. View
+    const viewPopup = this.el.nativeElement.querySelector('app-view-popup');
+    const viewIcon = this.el.nativeElement.querySelector('.view-icon'); // Cần check icon
+    // Logic: Nếu đang mở, click KHÔNG phải popup, và KHÔNG phải nút bấm -> Đóng
+    if (this.isViewOpen && viewPopup && !viewPopup.contains(target) && !viewIcon?.contains(target)) {
+      this.isViewOpen = false;
+    }
+
+    // 3. [NEW] Share
+    const sharePopup = this.el.nativeElement.querySelector('app-share-popup');
+    const shareBtn = this.el.nativeElement.querySelector('.share-btn');
+    if (this.isShareOpen && sharePopup && !sharePopup.contains(target) && !shareBtn?.contains(target)) {
+      this.isShareOpen = false;
+    }
+
+    // 4. Account
+    const accountPopup = this.el.nativeElement.querySelector('app-account-popup');
+    if (
+      this.showAccountPopup &&
+      accountPopup &&
+      !accountPopup.contains(target) &&
+      !target.classList.contains('avatar')
+    ) {
+      this.showAccountPopup = false;
+    }
+  }
+
+  // --- OTHER METHODS ---
+
   get avatarUrl(): string {
     return this.user?.user_metadata?.avatar_url || 'assets/images/default-avatar.png';
-  }
-
-  // match template bindings
-  get isPopupVisible(): boolean {
-    return this.showAccountPopup;
-  }
-
-  closePopup(): void {
-    this.showAccountPopup = false;
   }
 
   openCreateWorkspace(): void {
     this.navbarCreateWorkspaceVisible = true;
     this.dialog.open(CreateWorkspaceComponent);
-  }
-
-  @HostListener('document:click', ['$event'])
-  clickout(event: Event) {
-    const filterWrapper = this.el.nativeElement.querySelector('.filter-wrapper');
-    const accountPopup = this.el.nativeElement.querySelector('app-account-popup');
-    const viewPopup = this.el.nativeElement.querySelector('app-view-popup');
-
-    if (this.isDropdownOpen && filterWrapper && !filterWrapper.contains(event.target)) {
-      this.isDropdownOpen = false;
-    }
-
-    if (
-      this.showAccountPopup &&
-      accountPopup &&
-      !accountPopup.contains(event.target) &&
-      !(event.target as HTMLElement).classList.contains('avatar')
-    ) {
-      this.showAccountPopup = false;
-    }
-
-    if (
-      this.isViewOpen &&
-      viewPopup &&
-      !viewPopup.contains(event.target) &&
-      !(event.target as HTMLElement).classList.contains('view-icon')
-    ) {
-      this.isViewOpen = false;
-    }
-  }
-
-  toggleDropdown(): void {
-    this.isDropdownOpen = !this.isDropdownOpen;
-  }
-
-  toggleView(): void {
-    this.isGridView = !this.isGridView;
-    this.isViewOpen = !this.isViewOpen;
-  }
-
-  toggleAccountPopup(): void {
-    this.showAccountPopup = !this.showAccountPopup;
   }
 
   async logout() {

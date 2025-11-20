@@ -1,38 +1,66 @@
-/* css */
+/* Container chính */
 .home-container {
-  padding: 8px;
-}
-.h2{
-  margin-bottom: 12px;
-  color: #263238;
-  font-size: 20px;
-}
-.home-stats {
-  display: flex;
-  gap: 15px;
-  flex-wrap: wrap;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
-.create-card {
-  border: 2px;
-  cursor: pointer;
+.section-title {
+  margin-bottom: 20px;
+  color: #B6C2CF; /* Màu chữ tiêu đề sáng nhẹ (Dark Theme) */
+  font-size: 20px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
-.create-board {
-  width: 220px;
-  height: 120px;
-  background-color: #ffffff;
-  border: 2px;
-  border-radius: 12px;
+
+/* Grid Layout cho các thẻ */
+.home-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+/* --- STYLE CHO NÚT TẠO BẢNG (CREATE BOARD CARD) --- */
+.create-board-card {
+  width: 240px;  /* Chiều rộng cố định giống card */
+  height: 120px; /* Chiều cao giống card */
+  background-color: rgba(255, 255, 255, 0.05); /* Nền mờ */
+  border-radius: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 16px;
-  font-weight: 600;
-  color: #555;
+  font-size: 14px;
+  font-weight: 500;
+  color: #9fadbc;
   cursor: pointer;
+  transition: all 0.2s ease;
 }
 
-.create-board:hover {
-  background-color: #cccccc;
-  border-color: #888;
+.create-board-card:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-color: #1abc9c; /* Màu xanh accent khi hover */
+  color: #1abc9c;
+  transform: translateY(-2px); /* Nổi lên nhẹ */
+}
+
+/* Wrapper cho card thường để giữ kích thước */
+.card-wrapper {
+  width: 240px;
+  height: 120px;
+}
+
+/* Responsive cho màn hình nhỏ */
+@media (max-width: 600px) {
+  .home-container {
+    padding: 16px;
+  }
+  .home-stats {
+    justify-content: center;
+  }
+  .create-board-card, .card-wrapper {
+    width: 100%; /* Full width trên mobile */
+  }
 }

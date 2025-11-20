@@ -1,8 +1,5 @@
 <!-- Overlay mờ phía sau -->
 <div class="popup-overlay" *ngIf="visible" (click)="onCloseClick()"></div>
-
-<!-- Popup chính -->
-<!-- ngClass để đổi vị trí hiển thị giữa header / navbar -->
 <div
   class="popup"
   [ngClass]="position === 'header' ? 'popup-header' : 'popup-navbar'"
@@ -25,15 +22,6 @@
     </div>
   </div>
 
-  <hr />
-
-  <!-- Nút tạo workspace -->
-  <div class="popup-body">
-    <button class="menu-btn" (click)="onCreateWorkspaceClick()">
-      <mat-icon class="menu-icon">group</mat-icon>
-      <span>Create workspace</span>
-    </button>
-  </div>
 
   <hr />
 

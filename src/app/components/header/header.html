@@ -22,17 +22,15 @@
   </div>
 
   <div class="right">
-    <mat-icon class="notification-icon" (click)="toggleNotification()">
-      notifications
-    </mat-icon>
+    <div class="notification-wrapper">
+      <mat-icon class="notification-icon" (click)="toggleNotificationPopup()">
+        notifications
+      </mat-icon>
 
-    <!-- POPUP THÔNG BÁO -->
-    <div class="notification-popup" *ngIf="showNotification">
-      <p *ngFor="let n of notifications">{{ n }}</p>
-
-      <p *ngIf="notifications.length === 0" class="empty">
-        Không có thông báo
-      </p>
+      <app-notification-popup
+        [visible]="isNotificationVisible"
+        (onClose)="closeNotification()"
+      ></app-notification-popup>
     </div>
     <img
       *ngIf="avatarUrl"
@@ -54,9 +52,5 @@
       (onLogout)="logout()"
       (onCreateWorkspace)="openCreateWorkspace()"
     ></app-account-popup>
-
-    <app-create-workspace
-      *ngIf="headerCreateWorkspaceVisible"
-      (close)="headerCreateWorkspaceVisible = false"
-    ></app-create-workspace>
   </div>
+</header>

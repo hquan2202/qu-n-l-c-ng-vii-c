@@ -1,192 +1,94 @@
-// typescript
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { CommonModule, NgClass, NgFor, NgIf } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
+import { Subscription } from 'rxjs';
+
 import { TaskDescriptionComponent } from '../../components/task-description/task-description';
 import { CardComponent } from '../../components/card/card';
-import {HeaderComponent} from '../../components/header/header';
-
-type Board = {
-  id?: string;
-  title: string;
-  color: string;
-  background?: string;
-  tasks?: any[];
-};
-
-const DEFAULT_COLOR = '#e6f7ff';
-const CREATE_COLOR = '#ffffff';
-const CREATE_TITLE = 'Tạo bảng mới';
+import { HeaderComponent } from '../../components/header/header';
+import { BoardService, Board } from '../../services/board/board.service';
+const CREATE_BOARD_ID = 'ACTION_CREATE_BOARD';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, NgFor, NgIf, TaskDescriptionComponent, CardComponent, HeaderComponent],
+  imports: [CommonModule, TaskDescriptionComponent, CardComponent, HeaderComponent],
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css']
 })
 export class HomeComponent implements OnInit, OnDestroy {
   showPopup = false;
-  selectedBoard?: Board;
-  cards: Board[] = [];
+  realBoards: Board[] = [];
+  displayBoards: any[] = [];
+  currentSearch = '';
+  private boardSub!: Subscription;
+  readonly CREATE_BOARD_ID = CREATE_BOARD_ID;
 
-  filteredCards: Board[] = [];
+  constructor(
+    private router: Router,
+    private boardService: BoardService
+  ) {}
 
-  private onStorageBound = this.onStorageChange.bind(this);
-  private onCustomUpdateBound = this.onCustomBoardsUpdated.bind(this);
+  ngOnInit(): void {
+    this.boardSub = this.boardService.boards$.subscribe(boards => {
+      this.realBoards = boards;
+      this.updateGrid();
+    });
+  }
 
-  constructor(private router: Router) {
-
-    this.cards = this.loadBoards();
+  ngOnDestroy(): void {
+    if (this.boardSub) this.boardSub.unsubscribe();
   }
 
   onSearch(keyword: string) {
-    keyword = keyword.toLowerCase().trim();
-    this.filteredCards = this.cards.filter(c =>
-      c.title.toLowerCase().includes(keyword)
-    );
+    this.currentSearch = keyword.toLowerCase().trim();
+    this.updateGrid();
   }
 
-
-  ngOnInit(): void {
-    // lọc ban đầu
-    this.filteredCards = this.cards;
-
-    // listen for storage changes (other tabs/windows)
-    window.addEventListener('storage', this.onStorageBound);
-
-    // listen for custom in-app event
-    window.addEventListener('boards:updated', this.onCustomUpdateBound as EventListener);
-  }
-
-
-
-  ngOnDestroy(): void {
-    window.removeEventListener('storage', this.onStorageBound);
-    window.removeEventListener('boards:updated', this.onCustomUpdateBound as EventListener);
-  }
-
-
-  // --- Popup ---
-  openPopup(): void { this.showPopup = true; }
-  closePopup(): void {
-    this.showPopup = false;
-    this.selectedBoard = undefined;
-  }
-
-  // --- Xử lý click card ---
-  onCardClick(card: Board, index: number): void {
-    if (this.normalizeTitle(card.title) === CREATE_TITLE) {
-      this.selectedBoard = undefined;
-      this.openPopup();
-      return;
+  private updateGrid() {
+    let filtered = this.realBoards;
+    if (this.currentSearch) {
+      filtered = this.realBoards.filter(b => b.title.toLowerCase().includes(this.currentSearch));
     }
-
-    this.selectedBoard = card;
-    this.router.navigate(['/card', card.id], { state: { board: card } });
+    this.displayBoards = [
+      ...filtered,
+      { id: CREATE_BOARD_ID, title: 'Create new board', color: '#ffffff', background: '' }
+    ];
   }
 
-  // --- Thêm card mới ---
-  addNewBoard(board?: { title?: string; color?: string; background?: string }): void {
-    if (!board?.title) return;
+  openPopup(): void { this.showPopup = true; }
+  closePopup(): void { this.showPopup = false; }
+
+  addNewBoard(eventData: any): void {
+    if (!eventData?.title) return;
 
     const newBoard: Board = {
-      id: `${Date.now()}`,
-      title: board.title,
-      color: board.color ?? '#333333',
-      background: board.background ?? '#ffffff'
+      id: Date.now().toString(),
+      title: eventData.title,
+      background: eventData.background,
+      color: eventData.color,
+      type: eventData.visibility || 'workspace',
+      columns: []
     };
 
-    const createIndex = this.cards.findIndex(c => this.normalizeTitle(c.title) === CREATE_TITLE);
-    if (createIndex >= 0) this.cards.splice(createIndex, 0, newBoard);
-    else this.cards.push(newBoard);
-
-    this.persist();
+    this.boardService.addBoard(newBoard);
     this.showPopup = false;
-    // dispatch custom event so other components in same window update
-    window.dispatchEvent(new CustomEvent('boards:updated'));
   }
 
-  // --- Xóa từng card ---
-  deleteCard(index: number): void {
-    if (index < 0 || index >= this.cards.length) return;
-    const card = this.cards[index];
-    if (!card || this.normalizeTitle(card.title) === CREATE_TITLE) return;
-    this.cards.splice(index, 1);
-    this.persist();
-    window.dispatchEvent(new CustomEvent('boards:updated'));
-  }
-
-  // --- Xóa tất cả card do người dùng tạo ---
-  clearAllCards(): void {
-    if (!confirm('Bạn có chắc chắn muốn xóa tất cả card không?')) return;
-    this.cards = this.cards.filter(c => this.normalizeTitle(c.title) === CREATE_TITLE);
-    this.persist();
-    window.dispatchEvent(new CustomEvent('boards:updated'));
-  }
-
-  // --- Helpers ---
-  normalizeTitle(t?: string): string {   // public để template gọi được
-    return String(t ?? '').replace(/^\+?\s*/, '').trim();
-  }
-
-  private onStorageChange(e: StorageEvent) {
-    if (e.key === 'boards') {
-      this.cards = this.loadBoards();
+  onCardClick(card: any): void {
+    if (card.id === CREATE_BOARD_ID) {
+      this.openPopup();
+    } else {
+      // Hàm này giờ đã tồn tại trong Service
+      this.boardService.loadBoard(card.id);
+      this.router.navigate(['/board', card.id]);
     }
   }
 
-  private onCustomBoardsUpdated() {
-    // other in-app components can dispatch `boards:updated` after writing to localStorage
-    this.cards = this.loadBoards();
-  }
-
-  private loadBoards(): Board[] {
-    let raw: any[] = [];
-    try {
-      raw = JSON.parse(localStorage.getItem('boards') ?? '[]');
-      if (!Array.isArray(raw)) raw = [];
-    } catch {
-      raw = [];
-    }
-
-    const boards: Board[] = raw
-      .map((b: any, i: number): Board => ({
-        id: b?.id ?? `${Date.now()}-${i}-${Math.random().toString(36).slice(2,6)}`,
-        title: String(b?.title ?? '').trim(),
-        background: String(b?.background ?? b?.color ?? DEFAULT_COLOR),
-        color: String(b?.color ?? b?.background ?? DEFAULT_COLOR),
-        tasks: Array.isArray(b?.tasks) ? b.tasks : []
-      }))
-      .filter((b: Board) => b.title.length > 0 && this.normalizeTitle(b.title) !== CREATE_TITLE);
-
-    // luôn thêm nút tạo bảng mới
-    boards.push({ id: `${Date.now()}-create`, title: CREATE_TITLE, color: CREATE_COLOR, background: CREATE_COLOR });
-
-    try { localStorage.setItem('boards', JSON.stringify(boards)); } catch {}
-    return boards;
-  }
-
-  private persist(): void {
-    try {
-      const normalized: Board[] = this.cards
-        .map((b: Board): Board => ({
-          id: b.id ?? `${Date.now()}-${Math.random().toString(36).slice(2,9)}`,
-          title: String(b.title ?? '').trim(),
-          background: b.background ?? b.color ?? DEFAULT_COLOR,
-          color: b.color ?? b.background ?? DEFAULT_COLOR,
-          tasks: Array.isArray(b.tasks) ? b.tasks : []
-        }))
-        .filter((b: Board) => b.title.length > 0 && this.normalizeTitle(b.title) !== CREATE_TITLE);
-
-      normalized.push({ id: `${Date.now()}-create`, title: CREATE_TITLE, color: CREATE_COLOR, background: CREATE_COLOR });
-
-      localStorage.setItem('boards', JSON.stringify(normalized));
-      this.cards = normalized.slice();
-    } catch (e) {
-      console.error('Persist boards error:', e);
+  deleteCard(card: any): void {
+    if (card.id === CREATE_BOARD_ID) return;
+    if (confirm(`Are you sure you want to delete board "${card.title}"?`)) {
+      this.boardService.deleteBoard(card.id);
     }
   }
-
-  protected readonly CREATE_TITLE = CREATE_TITLE;
 }

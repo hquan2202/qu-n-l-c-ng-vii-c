@@ -1,0 +1,91 @@
+:host {
+  --h-header-bg: var(--header-bg, #1E1E1E);
+  --h-text-color: var(--text-color, #F0F0F0);
+  --h-search-bg: var(--search-bg, #333333);
+  --h-muted: var(--muted, #AAAAAA);
+  --h-hover-bg: rgba(255, 255, 255, 0.08);
+  --h-accent: var(--accent, #1abc9c);
+  --h-popup-bg: #252525;
+}
+.notif-container {
+  position: absolute;
+  top: 50px;
+  right: 100px;
+  width: 300px;
+  max-height: 350px;
+  overflow-y: auto;
+  padding: 13px;
+  background: var(--h-popup-bg);
+  color: var(--h-text-color);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.55);
+  animation: fadeIn 0.25s ease-out;
+  z-index: 1000;
+}
+
+.notif-title {
+  font-size: 19px;
+  font-weight: 600;
+  margin: 12px;
+}
+
+.no-notifications {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: var(--h-muted);
+  text-align: center;
+}
+
+.no-noti-img {
+  width: 300px;
+  height: 100px;
+  object-fit: contain;
+}
+.no-notifications-message{
+  margin-top: 2px;
+  font-size: 18px;
+}
+/* Danh sách notification */
+.notif-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  border-radius: 10px;
+  transition: background 0.2s;
+}
+
+.notif-item:hover {
+  background: var(--h-hover-bg);
+}
+
+.notif-icon {
+  font-size: 22px;
+  color: var(--h-accent);
+  flex-shrink: 0;
+}
+
+.notif-text {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+}
+
+.time {
+  font-size: 12px;
+  color: var(--h-muted);
+}
+
+.btns {
+  display: flex;
+  gap: 8px;
+  margin-top: 6px;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}

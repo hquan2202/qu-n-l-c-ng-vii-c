@@ -1,0 +1,204 @@
+:host {
+  --s-bg: #282E33; /* Nền tối Trello */
+  --s-text: #B6C2CF;
+  --s-accent: #579DFF;
+  --s-border: #3C454D;
+}
+
+.share-container {
+  position: absolute;
+  top: 50px; /* Cách navbar một chút */
+  left: 190px; /* Căn chỉnh vị trí tương đối với wrapper cha */
+  width: 340px;
+  background: var(--s-bg);
+  color: var(--s-text);
+  border-radius: 8px;
+  box-shadow: 0 8px 16px rgba(0,0,0,0.4);
+  padding: 16px;
+  z-index: 2000;
+  border: 1px solid var(--s-border);
+  animation: fadeIn 0.2s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.header h3 {
+  margin: 0;
+  font-size: 16px;
+  color: white;
+}
+
+.close-btn {
+  cursor: pointer;
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+}
+
+.section {
+  margin-bottom: 16px;
+}
+
+/* Link Box */
+.invite-link-box {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(0,0,0,0.2);
+  padding: 8px;
+  border-radius: 4px;
+}
+
+.link-content {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.link-text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+}
+
+.link-text span {
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.link-text small {
+  font-size: 11px;
+  opacity: 0.8;
+}
+
+.copy-btn {
+  background: transparent;
+  border: none;
+  color: var(--s-accent);
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 12px;
+}
+
+/* Input Section */
+.input-section {
+  display: flex;
+  gap: 8px;
+}
+
+.input-wrapper {
+  position: relative;
+  flex: 1;
+  display: flex;
+}
+
+.input-wrapper input {
+  width: 100%;
+  padding: 8px;
+  border-radius: 4px;
+  border: 1px solid var(--s-border);
+  background: #22272B;
+  color: white;
+  outline: none;
+  font-size: 13px;
+}
+
+.quick-select {
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 20px;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.invite-btn {
+  background: var(--s-accent);
+  color: #1D2125;
+  border: none;
+  border-radius: 4px;
+  padding: 0 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.invite-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Member List */
+.member-list {
+  max-height: 150px;
+  overflow-y: auto;
+}
+
+.member-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+.avatar-circle {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #A1BDD914;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 12px;
+  font-weight: bold;
+  color: white;
+}
+
+.member-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.member-info .name {
+  font-size: 13px;
+  color: white;
+}
+
+.member-info .role {
+  font-size: 11px;
+  opacity: 0.7;
+}
+
+.remove-btn {
+  background: transparent;
+  border: 1px solid var(--s-border);
+  color: var(--s-text);
+  font-size: 11px;
+  border-radius: 4px;
+  cursor: pointer;
+  padding: 2px 6px;
+}
+
+.remove-btn:hover {
+  background: rgba(255,0,0,0.1);
+  color: #ff5252;
+  border-color: #ff5252;
+}
