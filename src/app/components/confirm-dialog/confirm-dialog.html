@@ -1,0 +1,15 @@
+<div class="confirm-container">
+  <h2>Delete</h2>
+
+  <div class="confirm-content">
+    <p>Are you sure you want to delete <strong>{{ data.title }}</strong>?</p>
+  </div>
+
+  <div mat-dialog-actions align="end">
+    <button mat-button (click)="onDismiss()">Cancel</button>
+
+    <button mat-flat-button color="warn" (click)="onConfirm()">
+      Delete
+    </button>
+  </div>
+</div>

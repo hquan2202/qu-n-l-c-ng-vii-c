@@ -1,0 +1,82 @@
+:host {
+  --h-header-bg: var(--header-bg, #1E1E1E);
+  --h-text-color: var(--text-color, #F0F0F0);
+  --h-search-bg: var(--search-bg, #2B2B2B); /* Tối hơn để nổi khối */
+  --h-muted: var(--muted, #BBBBBB);
+  --h-hover-bg: rgba(255, 255, 255, 0.08);
+  --h-accent: var(--accent, #1abc9c);
+  --h-popup-bg: rgba(30, 30, 30, 0.92); /* Nền tối + mờ nhẹ để nổi bật dialog */
+}
+
+/* Dialog container */
+.confirm-container {
+  position: relative;
+  background-color: var(--h-popup-bg);
+  color: var(--h-text-color);
+  min-width: 330px;
+  max-width: 400px;
+  border-radius: 14px;
+  padding: 24px;
+}
+
+/* Title */
+.h2{
+  margin: 0 0 12px;
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--h-text-color);
+}
+
+/* Message */
+.dialog-message {
+  font-size: 15px;
+  margin-bottom: 24px;
+  color: var(--h-muted);
+  line-height: 1.5;
+}
+
+/* Actions */
+.dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+/* Buttons */
+.btn {
+  border: none;
+  padding: 9px 18px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: 0.2s;
+  font-size: 14px;
+}
+
+/* Cancel */
+.btn.cancel {
+  background: rgba(255, 255, 255, 0.08);
+  color: #e0e0e0;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.btn.cancel:hover {
+  background: rgba(255, 255, 255, 0.13);
+}
+
+/* Delete (confirm) */
+.btn.confirm {
+  background: #e84c4c; /* đỏ tươi nhẹ kiểu trello */
+  color: #fff;
+  box-shadow: 0 0 10px rgba(232, 76, 76, 0.25);
+}
+
+.btn.confirm:hover {
+  background: #cc3a3a;
+}
+
+/* Animation */
+@keyframes scaleIn {
+  from { transform: scale(0.9); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}

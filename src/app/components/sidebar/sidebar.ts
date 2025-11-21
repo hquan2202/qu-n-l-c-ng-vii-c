@@ -3,14 +3,23 @@ import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+
+// Import các component con
 import { TaskDescriptionComponent } from '../task-description/task-description';
+import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog'; // Đảm bảo đường dẫn đúng
 import { BoardService, Board } from '../../services/board/board.service';
 
 @Component({
   selector: 'app-sidebar',
   standalone: true,
-  imports: [CommonModule, RouterModule, MatIconModule, MatMenuModule],
+  imports: [
+    CommonModule,
+    RouterModule,
+    MatIconModule,
+    MatMenuModule,
+    MatDialogModule // Cần thiết để Dialog hoạt động
+  ],
   templateUrl: './sidebar.html',
   styleUrls: ['./sidebar.css']
 })
@@ -46,7 +55,8 @@ export class SidebarComponent implements OnInit {
 
   openCreateBoard(defaultType: 'personal' | 'workspace') {
     const dialogRef = this.dialog.open(TaskDescriptionComponent, {
-      panelClass: 'custom-dialog-container'
+      panelClass: 'custom-dialog-container', // Dùng class này để CSS global chỉnh bo góc
+      width: '500px'
     });
     // @ts-ignore
     dialogRef.componentInstance.defaultType = defaultType;
@@ -67,12 +77,25 @@ export class SidebarComponent implements OnInit {
     });
   }
 
+  // --- PHẦN ĐÃ SỬA ĐỔI: DÙNG CUSTOM DIALOG ---
   deleteBoard(board: Board) {
-    if (confirm(`Delete "${board.title}"?`)) {
-      this.boardService.deleteBoard(board.id);
-      if (this.router.url.includes(`/board/${board.id}`)) {
-        this.router.navigate(['/home']);
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      width: '400px',
+      // Class này quan trọng để ép màu nền Dark Theme từ Global Styles
+      panelClass: 'delete-dialog-overlay',
+      data: { title: board.title }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result === true) {
+        // Người dùng bấm nút Delete trong popup
+        this.boardService.deleteBoard(board.id);
+
+        // Nếu đang ở trong board bị xóa thì quay về trang chủ
+        if (this.router.url.includes(`/board/${board.id}`)) {
+          this.router.navigate(['/home']);
+        }
       }
-    }
+    });
   }
 }

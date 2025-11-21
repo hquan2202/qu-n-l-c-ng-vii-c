@@ -9,7 +9,8 @@ import { NavBarComponent } from './components/navbar/navbar';
 import { SidebarComponent } from './components/sidebar/sidebar';
 import { filter } from 'rxjs/operators';
 import { AccountPopupComponent } from './components/account/account';
-
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatButtonModule } from '@angular/material/button'; // Cần cho nút bấm
 @Component({
   selector: 'app-root',
   standalone: true,
@@ -19,7 +20,9 @@ import { AccountPopupComponent } from './components/account/account';
     HeaderComponent,
     SidebarComponent,
     NavBarComponent,
-    AccountPopupComponent
+    AccountPopupComponent,
+    MatDialogModule,
+    MatButtonModule
   ],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
