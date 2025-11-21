@@ -185,3 +185,18 @@
 .create-item:hover {
   opacity: 1;
 }
+
+/* 1. Khung Menu (Panel) */
+::ng-deep .mat-mdc-menu-content{ /* Chiều cao tối thiểu */
+  min-height: 20px !important;
+  height: 20px !important;
+  /* --- CĂN GIỮA TUYỆT ĐỐI --- */
+  display: flex !important;
+  align-items: center !important;    /* Căn giữa theo chiều dọc (Trên/Dưới) */
+  justify-content: center !important; /* Căn giữa theo chiều ngang (Trái/Phải) - Đã sửa */
+  color: #ffffff !important;
+  font-size: 13px !important;
+  background: transparent !important;
+  overflow: hidden !important;
+  background: var( --h-header-bg);
+}

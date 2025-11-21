@@ -75,16 +75,26 @@
         </div>
 
         <div class="board-actions" (click)="$event.stopPropagation()">
-          <button class="action-btn" [matMenuTriggerFor]="menuWorkspace">
+          <button class="action-btn" [matMenuTriggerFor]="menuPersonal">
             <mat-icon>more_horiz</mat-icon>
           </button>
-          <mat-menu #menuWorkspace="matMenu">
-            <button mat-menu-item (click)="deleteBoard(board)">
+          <mat-menu #menuPersonal="matMenu" class="board-action-menu">
+            <button mat-menu-item (click)="deleteBoard(board)" class="delete-item">
               <mat-icon>delete</mat-icon><span>Delete</span>
             </button>
           </mat-menu>
         </div>
-      </div>
+
+        <div class="board-actions" (click)="$event.stopPropagation()">
+          <button class="action-btn" [matMenuTriggerFor]="menuWorkspace">
+            <mat-icon>more_horiz</mat-icon>
+          </button>
+          <mat-menu #menuWorkspace="matMenu" class="board-action-menu">
+            <button mat-menu-item (click)="deleteBoard(board)" class="delete-item">
+              <mat-icon>delete</mat-icon><span>Delete</span>
+            </button>
+          </mat-menu>
+        </div>
 
       <div class="menu-item create-item" (click)="openCreateBoard('workspace')">
         <div class="icon"><mat-icon>add</mat-icon></div>

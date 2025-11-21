@@ -139,4 +139,8 @@ export class TaskDescriptionComponent implements OnInit {
     this.selectedMembers = [];
     this.close.emit();
   }
+
+  closePopup() {
+    this.close.emit();
+  }
 }
