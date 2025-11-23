@@ -1,11 +1,25 @@
 <div class="sidebar-container">
 
+  <!-- Nhóm menu trên cùng -->
   <div class="nav-group">
-    <div class="menu-item" routerLink="/home" routerLinkActive="active">
+
+    <!-- Trang chủ -->
+    <div
+      class="menu-item"
+      routerLink="/home"
+      routerLinkActive="active"
+      [routerLinkActiveOptions]="{ exact: true }"
+    >
       <div class="icon"><mat-icon>home</mat-icon></div>
-      <span class="label">Home</span>
+      <span class="label">Trang chủ</span>
     </div>
-    <div class="menu-item" routerLink="/all-task" routerLinkActive="active">
+
+    <!-- My Tasks -->
+    <div
+      class="menu-item"
+      routerLink="/all-task"
+      routerLinkActive="active"
+    >
       <div class="icon"><mat-icon>check_circle_outline</mat-icon></div>
       <span class="label">My Tasks</span>
     </div>
@@ -13,92 +27,63 @@
 
   <div class="divider"></div>
 
+  <!-- SECTION: BẢNG -->
   <div class="board-section">
-    <div class="section-header" (click)="toggleSection('personal')">
-      <span class="section-title">Personal Boards</span>
+    <div class="section-header" (click)="toggleBoards()">
+      <span class="section-title">Bảng</span>
       <mat-icon class="arrow-icon">
-        {{ isPersonalExpanded ? 'expand_more' : 'chevron_right' }}
+        {{ isBoardsOpen ? 'expand_more' : 'chevron_right' }}
       </mat-icon>
     </div>
 
-    <div class="board-list" [class.expanded]="isPersonalExpanded">
-      <div class="menu-item board-item"
-           *ngFor="let board of personalBoards"
-           [routerLink]="['/board', board.id]"
-           routerLinkActive="active">
-
+    <div class="board-list" [class.expanded]="isBoardsOpen">
+      <!-- Mỗi board lấy từ myBoards (backend) -->
+      <div
+        class="menu-item board-item"
+        *ngFor="let board of myBoards; trackBy: trackById"
+        [routerLink]="['/card', board.id]"
+        routerLinkActive="active"
+      >
         <div class="board-content">
           <div class="icon">
-            <div class="board-dot" [style.background]="board.background"></div>
+            <!-- dot màu theo background / color -->
+            <div
+              class="board-dot"
+              [style.background]="board.background || board.color || '#ffffff'"
+            ></div>
           </div>
           <span class="label">{{ board.title }}</span>
         </div>
 
+        <!-- (tuỳ nhóm có dùng menu 3 chấm hay không, để sẵn hook) -->
         <div class="board-actions" (click)="$event.stopPropagation()">
-          <button class="action-btn" [matMenuTriggerFor]="menuPersonal">
-            <mat-icon>more_horiz</mat-icon>
-          </button>
-          <mat-menu #menuPersonal="matMenu">
-            <button mat-menu-item (click)="deleteBoard(board)">
-              <mat-icon>delete</mat-icon><span>Delete</span>
-            </button>
-          </mat-menu>
+          <!-- ví dụ sau này có mat-menu thì gắn vào đây -->
         </div>
       </div>
-
-      <div class="menu-item create-item" (click)="openCreateBoard('personal')">
-        <div class="icon"><mat-icon>add</mat-icon></div>
-        <span class="label">Create Personal Board</span>
-      </div>
+      <div class="board-list" [class.expanded]="isBoardsOpen" *ngIf="myBoards.length === 0">
+    
+      <span class="label">Chưa có bảng nào</span>
+    
     </div>
   </div>
 
+  <!-- SECTION: NHÓM -->
   <div class="board-section">
-    <div class="section-header" (click)="toggleSection('workspace')">
-      <span class="section-title">Workspace</span>
+    <div class="section-header" (click)="toggleTeams()">
+      <span class="section-title">Nhóm</span>
       <mat-icon class="arrow-icon">
-        {{ isWorkspaceExpanded ? 'expand_more' : 'chevron_right' }}
+        {{ isTeamsOpen ? 'expand_more' : 'chevron_right' }}
       </mat-icon>
     </div>
 
-    <div class="board-list" [class.expanded]="isWorkspaceExpanded">
-      <div class="menu-item board-item"
-           *ngFor="let board of workspaceBoards"
-           [routerLink]="['/board', board.id]"
-           routerLinkActive="active">
-
-        <div class="board-content">
-          <div class="icon">
-            <div class="board-dot" [style.background]="board.background"></div>
-          </div>
-          <span class="label">{{ board.title }}</span>
-        </div>
-
-        <div class="board-actions" (click)="$event.stopPropagation()">
-          <button class="action-btn" [matMenuTriggerFor]="menuPersonal">
-            <mat-icon>more_horiz</mat-icon>
-          </button>
-          <mat-menu #menuPersonal="matMenu" class="board-action-menu">
-            <button mat-menu-item (click)="deleteBoard(board)" class="delete-item">
-              <mat-icon>delete</mat-icon><span>Delete</span>
-            </button>
-          </mat-menu>
-        </div>
-
-        <div class="board-actions" (click)="$event.stopPropagation()">
-          <button class="action-btn" [matMenuTriggerFor]="menuWorkspace">
-            <mat-icon>more_horiz</mat-icon>
-          </button>
-          <mat-menu #menuWorkspace="matMenu" class="board-action-menu">
-            <button mat-menu-item (click)="deleteBoard(board)" class="delete-item">
-              <mat-icon>delete</mat-icon><span>Delete</span>
-            </button>
-          </mat-menu>
-        </div>
-
-      <div class="menu-item create-item" (click)="openCreateBoard('workspace')">
-        <div class="icon"><mat-icon>add</mat-icon></div>
-        <span class="label">Create Workspace Board</span>
+    <div class="board-list" [class.expanded]="isTeamsOpen">
+      <!-- Hiện tại chỉ có 1 link "Tất cả nhóm" -->
+      <div
+        class="menu-item"
+        routerLink="/teams"
+        routerLinkActive="active"
+      >
+        <span class="label">Tất cả nhóm</span>
       </div>
     </div>
   </div>

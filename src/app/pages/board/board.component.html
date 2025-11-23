@@ -1,7 +1,17 @@
-<div class="board-container">
+<div
+  class="board-container"
+  [ngStyle]="{
+    'background-image': backgroundUrl ? 'url(' + backgroundUrl + ')' : 'none',
+    'background-size': 'cover',
+    'background-position': 'center'
+  }"
+>
 
+  <!-- Board Title + Edit -->
   <div class="board-title">
-    <h2 *ngIf="!editingTitle" (click)="startEditTitle()" title="Click to edit">{{ boardTitle }}</h2>
+    <h2 *ngIf="!editingTitle" (click)="startEditTitle()" title="Click to edit">
+      {{ boardTitle }}
+    </h2>
 
     <div *ngIf="editingTitle" class="title-edit">
       <input
@@ -16,6 +26,7 @@
     </div>
   </div>
 
+  <!-- Add Column -->
   <div class="column-actions">
     <input
       type="text"
@@ -26,14 +37,13 @@
     <button class="btn btn-add-column" (click)="addColumn()">Add list</button>
   </div>
 
+  <!-- Columns -->
   <div class="board-columns">
-    <div
-      class="board-column"
-      *ngFor="let column of columns; let i = index"
-    >
+    <div class="board-column" *ngFor="let column of columns; let i = index">
 
       <div class="column-header">
         <h3>{{ column.title }}</h3>
+
         <button
           *ngIf="columns.length > 1"
           class="btn-delete-column"
@@ -44,6 +54,7 @@
         </button>
       </div>
 
+      <!-- Cards -->
       <div
         class="card"
         *ngFor="let card of column.cards; let j = index"
@@ -51,7 +62,6 @@
         role="button"
         (click)="openEditor(i, j, $any(card))"
         aria-haspopup="dialog"
-
         [class.highlighted]="shouldHighlight($any(card))"
         [class.dimmed]="currentFilterStatus && !shouldHighlight($any(card))"
       >
@@ -62,19 +72,26 @@
 
         <div class="title">{{ $any(card).title || card }}</div>
         <div class="meta">Assignee: {{ $any(card).assignee || '—' }}</div>
-
       </div>
 
+      <!-- Add Card -->
       <div class="add-card">
         <input type="text" [(ngModel)]="column.newCardName" placeholder="Add card..." />
         <button (click)="addCard(i)">+ Add</button>
       </div>
+
     </div>
   </div>
 </div>
 
+<!-- MODAL EDIT CARD -->
 <div class="modal-overlay" *ngIf="editing" (click)="closeEditor()">
-  <div class="modal-dialog" role="dialog" aria-modal="true" (click)="$event.stopPropagation()">
+  <div
+    class="modal-dialog"
+    role="dialog"
+    aria-modal="true"
+    (click)="$event.stopPropagation()"
+  >
     <h3>Card</h3>
 
     <div class="field">
@@ -94,12 +111,23 @@
 
     <div class="field">
       <label for="modal-assignee">Assignee</label>
-      <input id="modal-assignee" type="text" [(ngModel)]="editBuffer.assignee" placeholder="Add assignee ..." />
+      <input
+        id="modal-assignee"
+        type="text"
+        [(ngModel)]="editBuffer.assignee"
+        placeholder="Add assignee ..."
+      />
     </div>
 
     <div class="field">
       <label for="modal-desc">Note</label>
-      <textarea id="modal-desc" [(ngModel)]="editBuffer.description" placeholder="Add more detail description..."maxlength="200"></textarea>
+      <textarea
+        id="modal-desc"
+        [(ngModel)]="editBuffer.description"
+        placeholder="Add more detail description..."
+        maxlength="200"
+      ></textarea>
+
       <div class="note-counter">
         {{ (editBuffer.description?.length || 0) }} / 200
       </div>
@@ -108,7 +136,9 @@
     <div class="actions">
       <button class="btn btn-delete" type="button" (click)="deleteCard()">Delete</button>
 
-      <div style="flex: 1;"></div> <button class="btn btn-cancel" type="button" (click)="closeEditor()">Cancel</button>
+      <div style="flex: 1"></div>
+
+      <button class="btn btn-cancel" type="button" (click)="closeEditor()">Cancel</button>
       <button class="btn btn-save" type="button" (click)="save()">Save</button>
     </div>
   </div>

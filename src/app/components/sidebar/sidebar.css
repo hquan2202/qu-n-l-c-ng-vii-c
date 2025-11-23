@@ -200,3 +200,34 @@
   overflow: hidden !important;
   background: var( --h-header-bg);
 }
+
+/* LIST BẢNG & NHÓM – dùng chung */
+.boards-list {
+  padding-left: 24px;        /* thụt vào dưới "Bảng" / "Nhóm" */
+  margin-top: 4px;
+}
+
+/* Item bên trong list Bảng / Nhóm */
+a.board-item,
+a.board-item:visited,
+a.board-item:active {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+
+  /* QUAN TRỌNG: bỏ màu xanh mặc định */
+  color: var(--h-text-color);
+  text-decoration: none;
+
+  font-size: 13px;
+}
+
+/* Hover + đang active (routerLinkActive="active") */
+.boards-list .board-item:hover,
+.boards-list .board-item.active {
+  background-color: var(--h-hover-bg);
+  color: var(--h-accent);
+}
