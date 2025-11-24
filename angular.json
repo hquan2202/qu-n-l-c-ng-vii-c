@@ -92,5 +92,11 @@
   },
   "cli": {
     "analytics": false
+  },
+  "serve": {
+    "options": {
+      "proxyConfig": "proxy.conf.json"
+    }
   }
+
 }

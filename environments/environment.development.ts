@@ -1,14 +1,12 @@
 export const environment = {
   production: false,
-  apiUrl: 'https://taskly.ext.itss.edu.vn',
-  wsUrl: 'https://taskly.ext.itss.edu.vn',
-  firebase:{
-    projectId: 'kanban-246',
-    appId: '1:656199323172:web:b6a85c041e28e03a8b52b1',
-    storageBucket: 'kanban-246.firebasestorage.app',
-    apiKey: 'AIzaSyAy1F24MJYwj0d2Mya4T7fJgPG3wC4Lwv0',
-    authDomain: 'kanban-246.firebaseapp.com',
-    messagingSenderId: '656199323172',
-    measurementId: 'G-14D94KVP60',
-  }
+  // Supabase
+  supabaseUrl: 'https://ddumqkjqiuheppgdvhiy.supabase.co',
+  supabaseAnonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRkdW1xa2pxaXVoZXBwZ2R2aGl5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjAxMzQ0MjcsImV4cCI6MjA3NTcxMDQyN30.kU7Uz5tdb7M91WDtkwm3-Qgdc4QlHV3YirxqnnL6NFk',
+
+  // NestJS API (sẽ tạo ở phần sau)
+  apiUrl: 'http://localhost:3000',
+
+  // chọn cách dùng datasource → hiện tại dùng API
+  useApi: true,
 };

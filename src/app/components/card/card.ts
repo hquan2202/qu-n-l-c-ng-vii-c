@@ -11,12 +11,17 @@ import { MatButtonModule } from '@angular/material/button';
   styleUrls: ['./card.css']
 })
 export class CardComponent {
-  @Input() id: string = ''; // ✅ thêm id
-  @Input() title: string = '';
-  @Input() color: string = '#000';
+
+  @Input() id: string = '';      // ID của board
+  @Input() title: string = '';   // Tên board
+
+  // ⭐ Input transform hợp lệ
+  @Input({ transform: (value: string | undefined) => value ?? '#000' })
+  color: string = '#000';
+
   @Input() background?: string;
 
-  @Output() cardClick = new EventEmitter<string>(); // ✅ phát id ra
+  @Output() cardClick = new EventEmitter<string>(); // emit ID ra ngoài
   @Output() delete = new EventEmitter<void>();
 
   hover: boolean = false;
