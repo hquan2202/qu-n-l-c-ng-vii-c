@@ -1,20 +1,27 @@
 <div class="home-container">
+
+  <div class="loading-overlay" *ngIf="loading">
+    <div class="spinner"></div>
+    <p>Đang xử lý...</p>
+  </div>
+
   <h2 class="section-title">YOUR WORKSPACES</h2>
 
-  <div class="home-stats">
-    <ng-container *ngFor="let c of cards; let i = index">
+  <div class="alert-error" *ngIf="errorMsg">
+    <span class="error-icon">⚠️</span>
+    <span class="error-text">{{ errorMsg }}</span>
+    <button class="close-alert" (click)="errorMsg = ''">×</button>
+  </div>
 
-      <!-- Ô "Tạo bảng mới" -->
-      <div
-        *ngIf="normalizeTitle(c.title) === 'Tạo bảng mới'; else normalCard"
-        class="create-board-card"
-        (click)="openPopup()"
-      >
-        <span>Create new board</span>
+  <div class="home-section">
+    <h3 class="sub-title">Bảng của tôi</h3>
+
+    <div class="home-stats">
+      <div class="create-board-card" (click)="openPopup()">
+        <span>+ Create new board</span>
       </div>
 
-      <!-- Card bình thường -->
-      <ng-template #normalCard>
+      <ng-container *ngFor="let c of myOwnedSoloBoards; let i = index">
         <div class="card-wrapper">
           <app-card
             [title]="c.title"
@@ -25,12 +32,60 @@
           >
           </app-card>
         </div>
-      </ng-template>
-
-    </ng-container>
+      </ng-container>
+    </div>
   </div>
 
-  <!-- Popup tạo board -->
+  <div class="home-section">
+    <h3 class="sub-title">Nhóm của tôi</h3>
+
+    <div class="home-stats" *ngIf="myGroupBoards.length > 0; else noMyGroup">
+      <ng-container *ngFor="let c of myGroupBoards; let i = index">
+        <div class="card-wrapper">
+          <app-card
+            [title]="c.title"
+            [color]="c.color"
+            [background]="c.background ?? ''"
+            (cardClick)="onCardClick(c, i)"
+            (delete)="deleteBoard(c, i)"
+          >
+          </app-card>
+        </div>
+      </ng-container>
+    </div>
+
+    <ng-template #noMyGroup>
+      <p class="empty-message">Hiện bạn chưa có nhóm nào.</p>
+    </ng-template>
+  </div>
+
+  <div class="home-section">
+    <h3 class="sub-title">Nhóm tôi được mời</h3>
+
+    <div
+      class="home-stats"
+      *ngIf="invitedGroupBoards.length > 0; else noInvitedGroup"
+    >
+      <ng-container *ngFor="let c of invitedGroupBoards; let i = index">
+        <div class="card-wrapper">
+          <app-card
+            [title]="c.title"
+            [color]="c.color"
+            [background]="c.background ?? ''"
+            (cardClick)="onCardClick(c, i)"
+          >
+          </app-card>
+        </div>
+      </ng-container>
+    </div>
+
+    <ng-template #noInvitedGroup>
+      <p class="empty-message">
+        Hiện bạn chưa được mời vào nhóm nào.
+      </p>
+    </ng-template>
+  </div>
+
   <app-task-description
     *ngIf="showPopup"
     [defaultType]="'workspace'"
@@ -38,5 +93,4 @@
     (addBoard)="addNewBoard($event)"
   >
   </app-task-description>
-
 </div>

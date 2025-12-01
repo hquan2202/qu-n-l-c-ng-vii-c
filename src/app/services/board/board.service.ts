@@ -1,6 +1,6 @@
 // src/app/services/board/board.service.ts
 import { Inject, Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import {Observable, Subject} from 'rxjs';
 
 import { BOARD_DATASOURCE } from './BOARD_DATASOURCE';
 import { IBoardDataSource, Card, Column } from './IBoardDataSource';
@@ -20,9 +20,16 @@ export interface Board {
 export class BoardService {
   /** Columns observable cho BoardComponent */
   columns$: Observable<Column[]>;
-
+  private _shareClickSubject = new Subject<void>();
+  public shareClick$ = this._shareClickSubject.asObservable();
   constructor(@Inject(BOARD_DATASOURCE) private ds: IBoardDataSource) {
     this.columns$ = this.ds.columns$;
+  }
+  triggerShareClick() {
+    this._shareClickSubject.next();
+  }
+  get boardInfo$() {
+    return (this.ds as any).boardInfo$;
   }
 
   /** Set board đang active */

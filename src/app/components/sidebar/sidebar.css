@@ -231,3 +231,73 @@ a.board-item:active {
   background-color: var(--h-hover-bg);
   color: var(--h-accent);
 }
+/* Thêm style này vào sidebar.component.css */
+
+.sub-section-title {
+  font-size: 11px; /* Nhỏ hơn text menu */
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #9fadbc; /* Màu tối hơn text chính */
+  margin: 16px 12px 8px 12px; /* Margin top lớn để tách nhóm */
+  letter-spacing: 0.5px;
+  user-select: none;
+}
+
+/* Tinh chỉnh lại Menu Item cho gọn */
+.menu-item {
+  /* ... giữ nguyên ... */
+  font-size: 14px; /* Kích thước chuẩn */
+  font-weight: 400; /* Mảnh hơn cho nhẹ mắt */
+}
+
+.menu-item.active {
+  font-weight: 600; /* Chỉ đậm khi active */
+  background-color: rgba(26, 188, 156, 0.15); /* Nền xanh nhạt thay vì xám */
+}
+
+/* Tinh chỉnh Section Header (Bảng/Nhóm) */
+.section-title {
+  /* Lưu ý: class này trùng tên với home nhưng ở component khác (ng-deep hoặc view encapsulation sẽ lo) */
+  font-size: 13px;
+  font-weight: 600;
+  color: #fff;
+  letter-spacing: 0.5px;
+}
+/* ... Code cũ giữ nguyên ... */
+
+/* --- SỬA/THÊM ĐOẠN NÀY ĐỂ ĐỒNG BỘ HIỆU ỨNG ACTIVE --- */
+
+/* Định nghĩa style chung cho trạng thái Active */
+.menu-item.active,
+.board-item.active { /* Thêm class này vào để ăn theo style */
+  background-color: var(--h-hover-bg); /* Hoặc dùng rgba(255, 255, 255, 0.1) */
+  color: var(--h-accent) !important;   /* Màu xanh sáng */
+  font-weight: 600;
+  border-radius: 99px; /* Bo tròn giống nút Trang chủ */
+}
+
+/* Đảm bảo icon bên trong cũng đổi màu theo */
+.menu-item.active mat-icon,
+.board-item.active mat-icon {
+  color: var(--h-accent);
+}
+
+/* Chỉnh lại Board Item một chút để nó giống Menu Item */
+.board-item {
+  /* Copy các thuộc tính quan trọng từ menu-item sang nếu chưa có */
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 12px;
+  cursor: pointer;
+  margin: 2px 0;
+  transition: all 0.15s ease;
+  border-radius: 99px; /* Quan trọng: Bo tròn */
+  text-decoration: none;
+  color: var(--h-text-color);
+}
+
+.board-item:hover {
+  background-color: var(--h-hover-bg);
+  color: #ffffff;
+}

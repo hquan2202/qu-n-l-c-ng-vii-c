@@ -23,15 +23,26 @@
 
   <div class="right">
     <div class="notification-wrapper">
-      <mat-icon class="notification-icon" (click)="toggleNotificationPopup()">
+      <mat-icon
+        class="notification-icon"
+        matBadge="{{ unreadCount }}"
+        [matBadgeHidden]="unreadCount === 0"
+        matBadgeColor="warn"
+        matBadgeOverlap="false"
+        (click)="toggleNotificationPopup()"
+      >
         notifications
       </mat-icon>
 
       <app-notification-popup
         [visible]="isNotificationVisible"
+        [notiArray]="notifications"
+        [isGettingNotifications]="isGettingNotifications"
         (onClose)="closeNotification()"
+        (changed)="onNotificationsChanged()"
       ></app-notification-popup>
     </div>
+
     <img
       *ngIf="avatarUrl"
       [src]="avatarUrl"
@@ -41,7 +52,13 @@
       (click)="toggleAccountPopup()"
     />
 
-    <mat-icon *ngIf="!avatarUrl" class="avatar-icon" (click)="toggleAccountPopup()">account_circle</mat-icon>
+    <mat-icon
+      *ngIf="!avatarUrl"
+      class="avatar-icon"
+      (click)="toggleAccountPopup()"
+    >
+      account_circle
+    </mat-icon>
 
     <app-account-popup
       [visible]="isPopupVisible"
@@ -53,4 +70,5 @@
       (onCreateWorkspace)="openCreateWorkspace()"
     ></app-account-popup>
   </div>
+
 </header>

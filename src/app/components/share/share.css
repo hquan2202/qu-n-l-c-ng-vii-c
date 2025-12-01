@@ -1,204 +1,260 @@
-:host {
-  --s-bg: #282E33; /* Nền tối Trello */
-  --s-text: #B6C2CF;
-  --s-accent: #579DFF;
-  --s-border: #3C454D;
+/* src/app/components/share/share.css */
+
+/* =========================================
+   1. LAYOUT CHÍNH (OVERLAY & CONTAINER)
+   ========================================= */
+.share-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  z-index: 9999; /* Luôn nằm trên cùng */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(2px);
 }
 
 .share-container {
-  position: absolute;
-  top: 50px; /* Cách navbar một chút */
-  left: 190px; /* Căn chỉnh vị trí tương đối với wrapper cha */
-  width: 340px;
-  background: var(--s-bg);
-  color: var(--s-text);
-  border-radius: 8px;
-  box-shadow: 0 8px 16px rgba(0,0,0,0.4);
-  padding: 16px;
-  z-index: 2000;
-  border: 1px solid var(--s-border);
-  animation: fadeIn 0.2s ease-out;
+  background-color: #252525;
+  width: 500px;
+  max-width: 95%;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+  color: #fff;
+  font-family: Arial, sans-serif;
+  animation: popupFadeIn 0.2s ease-out;
 }
 
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(-10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+@keyframes popupFadeIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
 }
 
+/* =========================================
+   2. HEADER & CLOSE BUTTON
+   ========================================= */
 .header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 16px;
+  margin-bottom: 20px;
 }
 
 .header h3 {
   margin: 0;
-  font-size: 16px;
-  color: white;
+  font-size: 20px;
+  font-weight: 600;
 }
 
 .close-btn {
+  background: transparent;
+  border: none;
+  color: #888;
   cursor: pointer;
-  font-size: 20px;
-  width: 20px;
-  height: 20px;
+  padding: 4px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
 }
 
+.close-btn:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+
+/* =========================================
+   3. LINK COPY SECTION
+   ========================================= */
 .section {
-  margin-bottom: 16px;
+  margin-bottom: 20px;
 }
 
-/* Link Box */
 .invite-link-box {
+  background-color: #1f1f1f;
+  border: 1px solid #333;
+  padding: 12px;
+  border-radius: 8px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: rgba(0,0,0,0.2);
-  padding: 8px;
-  border-radius: 4px;
 }
 
 .link-content {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
 }
 
-.link-text {
+.icon-bg {
+  width: 36px;
+  height: 36px;
+  background-color: #333;
+  border-radius: 50%;
   display: flex;
-  flex-direction: column;
-  line-height: 1.2;
+  align-items: center;
+  justify-content: center;
+  color: #ccc;
 }
 
-.link-text span {
-  font-size: 12px;
-  font-weight: 600;
-}
-
-.link-text small {
-  font-size: 11px;
-  opacity: 0.8;
-}
+.link-text { display: flex; flex-direction: column; }
+.link-text span { font-size: 14px; font-weight: 500; }
+.link-url { font-size: 12px; color: #888; margin-top: 2px; }
 
 .copy-btn {
   background: transparent;
+  color: #3b82f6;
   border: none;
-  color: var(--s-accent);
-  cursor: pointer;
   font-weight: 600;
-  font-size: 12px;
-}
-
-/* Input Section */
-.input-section {
-  display: flex;
-  gap: 8px;
-}
-
-.input-wrapper {
-  position: relative;
-  flex: 1;
-  display: flex;
-}
-
-.input-wrapper input {
-  width: 100%;
-  padding: 8px;
+  cursor: pointer;
+  padding: 6px 12px;
   border-radius: 4px;
-  border: 1px solid var(--s-border);
-  background: #22272B;
-  color: white;
-  outline: none;
   font-size: 13px;
 }
 
-.quick-select {
-  position: absolute;
-  right: 0;
-  top: 0;
-  width: 20px;
-  height: 100%;
-  opacity: 0;
-  cursor: pointer;
+.copy-btn:hover { background-color: rgba(59, 130, 246, 0.1); }
+
+/* =========================================
+   4. INPUT SECTION (ĐÃ SỬA LẠI)
+   ========================================= */
+/* Wrapper bao quanh cả input và thông báo lỗi */
+.input-section-wrapper {
+  margin-bottom: 20px;
 }
 
+/* Dòng chứa Input và Button nằm ngang */
+.input-row {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  width: 100%;
+}
+
+.input-row input {
+  flex: 1;
+  background-color: #1f1f1f; /* Fix lỗi nền trắng */
+  border: 1px solid #444;
+  color: #fff;
+  padding: 0 12px; /* Padding ngang */
+  border-radius: 6px;
+  font-size: 14px;
+  outline: none;
+  height: 40px; /* Chiều cao cố định */
+  transition: border-color 0.2s;
+  box-sizing: border-box;
+}
+
+.input-row input:focus {
+  border-color: #27ae60;
+}
+
+/* Style khi Input có lỗi (viền đỏ) */
+.input-row input.input-error {
+  border-color: #ff5252;
+  background-color: rgba(255, 82, 82, 0.1);
+}
+
+/* Nút Share */
 .invite-btn {
-  background: var(--s-accent);
-  color: #1D2125;
+  background-color: #27ae60;
+  color: #fff;
   border: none;
-  border-radius: 4px;
-  padding: 0 12px;
+  padding: 0 20px;
+  border-radius: 6px;
   font-weight: 600;
   cursor: pointer;
+  height: 40px; /* Chiều cao bằng input */
+  transition: background-color 0.2s;
 }
 
 .invite-btn:disabled {
-  opacity: 0.6;
+  background-color: #444;
+  color: #888;
   cursor: not-allowed;
 }
 
-/* Member List */
+.invite-btn:hover:not(:disabled) {
+  background-color: #219150;
+}
+
+/* =========================================
+   5. MESSAGE BOX (LỖI / THÀNH CÔNG)
+   ========================================= */
+.message-box {
+  margin-top: 8px;
+  min-height: 20px;
+}
+
+.error-text {
+  color: #ff5252;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 13px;
+  animation: fadeIn 0.3s;
+}
+
+.success-text {
+  color: #27ae60;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 13px;
+  animation: fadeIn 0.3s;
+}
+
+.msg-icon { font-size: 16px; width: 16px; height: 16px; }
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* =========================================
+   6. MEMBER LIST
+   ========================================= */
 .member-list {
-  max-height: 150px;
+  max-height: 200px;
   overflow-y: auto;
+  padding-right: 4px;
+}
+
+.member-label {
+  font-size: 13px;
+  color: #888;
+  margin-bottom: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
 }
 
 .member-item {
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 6px 0;
-  border-bottom: 1px solid rgba(255,255,255,0.05);
+  gap: 12px;
+  padding: 8px 0;
+  border-bottom: 1px solid #333;
 }
+.member-item:last-child { border-bottom: none; }
 
 .avatar-circle {
-  width: 28px;
-  height: 28px;
+  width: 32px; height: 32px;
   border-radius: 50%;
-  background: #A1BDD914;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 12px;
-  font-weight: bold;
-  color: white;
+  background-color: #444;
+  color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: bold;
+  overflow: hidden; flex-shrink: 0;
 }
+.avatar-img { width: 100%; height: 100%; object-fit: cover; }
 
-.member-info {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-}
+.member-info { flex: 1; display: flex; flex-direction: column; }
+.name { font-size: 14px; font-weight: 500; }
+.role-badge { font-size: 11px; color: #888; margin-top: 2px; }
 
-.member-info .name {
-  font-size: 13px;
-  color: white;
-}
-
-.member-info .role {
-  font-size: 11px;
-  opacity: 0.7;
-}
-
-.remove-btn {
-  background: transparent;
-  border: 1px solid var(--s-border);
-  color: var(--s-text);
-  font-size: 11px;
-  border-radius: 4px;
-  cursor: pointer;
-  padding: 2px 6px;
-}
-
-.remove-btn:hover {
-  background: rgba(255,0,0,0.1);
-  color: #ff5252;
-  border-color: #ff5252;
-}
+/* Scrollbar */
+.member-list::-webkit-scrollbar { width: 6px; }
+.member-list::-webkit-scrollbar-track { background: #1f1f1f; border-radius: 4px; }
+.member-list::-webkit-scrollbar-thumb { background: #444; border-radius: 4px; }
+.member-list::-webkit-scrollbar-thumb:hover { background: #555; }

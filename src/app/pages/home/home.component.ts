@@ -2,12 +2,16 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
 
-import { TaskDescriptionComponent } from '../../components/task-description/task-description';
+import {
+  TaskDescriptionComponent,
+  BoardMember,
+} from '../../components/task-description/task-description';
 import { CardComponent } from '../../components/card/card';
 import { environment } from '../../../../environments/environment';
 import { supabase } from '../../core/supabase.client';
+import { InvitationService } from '../../services/invitation/invitation.service';
 
 type Board = {
   id?: string;
@@ -15,6 +19,8 @@ type Board = {
   color: string;
   background?: string;
   tasks?: any[];
+  isOwner?: boolean;
+  hasMembers?: boolean;
 };
 
 const DEFAULT_COLOR = '#e6f7ff';
@@ -42,6 +48,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   constructor(
     private router: Router,
     private http: HttpClient,
+    private invitationService: InvitationService,
   ) {}
 
   // ================= LIFECYCLE =================
@@ -85,9 +92,15 @@ export class HomeComponent implements OnInit, OnDestroy {
     });
   }
 
-  // ================= TẠO BOARD MỚI =================
+  // ================= TẠO BOARD MỚI (ĐÃ UPDATE CHECK EMAIL) =================
 
-  async addNewBoard(board?: { title?: string; color?: string; background?: string }) {
+  async addNewBoard(board?: {
+    title?: string;
+    color?: string;
+    background?: string;
+    members?: BoardMember[];
+    visibility?: string;
+  }) {
     if (!board?.title) return;
 
     // --- Fallback: localStorage ---
@@ -97,8 +110,9 @@ export class HomeComponent implements OnInit, OnDestroy {
         title: board.title,
         color: board.color ?? '#333333',
         background: board.background ?? '#ffffff',
+        isOwner: true,
+        hasMembers: false,
       };
-
       const createIndex = this.cards.findIndex(
         (c) => this.normalizeTitle(c.title) === CREATE_TITLE,
       );
@@ -107,11 +121,8 @@ export class HomeComponent implements OnInit, OnDestroy {
       } else {
         this.cards.push(newBoard);
       }
-
       this.persistLocal();
       this.showPopup = false;
-
-      // thông báo cho Sidebar reload
       window.dispatchEvent(new CustomEvent('boards:updated'));
       return;
     }
@@ -121,6 +132,7 @@ export class HomeComponent implements OnInit, OnDestroy {
       this.loading = true;
       this.errorMsg = '';
 
+      // 1. Tạo Board trước
       const headers = await this.buildAuthHeaders();
       const body = {
         name: board.title,
@@ -138,23 +150,73 @@ export class HomeComponent implements OnInit, OnDestroy {
         title: created?.name ?? board.title,
         color: created?.color ?? body.color,
         background: created?.background ?? body.background,
+        isOwner: true,
+        hasMembers: false,
       };
 
-      this.cards.push(newBoard);
+      // 2. Xử lý mời thành viên
+      const members = board.members ?? [];
+      const boardId = newBoard.id;
+      const failedInvites: string[] = []; // Danh sách mời thất bại
 
+      // 👇 Regex kiểm tra email chuẩn
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+      if (boardId && members.length > 0) {
+        for (const m of members) {
+          if (m.type === 'email' && m.name) {
+
+            // 🔥 THÊM CHECK: Định dạng Email
+            if (!emailRegex.test(m.name)) {
+              failedInvites.push(`${m.name} (Email không đúng định dạng)`);
+              continue; // Bỏ qua người này, không gọi API
+            }
+
+            try {
+              // Gọi API mời từng người
+              await this.invitationService.sendInvitation(boardId, m.name);
+
+              // Nếu thành công -> đánh dấu board có member
+              newBoard.hasMembers = true;
+
+            } catch (err: any) {
+              console.error(`Lỗi khi mời ${m.name}:`, err);
+
+              // Phân loại lỗi từ Backend
+              let reason = 'Lỗi không xác định';
+              if (err instanceof HttpErrorResponse) {
+                if (err.status === 404) reason = 'Người dùng không tồn tại';
+                else if (err.status === 409) reason = 'Đã là thành viên hoặc đã mời';
+                else if (err.status === 400) reason = 'Yêu cầu không hợp lệ';
+              }
+
+              failedInvites.push(`${m.name} (${reason})`);
+            }
+          }
+        }
+      }
+
+      // 3. Cập nhật UI
+      this.cards.push(newBoard);
       this.showPopup = false;
-      // cho Sidebar reload
       window.dispatchEvent(new CustomEvent('boards:updated'));
+
+      // 4. Thông báo kết quả mời (Nếu có lỗi)
+      if (failedInvites.length > 0) {
+        alert(
+          `Bảng đã được tạo thành công!\nTuy nhiên, một số lời mời gửi thất bại:\n\n- ${failedInvites.join('\n- ')}`
+        );
+      }
+
     } catch (e: any) {
       console.error('Create board error', e);
-      this.errorMsg = 'Không tạo được bảng. Kiểm tra lại login hoặc backend.';
+      this.errorMsg = 'Không tạo được bảng. Kiểm tra lại kết nối hoặc đăng nhập.';
     } finally {
       this.loading = false;
     }
   }
 
   // ================= XOÁ BOARD =================
-
   async deleteBoard(card: Board, index: number) {
     if (this.normalizeTitle(card.title) === CREATE_TITLE) return;
 
@@ -162,19 +224,13 @@ export class HomeComponent implements OnInit, OnDestroy {
       return;
     }
 
-    // --- Dùng API ---
     if (environment.useApi) {
       try {
         this.loading = true;
         this.errorMsg = '';
-
         const headers = await this.buildAuthHeaders();
-        await this.http
-          .delete(`${this.apiUrl}/boards/${card.id}`, { headers })
-          .toPromise();
-
+        await this.http.delete(`${this.apiUrl}/boards/${card.id}`, { headers }).toPromise();
         this.cards.splice(index, 1);
-
         window.dispatchEvent(new CustomEvent('boards:updated'));
       } catch (e: any) {
         console.error('Delete board error', e);
@@ -185,24 +241,20 @@ export class HomeComponent implements OnInit, OnDestroy {
       return;
     }
 
-    // --- Fallback: localStorage ---
     this.cards.splice(index, 1);
     this.persistLocal();
     window.dispatchEvent(new CustomEvent('boards:updated'));
   }
 
   // ================= LOAD TỪ API =================
-
   private async loadBoardsFromApi() {
     try {
       this.loading = true;
       this.errorMsg = '';
-
       const headers = await this.buildAuthHeaders();
-
-      const apiBoards = await this.http
-        .get<any[]>(`${this.apiUrl}/boards`, { headers })
-        .toPromise();
+      const apiBoards = await this.http.get<any[]>(`${this.apiUrl}/boards`, { headers }).toPromise();
+      const { data: userData } = await supabase.auth.getUser();
+      const currentUserId = userData.user?.id;
 
       const boards: Board[] = (apiBoards ?? []).map((b: any) => ({
         id: String(b.id),
@@ -210,14 +262,17 @@ export class HomeComponent implements OnInit, OnDestroy {
         color: b.color ?? DEFAULT_COLOR,
         background: b.background ?? b.color ?? DEFAULT_COLOR,
         tasks: [],
+        isOwner: currentUserId ? b.owner_id === currentUserId : true,
+        hasMembers: !!b.has_members,
       }));
 
-      // luôn thêm card "Tạo bảng mới"
       boards.push({
         id: 'create',
         title: CREATE_TITLE,
         color: CREATE_COLOR,
         background: CREATE_COLOR,
+        isOwner: true,
+        hasMembers: false,
       });
 
       this.cards = boards;
@@ -230,26 +285,31 @@ export class HomeComponent implements OnInit, OnDestroy {
     }
   }
 
-  // ================= AUTH HEADER (SUPABASE) =================
-
+  // ================= AUTH HEADER =================
   private async buildAuthHeaders(): Promise<HttpHeaders> {
     const { data, error } = await supabase.auth.getSession();
     if (error || !data.session?.access_token) {
       throw new Error('Chưa có Supabase session (chưa đăng nhập).');
     }
-
     return new HttpHeaders({
       Authorization: `Bearer ${data.session.access_token}`,
       'Content-Type': 'application/json',
     });
   }
 
-  // ================= LOCALSTORAGE HELPER =================
-
+  // ================= GETTERS & HELPERS =================
+  get invitedGroupBoards(): Board[] {
+    return this.cards.filter((b) => this.normalizeTitle(b.title) !== CREATE_TITLE && !b.isOwner);
+  }
+  get myOwnedSoloBoards(): Board[] {
+    return this.cards.filter((b) => b.isOwner && !b.hasMembers && this.normalizeTitle(b.title) !== 'Tạo bảng mới');
+  }
+  get myGroupBoards(): Board[] {
+    return this.cards.filter((b) => b.isOwner && b.hasMembers && this.normalizeTitle(b.title) !== 'Tạo bảng mới');
+  }
   normalizeTitle(t?: string): string {
     return String(t ?? '').replace(/^\+?\s*/, '').trim();
   }
-
   private loadBoardsFromLocal(): Board[] {
     let raw: any[] = [];
     try {
@@ -258,52 +318,38 @@ export class HomeComponent implements OnInit, OnDestroy {
     } catch {
       raw = [];
     }
-
-    const boards: Board[] = raw
-      .map(
-        (b: any, i: number): Board => ({
-          id: b?.id ?? `${Date.now()}-${i}`,
-          title: String(b?.title ?? '').trim(),
-          background: String(b?.background ?? b?.color ?? DEFAULT_COLOR),
-          color: String(b?.color ?? b?.background ?? DEFAULT_COLOR),
-          tasks: Array.isArray(b?.tasks) ? b.tasks : [],
-        }),
-      )
-      .filter(
-        (b: Board) =>
-          b.title.length > 0 && this.normalizeTitle(b.title) !== CREATE_TITLE,
-      );
+    const boards: Board[] = raw.map((b: any, i: number): Board => ({
+      id: b?.id ?? `${Date.now()}-${i}`,
+      title: String(b?.title ?? '').trim(),
+      background: String(b?.background ?? b?.color ?? DEFAULT_COLOR),
+      color: String(b?.color ?? b?.background ?? DEFAULT_COLOR),
+      tasks: Array.isArray(b?.tasks) ? b.tasks : [],
+      isOwner: true,
+      hasMembers: false,
+    })).filter((b: Board) => b.title.length > 0 && this.normalizeTitle(b.title) !== CREATE_TITLE);
 
     boards.push({
       id: 'create',
       title: CREATE_TITLE,
       color: CREATE_COLOR,
       background: CREATE_COLOR,
+      isOwner: true,
+      hasMembers: false,
     });
-
     return boards;
   }
-
   private persistLocal(): void {
     try {
-      const normalized: Board[] = this.cards
-        .map(
-          (b: Board): Board => ({
-            id: b.id ?? `${Date.now()}`,
-            title: String(b.title ?? '').trim(),
-            background: b.background ?? b.color ?? DEFAULT_COLOR,
-            color: b.color ?? b.background ?? DEFAULT_COLOR,
-            tasks: Array.isArray(b.tasks) ? b.tasks : [],
-          }),
-        )
-        .filter(
-          (b: Board) =>
-            b.title.length > 0 && this.normalizeTitle(b.title) !== CREATE_TITLE,
-        );
-
+      const normalized: Board[] = this.cards.map((b: Board): Board => ({
+        id: b.id ?? `${Date.now()}`,
+        title: String(b.title ?? '').trim(),
+        background: b.background ?? b.color ?? DEFAULT_COLOR,
+        color: b.color ?? b.background ?? DEFAULT_COLOR,
+        tasks: Array.isArray(b.tasks) ? b.tasks : [],
+        isOwner: b.isOwner,
+        hasMembers: b.hasMembers,
+      })).filter((b: Board) => b.title.length > 0 && this.normalizeTitle(b.title) !== CREATE_TITLE);
       localStorage.setItem('boards', JSON.stringify(normalized));
-    } catch (e) {
-      console.error('Persist boards error:', e);
-    }
+    } catch (e) { console.error('Persist boards error:', e); }
   }
 }

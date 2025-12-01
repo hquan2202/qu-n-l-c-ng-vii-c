@@ -59,11 +59,22 @@
 
       <div class="add-member-controls">
         <div class="or-divider">or</div>
+
         <div class="email-input-group" style="margin-top: 8px;">
-          <input type="email" [(ngModel)]="emailInput" (keydown.enter)="addEmail()"
-                 placeholder="email@example.com">
+          <input
+            type="email"
+            [(ngModel)]="emailInput"
+            (ngModelChange)="onInputChange()"
+            (keydown.enter)="addEmail()"
+            [class.has-error]="inputError"
+            placeholder="email@example.com"
+          >
           <button class="add-btn" [disabled]="!emailInput" (click)="addEmail()">Add</button>
         </div>
+
+        <small class="error-msg" *ngIf="inputError">
+          {{ inputError }}
+        </small>
       </div>
 
       <div class="selected-members-list" *ngIf="selectedMembers.length > 0">

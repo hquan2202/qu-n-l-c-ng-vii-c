@@ -1,3 +1,4 @@
+// src/app/share/sidebar/sidebar.ts
 import {
   Component,
   ChangeDetectionStrategy,
@@ -18,6 +19,8 @@ type Board = {
   color?: string;
   background?: string;
   tasks?: any[];
+  isOwner?: boolean;
+  hasMembers?: boolean;
 };
 
 @Component({
@@ -29,7 +32,11 @@ type Board = {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SidebarComponent implements OnInit, OnDestroy {
-  myBoards: Board[] = [];
+  myBoardsOwned: Board[] = [];     // nếu muốn giữ thì vẫn được
+  mySoloBoards: Board[] = [];      // 👈 bảng cá nhân
+  myGroupsOwned: Board[] = [];     // nhóm của tôi (owner + có member)
+  myGroupsInvited: Board[] = [];   // nhóm tôi được mời
+
 
   isBoardsOpen = true;
   isTeamsOpen = true;
@@ -76,18 +83,31 @@ export class SidebarComponent implements OnInit, OnDestroy {
         .get<any[]>(`${this.apiUrl}/boards`, { headers })
         .toPromise();
 
-      this.myBoards = (apiBoards ?? []).map((b: any) => ({
+      const { data: userData } = await supabase.auth.getUser();
+      const currentUserId = userData.user?.id;
+
+      const allBoards: Board[] = (apiBoards ?? []).map((b: any) => ({
         id: String(b.id),
         title: String(b.name ?? b.title ?? '').trim() || 'Untitled',
         color: b.color ?? '#333333',
         background: b.background ?? b.color ?? '#ffffff',
         tasks: Array.isArray(b.tasks) ? b.tasks : [],
+        isOwner: currentUserId ? b.owner_id === currentUserId : true,
+        hasMembers: !!b.has_members,
       }));
+
+      this.myBoardsOwned   = allBoards.filter((b) => b.isOwner);
+      this.mySoloBoards    = allBoards.filter((b) => b.isOwner && !b.hasMembers); // 👈
+      this.myGroupsOwned   = allBoards.filter((b) => b.isOwner && b.hasMembers);
+      this.myGroupsInvited = allBoards.filter((b) => !b.isOwner);
+
 
       this.cdr.markForCheck();
     } catch (e) {
       console.error('[Sidebar] Lỗi tải boards từ API', e);
-      this.myBoards = [];
+      this.myBoardsOwned = [];
+      this.myGroupsOwned = [];
+      this.myGroupsInvited = [];
       this.cdr.markForCheck();
     }
   }

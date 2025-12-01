@@ -1,3 +1,4 @@
+// src/app/components/navbar/navbar.component.ts
 import { Component, OnInit, HostListener, ElementRef } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
@@ -14,8 +15,8 @@ import { CreateWorkspaceComponent } from '../create-workspace/create-workspace';
 import { UiFilterService } from '../../services/ui-filter/ui-filter.service';
 import { AuthService } from '../../services/auth/auth.service';
 
-// [NEW] Import Component Share vừa tạo
-import { SharePopupComponent } from '../share/share';
+// 👇 1. IMPORT BOARD SERVICE
+import { BoardService } from '../../services/board/board.service';
 
 @Component({
   selector: 'app-navbar',
@@ -27,7 +28,8 @@ import { SharePopupComponent } from '../share/share';
     NgIf,
     AsyncPipe,
     ViewPopupComponent,
-    SharePopupComponent // <--- Đừng quên thêm vào imports
+    AccountPopupComponent
+    // ❌ KHÔNG import SharePopupComponent ở đây nữa
   ],
   templateUrl: './navbar.html',
   styleUrls: ['./navbar.css']
@@ -39,7 +41,7 @@ export class NavBarComponent implements OnInit {
   // Trạng thái các popup
   isViewOpen = false;
   isDropdownOpen = false; // Filter
-  isShareOpen = false;    // [NEW] Share
+  // ❌ Xóa isShareOpen vì BoardComponent sẽ quản lý popup này
 
   currentFilterStatus$: Observable<string | null>;
 
@@ -51,7 +53,8 @@ export class NavBarComponent implements OnInit {
     private dialog: MatDialog,
     private uiFilterService: UiFilterService,
     private el: ElementRef,
-    private authService: AuthService
+    private authService: AuthService,
+    private boardService: BoardService // 👇 2. INJECT SERVICE
   ) {
     this.currentFilterStatus$ = this.uiFilterService.currentFilterStatus$;
   }
@@ -72,10 +75,14 @@ export class NavBarComponent implements OnInit {
     if (this.isViewOpen) this.closeOtherPopups('view');
   }
 
-  // [NEW] Toggle Share
-  toggleShare(): void {
-    this.isShareOpen = !this.isShareOpen;
-    if (this.isShareOpen) this.closeOtherPopups('share');
+  // 👇 3. HÀM XỬ LÝ KHI BẤM NÚT SHARE
+  onShareClick(): void {
+    // Chỉ đơn giản là gọi service, không bật tắt biến cục bộ nào cả
+    console.log('Navbar: Bấm nút Share -> Gửi tín hiệu');
+    this.boardService.triggerShareClick();
+
+    // Đóng các popup khác nếu đang mở cho gọn
+    this.closeOtherPopups('share');
   }
 
   toggleAccountPopup(): void {
@@ -83,16 +90,15 @@ export class NavBarComponent implements OnInit {
     if (this.showAccountPopup) this.closeOtherPopups('account');
   }
 
-  // Hàm phụ trợ để đóng các popup khác khi mở 1 cái mới (UX tốt hơn)
+  // Hàm phụ trợ
   closeOtherPopups(except: string) {
     if (except !== 'filter') this.isDropdownOpen = false;
     if (except !== 'view') this.isViewOpen = false;
-    if (except !== 'share') this.isShareOpen = false;
+    // Share không cần đóng ở đây vì nó nằm ở BoardComponent
     if (except !== 'account') this.showAccountPopup = false;
   }
 
   // --- LOGIC CLICK OUTSIDE ---
-
   @HostListener('document:click', ['$event'])
   clickout(event: Event) {
     const target = event.target as HTMLElement;
@@ -105,20 +111,14 @@ export class NavBarComponent implements OnInit {
 
     // 2. View
     const viewPopup = this.el.nativeElement.querySelector('app-view-popup');
-    const viewIcon = this.el.nativeElement.querySelector('.view-icon'); // Cần check icon
-    // Logic: Nếu đang mở, click KHÔNG phải popup, và KHÔNG phải nút bấm -> Đóng
+    const viewIcon = this.el.nativeElement.querySelector('.view-icon');
     if (this.isViewOpen && viewPopup && !viewPopup.contains(target) && !viewIcon?.contains(target)) {
       this.isViewOpen = false;
     }
 
-    // 3. [NEW] Share
-    const sharePopup = this.el.nativeElement.querySelector('app-share-popup');
-    const shareBtn = this.el.nativeElement.querySelector('.share-btn');
-    if (this.isShareOpen && sharePopup && !sharePopup.contains(target) && !shareBtn?.contains(target)) {
-      this.isShareOpen = false;
-    }
+    // ❌ 4. Xóa logic clickout của Share (vì popup không còn nằm trong DOM của navbar)
 
-    // 4. Account
+    // 3. Account
     const accountPopup = this.el.nativeElement.querySelector('app-account-popup');
     if (
       this.showAccountPopup &&

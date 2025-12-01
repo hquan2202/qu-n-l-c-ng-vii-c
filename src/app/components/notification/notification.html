@@ -1,35 +1,112 @@
+<!-- src/app/components/notification/notification.html -->
+
 <!-- Overlay mờ -->
 <div class="overlay" *ngIf="visible" (click)="onCloseClick()"></div>
 
-<div class="notif-container" *ngIf="visible" (click)="$event.stopPropagation()" (scroll)="onScroll($event)">
-  <p class="notif-title">Notifications</p>
+<!-- Popup -->
+<div
+  class="notif-container"
+  *ngIf="visible"
+  (click)="$event.stopPropagation()"
+>
+  <!-- Header -->
+  <div class="notif-header">
+    <span class="notif-title">Notifications</span>
 
-  <mat-list>
+    <button
+      mat-icon-button
+      class="close-btn"
+      (click)="onCloseClick()"
+      matTooltip="Close"
+    >
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
+  <!-- Danh sách -->
+  <mat-list class="notif-list" (scroll)="onScroll($event)">
+
+    <!-- Loading -->
+    <ng-container *ngIf="isGettingNotifications">
+      <div class="state loading">Loading...</div>
+    </ng-container>
+
     <!-- Không có thông báo -->
-    <div *ngIf="notiArray.length === 0" class="no-notifications">
-      <img src="assets/images/noti.png" alt="No notifications" class="no-noti-img" />
-      <p class="no-notifications-message">No notifications yet</p>
-    </div>
-
-    <!-- Danh sách thông báo -->
-    <mat-list-item *ngFor="let noti of notiArray" class="notif-item">
-      <mat-icon matListItemIcon>
-        {{ noti.type === 'invite_board' ? 'group_add' : 'info' }}
-      </mat-icon>
-      <div matLine>
-        {{ noti.message }}
+    <ng-container *ngIf="!isGettingNotifications && notiArray.length === 0">
+      <div class="state empty">
+        <img
+          src="assets/images/noti.png"
+          alt="No notifications"
+          class="no-noti-img"
+        />
+        <p class="no-notifications-message">No notifications yet</p>
       </div>
-      <div matLine class="time">{{ noti.createdAt | date:'short' }}</div>
+    </ng-container>
 
-      <!-- Nếu là invite_board -->
-      <div class="btns" *ngIf="noti.type === 'invite_board'">
-        <button mat-stroked-button color="warn" (click)="rejectInvitation(noti.id)">
-          Decline
-        </button>
-        <button mat-flat-button color="primary" (click)="acceptInvitation(noti.id, noti.boardId, noti.senderId)">
-          Accept
-        </button>
+    <!-- Có thông báo -->
+    <ng-container *ngIf="!isGettingNotifications && notiArray.length > 0">
+      <div
+        class="notif-item"
+        *ngFor="let noti of notiArray"
+        [class.processing]="processingId === noti.id"
+      >
+        <!-- avatar người gửi -->
+        <div class="notif-avatar">
+          <img
+            *ngIf="noti.senderAvatarUrl; else avatarFallback"
+            [src]="noti.senderAvatarUrl"
+            [alt]="noti.senderName || 'Sender avatar'"
+          />
+          <ng-template #avatarFallback>
+            <div class="avatar-fallback">
+              {{ (noti.senderName || 'U').charAt(0) | uppercase }}
+            </div>
+          </ng-template>
+        </div>
+
+        <!-- nội dung -->
+        <div class="notif-content">
+          <div class="notif-message">
+            {{ noti.message }}
+          </div>
+
+          <div class="notif-meta">
+            <span class="sender" *ngIf="noti.senderName">
+              {{ noti.senderName }}
+            </span>
+            <span class="dot" *ngIf="noti.senderName">&bull;</span>
+            <span class="time">
+              {{ noti.createdAt | date : 'short' }}
+            </span>
+          </div>
+
+          <!-- nút Accept / Decline -->
+          <div class="notif-actions" *ngIf="noti.type === 'invite_board'">
+            <button
+              mat-stroked-button
+              color="warn"
+              (click)="onRejectClick(noti)"
+              [disabled]="processingId === noti.id"
+            >
+              Decline
+            </button>
+
+            <button
+              mat-flat-button
+              color="primary"
+              (click)="onAcceptClick(noti)"
+              [disabled]="processingId === noti.id"
+            >
+              Accept
+            </button>
+          </div>
+        </div>
       </div>
-    </mat-list-item>
+    </ng-container>
   </mat-list>
+
+  <!-- Toast message bên trong popup -->
+  <div class="notif-toast" *ngIf="lastMessage">
+    {{ lastMessage }}
+  </div>
 </div>

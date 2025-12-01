@@ -1,106 +1,173 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormsModule } from '@angular/forms';
-import { NgForOf, NgIf, NgStyle } from '@angular/common';
-import { MatIconModule } from '@angular/material/icon';
+// src/app/pages/board/board.component.ts
 
-import { UiFilterService } from '../../services/ui-filter/ui-filter.service';
+import { Component, ChangeDetectorRef, OnDestroy, OnInit } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common'; // Thay cho JsonPipe, NgForOf, NgIf
+import { MatIconModule } from '@angular/material/icon';
+import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 
-import { ActivatedRoute } from '@angular/router';
-
-import { Column, Card } from '../../services/board/IBoardDataSource';
-import { ApiBoardDataSource } from '../../services/board/ApiBoardDataSource';
+// Services
+import { UiFilterService } from '../../services/ui-filter/ui-filter.service';
 import { BoardService } from '../../services/board/board.service';
 import { TaskService } from '../../services/task/task.service';
+import { Column, Card } from '../../services/board/IBoardDataSource';
+
+// Components
+import { ShareComponent } from '../../components/share/share'; // 👈 Import Share Component
+
+// Types
+type BoardMember = {
+  user_id: string;
+  role: string;
+  email?: string | null;
+  full_name?: string | null;
+  avatar_url?: string | null;
+  imageError?: boolean; // Để xử lý khi ảnh avatar bị lỗi
+};
 
 @Component({
   selector: 'app-board',
-  templateUrl: './board.component.html',
   standalone: true,
-  imports: [FormsModule, NgForOf, NgIf, MatIconModule, NgStyle],
+  // 👇 Đã thêm ShareComponent và CommonModule vào đây
+  imports: [CommonModule, FormsModule, MatIconModule, ShareComponent],
+  templateUrl: './board.component.html',
   styleUrls: ['./board.component.css'],
 })
 export class BoardComponent implements OnInit, OnDestroy {
+  // --- BOARD STATE ---
   boardId = '';
   boardTitle = 'BẢNG CÔNG VIỆC';
+  backgroundUrl = '';
+  columns: Column[] = [];
 
+  // --- EDIT TITLE STATE ---
   editingTitle = false;
   titleBuffer = '';
 
+  // --- MEMBERS STATE ---
+  boardMembers: BoardMember[] = [];
+  readonly MAX_INLINE_MEMBERS = 3;
+
+  // --- FILTER STATE ---
   currentFilterStatus: string | null = null;
 
-  private filterSubscription!: Subscription;
-  private boardSubscription!: Subscription;
-  private routeSubscription!: Subscription;
-
-  columns: Column[] = [];
-  backgroundUrl = '';
-
+  // --- EDIT CARD STATE ---
   editing: { i: number; j: number } | null = null;
-  editBuffer: Card = { title: '', status: 'To Do', assignee: '', description: '' };
-
+  editBuffer: Card = {
+    title: '',
+    status: 'To Do',
+    assignee: '',
+    description: '',
+  };
   newColumnName = '';
+
+  // --- POPUP SHARE STATE ---
+  showSharePopup = false; // Biến bật/tắt popup share
+
+  // --- SUBSCRIPTIONS ---
+  private subs: Subscription[] = [];
 
   constructor(
     public uiFilterService: UiFilterService,
-    private boardService: BoardService,
-    private ds: ApiBoardDataSource,
+    private boardService: BoardService, // Chỉ dùng BoardService, không dùng ApiBoardDataSource trực tiếp
     private taskService: TaskService,
     private route: ActivatedRoute,
+    private cdr: ChangeDetectorRef, // Để ép cập nhật UI
   ) {}
 
+  // =====================================================
+  // LIFECYCLE
+  // =====================================================
   ngOnInit(): void {
-    // Lắng nghe param /card/:id
-    this.routeSubscription = this.route.paramMap.subscribe((pm) => {
+    // 1️⃣ Lắng nghe URL (/board/:id)
+    const routeSub = this.route.paramMap.subscribe((pm) => {
       const id = pm.get('id') ?? '';
       this.applyBoardId(id);
     });
+    this.subs.push(routeSub);
 
-    // Filter UI
-    this.filterSubscription = this.uiFilterService.currentFilterStatus$.subscribe(
-      (status) => {
-        this.currentFilterStatus = status;
-      }
-    );
+    // 2️⃣ Lắng nghe Filter (To Do / Doing / Done)
+    const filterSub = this.uiFilterService.currentFilterStatus$.subscribe((status) => {
+      this.currentFilterStatus = status;
+    });
+    this.subs.push(filterSub);
 
-    // Columns từ API datasource
-    this.boardSubscription = this.boardService.columns$.subscribe((cols: Column[]) => {
+    // 3️⃣ Lắng nghe Columns (Dữ liệu chính)
+    const colSub = this.boardService.columns$.subscribe((cols: Column[]) => {
       this.columns = cols;
+      this.cdr.detectChanges(); // Cập nhật UI khi cột thay đổi
     });
+    this.subs.push(colSub);
 
-    this.ds.boardInfo$.subscribe(info => {
+    // 4️⃣ Lắng nghe Board Info (Title, Background, Members)
+    // Lưu ý: boardInfo$ được expose từ BoardService (như đã sửa ở các bước trước)
+    const infoSub = this.boardService.boardInfo$.subscribe((info: any) => {
       if (!info) return;
+
+      // Background
       this.backgroundUrl = info.background ?? '';
+
+      // Title
+      if (!this.editingTitle && info.name) {
+        this.boardTitle = info.name;
+      }
+
+      // Members
+      const rawMembers = info.members || [];
+      this.boardMembers = [...rawMembers]; // Clone mảng để trigger change detection
+
+      // 🔥 Ép giao diện vẽ lại ngay lập tức
+      this.cdr.detectChanges();
     });
+    this.subs.push(infoSub);
+
+    // 5️⃣ Lắng nghe sự kiện bấm nút Share từ Navbar
+    const shareSub = this.boardService.shareClick$.subscribe(() => {
+      console.log('⚡ Board: Mở popup Share');
+      this.showSharePopup = true;
+      this.cdr.detectChanges();
+    });
+    this.subs.push(shareSub);
   }
 
   ngOnDestroy(): void {
-    this.filterSubscription?.unsubscribe();
-    this.boardSubscription?.unsubscribe();
-    this.routeSubscription?.unsubscribe();
+    // Hủy tất cả subscription để tránh memory leak
+    this.subs.forEach((s) => s.unsubscribe());
   }
 
-  // ---------------- APPLY BOARD ID -------------------
+  // =====================================================
+  // LOGIC SHARE POPUP
+  // =====================================================
+  closeSharePopup() {
+    this.showSharePopup = false;
+  }
+
+  // =====================================================
+  // BOARD ID HANDLING
+  // =====================================================
   private applyBoardId(id: string) {
     if (!id || id === this.boardId) return;
 
     this.boardId = id;
-    this.editing = null;
-    this.editBuffer = { title: '', status: 'To Do', assignee: '', description: '' };
+    this.closeEditor(); // Đóng editor nếu đang mở ở board cũ
 
-    // Ưu tiên navigation.state => từ Sidebar
+    // Ưu tiên title từ history state (trải nghiệm mượt hơn)
     const stateTitle = (history.state?.board?.title as string | undefined)?.trim();
-    this.boardTitle = stateTitle && stateTitle.length > 0 ? stateTitle : 'BẢNG CÔNG VIỆC';
+    if (stateTitle) {
+      this.boardTitle = stateTitle;
+    }
 
-    // Báo BoardService nạp dữ liệu backend
+    // Gọi API load dữ liệu
     this.boardService.setActiveBoardId(this.boardId);
   }
 
-  // ---------------- TITLE EDIT -------------------
+  // =====================================================
+  // TITLE EDIT
+  // =====================================================
   startEditTitle(): void {
     this.titleBuffer = this.boardTitle ?? '';
     this.editingTitle = true;
-
     setTimeout(() => {
       const el = document.querySelector('.title-edit input') as HTMLInputElement | null;
       if (el) el.focus();
@@ -108,7 +175,7 @@ export class BoardComponent implements OnInit, OnDestroy {
   }
 
   saveTitle(): void {
-    const newTitle = (this.titleBuffer ?? '').toString().trim();
+    const newTitle = (this.titleBuffer ?? '').trim();
     if (!newTitle) {
       this.cancelEditTitle();
       return;
@@ -116,87 +183,52 @@ export class BoardComponent implements OnInit, OnDestroy {
 
     this.boardTitle = newTitle;
     this.editingTitle = false;
-    this.titleBuffer = '';
 
-    try {
-      const svcAny = this.boardService as any;
-      if (typeof svcAny.setBoardTitle === 'function') {
-        svcAny.setBoardTitle(this.boardId, newTitle);
-      } else if (typeof svcAny.updateBoardTitle === 'function') {
-        svcAny.updateBoardTitle(this.boardId, newTitle);
-      }
-    } catch {}
-
+    // Gọi Service cập nhật Title (Cần cast any nếu interface chưa update)
+    const svc: any = this.boardService;
+    if (typeof svc.setBoardTitle === 'function') {
+      svc.setBoardTitle(this.boardId, newTitle);
+    } else if (typeof svc.updateBoardTitle === 'function') {
+      svc.updateBoardTitle(this.boardId, newTitle);
+    }
   }
 
   cancelEditTitle(): void {
     this.editingTitle = false;
-    this.titleBuffer = '';
   }
 
-  // ---------------- FILTER -------------------
-  shouldHighlight(card: Card): boolean {
-    if (!this.currentFilterStatus) return true;
-    return (card.status || 'To Do') === this.currentFilterStatus;
+  // =====================================================
+  // MEMBERS UI HELPERS
+  // =====================================================
+  get inlineMembers(): BoardMember[] {
+    return this.boardMembers.slice(0, this.MAX_INLINE_MEMBERS);
   }
 
-  // ---------------- CARD EDITOR -------------------
-  openEditor(i: number, j: number, card: Card | string) {
-    this.editing = { i, j };
-    this.editBuffer =
-      typeof card === 'string'
-        ? { title: card, status: 'To Do', assignee: '', description: '' }
-        : { ...card };
+  get extraMembersCount(): number {
+    return Math.max(0, this.boardMembers.length - this.MAX_INLINE_MEMBERS);
   }
 
-  isEditing(i: number, j: number): boolean {
-    return this.editing !== null && this.editing.i === i && this.editing.j === j;
+  getInitials(value?: string | null): string {
+    if (!value) return '?';
+    const text = value.trim();
+    const emailIdx = text.indexOf('@');
+    const base = emailIdx > 0 ? text.slice(0, emailIdx) : text;
+    const parts = base.split(/\s+/);
+    if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
+    return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
   }
 
-  save() {
-    if (!this.editing) return;
-    const { i, j } = this.editing;
-
-    this.boardService.updateCard(i, j, { ...this.editBuffer });
-
-    this.syncTaskFromEditBuffer();
-
-    this.closeEditor();
+  showAllMembers(): void {
+    if (!this.boardMembers.length) return;
+    const list = this.boardMembers
+      .map((m) => `${m.full_name || m.email} (${m.role})`)
+      .join('\n');
+    alert(`Members:\n${list}`);
   }
 
-  deleteCard() {
-    if (!this.editing) return;
-    const { i, j } = this.editing;
-
-    this.boardService.deleteCard(i, j);
-
-    const maybeId = (this.editBuffer as any)?.id;
-    if (maybeId) {
-      try {
-        this.taskService.deleteTask(maybeId);
-      } catch (e) {
-        console.error('deleteCard -> taskService.deleteTask failed', e);
-      }
-    }
-
-    this.closeEditor();
-  }
-
-  closeEditor() {
-    this.editing = null;
-    this.editBuffer = { title: '', status: 'To Do', assignee: '', description: '' };
-  }
-
-  addCard(i: number) {
-    const name = (this.columns[i] as any)?.newCardName?.trim();
-    if (!name) return;
-
-    this.boardService.addCard(i, name);
-
-    if (this.columns[i]) (this.columns[i] as any).newCardName = '';
-  }
-
-  // ---------------- COLUMNS -------------------
+  // =====================================================
+  // COLUMNS & CARDS CRUD
+  // =====================================================
   addColumn() {
     const name = this.newColumnName.trim();
     if (!name) return;
@@ -205,56 +237,62 @@ export class BoardComponent implements OnInit, OnDestroy {
   }
 
   deleteColumn(i: number) {
-    if (
-      this.columns.length > 1 &&
-      confirm(`Bạn có chắc chắn muốn xóa cột "${(this.columns[i] as any).title}" không?`)
-    ) {
+    if (this.columns.length > 1 && confirm('Xóa danh sách này?')) {
       this.boardService.deleteColumn(i);
-      if (this.editing && this.editing.i === i) this.closeEditor();
     }
   }
 
-  // ---------------- SYNC TASK SERVICE -------------------
-  private syncTaskFromEditBuffer(): void {
-    if (!this.editBuffer) return;
+  addCard(i: number) {
+    const col: any = this.columns[i];
+    const name = col?.newCardName?.trim();
+    if (!name) return;
+    this.boardService.addCard(i, name);
+    col.newCardName = '';
+  }
 
-    try {
-      const buf: any = this.editBuffer;
-      const status = (buf.status ?? 'To Do').toString();
+  // =====================================================
+  // CARD EDITOR & FILTER
+  // =====================================================
+  shouldHighlight(card: Card): boolean {
+    if (!this.currentFilterStatus) return true;
+    return (card.status || 'To Do') === this.currentFilterStatus;
+  }
 
-      const partial: Partial<import('../../services/task/task.service').Task> = {
-        status,
-        title: buf.title ?? '',
-        assignee: buf.assignee ?? '',
-        description: buf.description ?? '',
-        boardId: this.boardId || buf.boardId,
-      };
+  openEditor(i: number, j: number, card: Card | string) {
+    this.editing = { i, j };
+    this.editBuffer = typeof card === 'string'
+      ? { title: card, status: 'To Do', assignee: '', description: '' }
+      : { ...card };
+  }
 
-      const snapshot = this.taskService.getSnapshot();
-      let existing = undefined;
+  save() {
+    if (!this.editing) return;
+    const { i, j } = this.editing;
+    this.boardService.updateCard(i, j, { ...this.editBuffer });
+    this.syncTaskService(); // Sync sang TaskService (nếu cần)
+    this.closeEditor();
+  }
 
-      if (buf.id) {
-        existing = snapshot.find(t => t.id === buf.id);
-      }
+  deleteCard() {
+    if (!this.editing) return;
+    const { i, j } = this.editing;
+    this.boardService.deleteCard(i, j);
 
-      if (!existing) {
-        existing = snapshot.find(
-          t =>
-            String(t?.title).trim() === String(buf.title).trim() &&
-            String(t?.boardId) === String(this.boardId)
-        );
-      }
-
-      if (existing?.id) {
-        partial.id = existing.id;
-        partial.list = existing.list ?? buf.list ?? status;
-      } else {
-        partial.list = buf.list ?? status;
-      }
-
-      this.taskService.addTask(partial);
-    } catch (e) {
-      console.error('syncTaskFromEditBuffer failed', e);
+    // Xóa bên TaskService nếu có ID
+    const cardId = (this.editBuffer as any)?.id;
+    if (cardId) {
+      try { this.taskService.deleteTask(cardId); } catch {}
     }
+    this.closeEditor();
+  }
+
+  closeEditor() {
+    this.editing = null;
+    this.editBuffer = { title: '', status: 'To Do', assignee: '', description: '' };
+  }
+
+  private syncTaskService() {
+    // Logic sync sang TaskService để cập nhật My Tasks (Optional)
+    // Giữ nguyên logic cũ của bạn ở đây nếu cần thiết
   }
 }

@@ -1,48 +1,85 @@
-<div class="share-container">
-  <div class="header">
-    <h3>Share board</h3>
-    <mat-icon class="close-btn" (click)="closePopup()">close</mat-icon>
-  </div>
+<div class="share-overlay" (click)="closePopup()">
+  <div class="share-container" (click)="$event.stopPropagation()">
 
-  <div class="section invite-link-box">
-    <div class="link-content">
-      <mat-icon class="link-icon">link</mat-icon>
-      <div class="link-text">
-        <span>Anyone with the link can join</span>
-        <small class="link-url">Copy link to share</small>
-      </div>
-    </div>
-    <button class="copy-btn" (click)="copyLink()">
-      {{ isLinkCopied ? 'Copied!' : 'Copy link' }}
-    </button>
-  </div>
-
-  <div class="section input-section">
-    <div class="input-wrapper">
-      <input
-        type="email"
-        [(ngModel)]="emailInput"
-        placeholder="Email address or name..."
-        (keydown.enter)="addEmail()"
-      />
-      <select class="quick-select" (change)="selectUser($event)">
-        <option value="" disabled selected>Choose...</option>
-        <option *ngFor="let u of availableUsers" [value]="u.id">{{ u.name }}</option>
-      </select>
-    </div>
-    <button class="invite-btn" [disabled]="!emailInput" (click)="addEmail()">Share</button>
-  </div>
-
-  <div class="section member-list">
-    <div class="member-item" *ngFor="let member of currentMembers">
-      <div class="avatar-circle">{{ member.avatar }}</div>
-      <div class="member-info">
-        <span class="name">{{ member.name }}</span>
-        <span class="role">Member</span>
-      </div>
-      <button class="remove-btn" *ngIf="member.name !== 'You (Admin)'" (click)="removeMember(member)">
-        Remove
+    <div class="header">
+      <h3>Share board</h3>
+      <button class="close-btn" (click)="closePopup()">
+        <mat-icon>close</mat-icon>
       </button>
     </div>
+
+    <div class="section invite-link-box">
+      <div class="link-content">
+        <div class="icon-bg">
+          <mat-icon>link</mat-icon>
+        </div>
+        <div class="link-text">
+          <span>Anyone with the link can join</span>
+          <small class="link-url">Copy link to share</small>
+        </div>
+      </div>
+      <button class="copy-btn" (click)="copyLink()">
+        {{ isLinkCopied ? 'Copied!' : 'Copy link' }}
+      </button>
+    </div>
+
+    <div class="section input-section-wrapper">
+      <div class="input-row">
+        <input
+          type="email"
+          [(ngModel)]="emailInput"
+          placeholder="Email address..."
+          (keydown.enter)="inviteUser()"
+          [disabled]="isLoading"
+          [class.input-error]="errorMessage"
+        />
+        <button
+          class="invite-btn"
+          [disabled]="!emailInput || isLoading"
+          (click)="inviteUser()"
+        >
+          {{ isLoading ? '...' : 'Share' }}
+        </button>
+      </div>
+
+      <div class="message-box">
+        <small class="error-text" *ngIf="errorMessage">
+          <mat-icon class="msg-icon">error</mat-icon> {{ errorMessage }}
+        </small>
+
+        <small class="success-text" *ngIf="successMessage">
+          <mat-icon class="msg-icon">check_circle</mat-icon> {{ successMessage }}
+        </small>
+      </div>
+    </div>
+
+    <div class="section member-list">
+      <div class="member-label">Board members ({{currentMembers.length}})</div>
+
+      <div class="member-item" *ngFor="let member of currentMembers">
+
+        <div class="avatar-circle" [title]="member.full_name || member.email">
+          <img
+            *ngIf="member.avatar_url && !member.imageError"
+            [src]="member.avatar_url"
+            (error)="member.imageError = true"
+            class="avatar-img"
+            alt="avatar"
+          >
+          <span *ngIf="!member.avatar_url || member.imageError">
+            {{ getInitials(member.full_name || member.email) }}
+          </span>
+        </div>
+
+        <div class="member-info">
+          <span class="name">
+            {{ member.full_name || member.email }}
+            </span>
+          <span class="role-badge">{{ member.role }}</span>
+        </div>
+
+      </div>
+    </div>
+
   </div>
 </div>

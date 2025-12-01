@@ -24,17 +24,15 @@
     </div>
 
     <div class="share-wrapper">
-      <button class="share-btn" (click)="toggleShare()">
+      <button class="share-btn" (click)="onShareClick()">
         <mat-icon class="share-icon">person_add</mat-icon>
         <span>Share</span>
       </button>
 
-      <app-share-popup
-        *ngIf="isShareOpen"
-        (close)="isShareOpen = false">
-      </app-share-popup>
     </div>
 
   </div>
 
+  <div class="right">
+  </div>
 </nav>

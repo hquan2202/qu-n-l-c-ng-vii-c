@@ -1,82 +1,120 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
+import { HttpErrorResponse } from '@angular/common/http';
 
-interface Member {
-  id?: number;
-  name: string;
-  type: 'user' | 'email';
-  avatar?: string; // Mock avatar url hoặc initials
-}
+
+// Import Services
+import { BoardService } from '../../services/board/board.service';
+import { InvitationService } from '../../services/invitation/invitation.service';
 
 @Component({
-  selector: 'app-share-popup',
+  selector: 'app-share', // 👈 Selector ngắn gọn theo tên folder của bạn
   standalone: true,
   imports: [CommonModule, FormsModule, MatIconModule],
   templateUrl: './share.html',
   styleUrls: ['./share.css']
 })
-export class SharePopupComponent {
+export class ShareComponent implements OnInit { // 👈 Tên Class theo file share.ts
+  @Input() boardId!: string;
   @Output() close = new EventEmitter<void>();
 
   emailInput = '';
   isLinkCopied = false;
-  inviteLink = 'https://task-app.com/invite/b/xyz123'; // Link giả lập
+  isLoading = false;
+  currentMembers: any[] = [];
+  errorMessage = '';
+  successMessage = '';
+  constructor(
+    private boardService: BoardService,
+    private invitationService: InvitationService
+  ) {}
 
-  // Mock data: Những người ĐÃ có trong bảng
-  currentMembers: Member[] = [
-    { id: 1, name: 'You (Admin)', type: 'user', avatar: 'A' },
-  ];
+  ngOnInit(): void {
+    // Lấy danh sách thành viên
+    this.boardService.boardInfo$.subscribe((info: any) => {
+      if (info && info.members) {
+        this.currentMembers = info.members;
+      }
+    });
+  }
 
-  // Mock data: Những người CÓ THỂ mời
-  availableUsers: Member[] = [
-    { id: 3, name: 'Bob Smith', type: 'user', avatar: 'BS' },
-    { id: 4, name: 'Charlie Brown', type: 'user', avatar: 'CB' }
-  ];
+  private isValidEmail(email: string): boolean {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  }
 
-  // Xử lý Copy Link
+  // 2️⃣ Hàm xử lý mời (Cập nhật logic)
+  async inviteUser() {
+    // 1. Reset thông báo
+    this.errorMessage = '';
+    this.successMessage = '';
+
+    const email = this.emailInput.trim();
+
+    // 2. Validate cơ bản ở Frontend
+    if (!email) return;
+
+    if (!this.isValidEmail(email)) {
+      this.errorMessage = 'Email không đúng định dạng (vd: abc@gmail.com)';
+      return;
+    }
+
+    try {
+      this.isLoading = true;
+
+      // 3. Gọi API
+      console.log('Đang mời:', email);
+      await this.invitationService.sendInvitation(this.boardId, email);
+
+      // Nếu chạy xuống đây nghĩa là Backend trả về 200 OK -> Thành công
+      this.successMessage = `Đã mời thành công: ${email}`;
+      this.emailInput = '';
+
+      // Tự tắt thông báo sau 3s
+      setTimeout(() => this.successMessage = '', 3000);
+
+    } catch (error: any) {
+      console.error('API trả về lỗi:', error); // Quan trọng: Xem log này ở F12
+
+      // 4. Xử lý lỗi dựa trên phản hồi từ Backend
+      if (error instanceof HttpErrorResponse) {
+        if (error.status === 404) {
+          // 🔥 LỖI BẠN CẦN: Backend báo không tìm thấy user
+          this.errorMessage = 'Người dùng này chưa đăng ký tài khoản!';
+        } else if (error.status === 409) {
+          this.errorMessage = 'Người này đã ở trong bảng rồi.';
+        } else if (error.status === 400) {
+          this.errorMessage = 'Yêu cầu không hợp lệ.';
+        } else {
+          // Lấy message chi tiết từ backend nếu có
+          this.errorMessage = error.error?.message || 'Lỗi server, vui lòng thử lại.';
+        }
+      } else {
+        this.errorMessage = 'Đã xảy ra lỗi kết nối.';
+      }
+    } finally {
+      this.isLoading = false;
+    }
+  }
+
+
+
   copyLink() {
-    navigator.clipboard.writeText(this.inviteLink).then(() => {
+    const url = window.location.href;
+    navigator.clipboard.writeText(url).then(() => {
       this.isLinkCopied = true;
       setTimeout(() => this.isLinkCopied = false, 2000);
     });
   }
 
-  // Xử lý thêm thành viên từ input
-  addEmail() {
-    if (this.emailInput.trim()) {
-      // Logic gọi API mời email ở đây
-      this.currentMembers.push({
-        name: this.emailInput,
-        type: 'email',
-        avatar: '@'
-      });
-      this.emailInput = '';
-    }
-  }
-
-  // Chọn user từ dropdown (mô phỏng)
-  selectUser(event: any) {
-    const userId = Number(event.target.value);
-    const user = this.availableUsers.find(u => u.id === userId);
-    if (user) {
-      this.currentMembers.push(user);
-      // Xóa khỏi danh sách available để không mời lại
-      this.availableUsers = this.availableUsers.filter(u => u.id !== userId);
-    }
-    event.target.value = "";
-  }
-
-  // Xóa thành viên (Remove)
-  removeMember(member: Member) {
-    this.currentMembers = this.currentMembers.filter(m => m !== member);
-    if (member.type === 'user') {
-      this.availableUsers.push(member); // Trả lại list available
-    }
-  }
-
   closePopup() {
     this.close.emit();
+  }
+
+  getInitials(name: string): string {
+    if (!name) return '?';
+    return name.charAt(0).toUpperCase();
   }
 }

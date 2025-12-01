@@ -45,6 +45,7 @@ export class TaskDescriptionComponent implements OnInit {
 
   // Invite Variables
   emailInput = '';
+  inputError = '';
   isLinkCopied = false;
   inviteLink = 'https://mytrello.com/invite/b/kLs23a';
 
@@ -76,6 +77,35 @@ export class TaskDescriptionComponent implements OnInit {
   }
 
   // --- LOGIC INVITE ---
+
+  addEmail() {
+    const email = this.emailInput.trim();
+    if (!email) return;
+
+    // 1. Kiểm tra Regex
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      this.inputError = 'Email không đúng định dạng (vd: user@example.com)';
+      return;
+    }
+
+    // 2. Kiểm tra trùng lặp
+    const exists = this.selectedMembers.some(m => m.name === email && m.type === 'email');
+    if (exists) {
+      this.inputError = 'Email này đã được thêm vào danh sách';
+      return;
+    }
+
+    // 3. Thêm thành công
+    this.selectedMembers.push({ name: email, type: 'email' });
+    this.emailInput = '';
+    this.inputError = ''; // Reset lỗi
+  }
+  onInputChange() {
+    if (this.inputError) {
+      this.inputError = '';
+    }
+  }
   addMemberFromSelect(event: any) {
     const userId = Number(event.target.value);
     const user = this.availableUsers.find(u => u.id === userId);
@@ -83,18 +113,6 @@ export class TaskDescriptionComponent implements OnInit {
       this.selectedMembers.push(user);
     }
     this.memberSelect.nativeElement.value = "";
-  }
-
-  addEmail() {
-    const email = this.emailInput.trim();
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (email && emailRegex.test(email)) {
-      const exists = this.selectedMembers.some(m => m.name === email && m.type === 'email');
-      if (!exists) {
-        this.selectedMembers.push({ name: email, type: 'email' });
-        this.emailInput = '';
-      }
-    }
   }
 
   removeMember(member: BoardMember) {

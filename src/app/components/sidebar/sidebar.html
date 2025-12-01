@@ -1,9 +1,5 @@
 <div class="sidebar-container">
-
-  <!-- Nhóm menu trên cùng -->
   <div class="nav-group">
-
-    <!-- Trang chủ -->
     <div
       class="menu-item"
       routerLink="/home"
@@ -14,7 +10,6 @@
       <span class="label">Trang chủ</span>
     </div>
 
-    <!-- My Tasks -->
     <div
       class="menu-item"
       routerLink="/all-task"
@@ -27,7 +22,6 @@
 
   <div class="divider"></div>
 
-  <!-- SECTION: BẢNG -->
   <div class="board-section">
     <div class="section-header" (click)="toggleBoards()">
       <span class="section-title">Bảng</span>
@@ -37,16 +31,18 @@
     </div>
 
     <div class="board-list" [class.expanded]="isBoardsOpen">
-      <!-- Mỗi board lấy từ myBoards (backend) -->
+      <div class="menu-item empty" *ngIf="mySoloBoards.length === 0">
+        <span class="label" style="opacity: 0.6; font-style: italic;">Chưa có bảng nào</span>
+      </div>
+
       <div
         class="menu-item board-item"
-        *ngFor="let board of myBoards; trackBy: trackById"
+        *ngFor="let board of mySoloBoards; trackBy: trackById"
         [routerLink]="['/card', board.id]"
         routerLinkActive="active"
       >
         <div class="board-content">
           <div class="icon">
-            <!-- dot màu theo background / color -->
             <div
               class="board-dot"
               [style.background]="board.background || board.color || '#ffffff'"
@@ -55,19 +51,12 @@
           <span class="label">{{ board.title }}</span>
         </div>
 
-        <!-- (tuỳ nhóm có dùng menu 3 chấm hay không, để sẵn hook) -->
         <div class="board-actions" (click)="$event.stopPropagation()">
-          <!-- ví dụ sau này có mat-menu thì gắn vào đây -->
         </div>
       </div>
-      <div class="board-list" [class.expanded]="isBoardsOpen" *ngIf="myBoards.length === 0">
-    
-      <span class="label">Chưa có bảng nào</span>
-    
     </div>
   </div>
 
-  <!-- SECTION: NHÓM -->
   <div class="board-section">
     <div class="section-header" (click)="toggleTeams()">
       <span class="section-title">Nhóm</span>
@@ -77,15 +66,53 @@
     </div>
 
     <div class="board-list" [class.expanded]="isTeamsOpen">
-      <!-- Hiện tại chỉ có 1 link "Tất cả nhóm" -->
+
+      <div class="sub-section-title">Nhóm của tôi</div>
+
+      <div class="menu-item empty" *ngIf="myGroupsOwned.length === 0">
+        <span class="label" style="opacity: 0.6; font-style: italic;">Chưa có nhóm nào</span>
+      </div>
+
       <div
-        class="menu-item"
-        routerLink="/teams"
+        class="menu-item board-item"
+        *ngFor="let board of myGroupsOwned; trackBy: trackById"
+        [routerLink]="['/card', board.id]"
         routerLinkActive="active"
       >
-        <span class="label">Tất cả nhóm</span>
+        <div class="board-content">
+          <div class="icon">
+            <div
+              class="board-dot"
+              [style.background]="board.background || board.color || '#ffffff'"
+            ></div>
+          </div>
+          <span class="label">{{ board.title }}</span>
+        </div>
       </div>
+
+      <div class="sub-section-title">Nhóm tôi được mời</div>
+
+      <div class="menu-item empty" *ngIf="myGroupsInvited.length === 0">
+        <span class="label" style="opacity: 0.6; font-style: italic;">Chưa được mời vào nhóm nào</span>
+      </div>
+
+      <div
+        class="menu-item board-item"
+        *ngFor="let board of myGroupsInvited; trackBy: trackById"
+        [routerLink]="['/card', board.id]"
+        routerLinkActive="active"
+      >
+        <div class="board-content">
+          <div class="icon">
+            <div
+              class="board-dot shared"
+              [style.background]="board.background || board.color || '#ffffff'"
+            ></div>
+          </div>
+          <span class="label">{{ board.title }}</span>
+        </div>
+      </div>
+
     </div>
   </div>
-
 </div>

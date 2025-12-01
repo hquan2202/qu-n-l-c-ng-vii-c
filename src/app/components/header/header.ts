@@ -1,21 +1,37 @@
 // src/app/components/header/header.ts
-import { Component, OnInit, Output, EventEmitter, ChangeDetectorRef } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  Output,
+  EventEmitter,
+  ChangeDetectorRef,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { AuthService } from '../../services/auth/auth.service';
-import {AccountPopupComponent} from '../account/account';
-import { NotificationPopupComponent } from '../notification/notification';
 import { MatIconModule } from '@angular/material/icon';
+import { MatBadgeModule } from '@angular/material/badge';
+
+import { AuthService } from '../../services/auth/auth.service';
+import { InvitationService } from '../../services/invitation/invitation.service';
+
+import { AccountPopupComponent } from '../account/account';
+import { NotificationPopupComponent } from '../notification/notification';
 
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [CommonModule, FormsModule, AccountPopupComponent, NotificationPopupComponent, MatIconModule],
+  imports: [
+    CommonModule,
+    FormsModule,
+    MatIconModule,
+    MatBadgeModule,
+    AccountPopupComponent,
+    NotificationPopupComponent,
+  ],
   templateUrl: './header.html',
-  styleUrls: ['./header.css']
+  styleUrls: ['./header.css'],
 })
 export class HeaderComponent implements OnInit {
-  // FIX: Thêm access modifiers (public/private)
   public user: any = null;
   public isDark = false;
   public isPopupVisible = false;
@@ -23,22 +39,29 @@ export class HeaderComponent implements OnInit {
   public headerCreateWorkspaceVisible = false;
   public searchText = '';
 
+  // Notifications
+  public notifications: any[] = [];
+  public isGettingNotifications = false;
+
   @Output() public search = new EventEmitter<string>();
 
-  // FIX: Thêm access modifiers vào constructor và sử dụng kiểu AuthService
-  constructor(private authService: AuthService, private cdr: ChangeDetectorRef) {}
+  constructor(
+    private authService: AuthService,
+    private cdr: ChangeDetectorRef,
+    private invitationService: InvitationService,
+  ) {}
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
     this.applyTheme();
-    this.loadUser();
+    await this.loadUser();
   }
+
+  // ===== User & theme =====
 
   private async loadUser(): Promise<void> {
-    // Sử dụng optional chaining (?.) an toàn hơn
-    this.user = await this.authService?.getCurrentUser?.() ?? null;
+    this.user = (await this.authService?.getCurrentUser?.()) ?? null;
     this.cdr.detectChanges();
   }
-
 
   private applyTheme(): void {
     if (this.isDark) {
@@ -48,28 +71,84 @@ export class HeaderComponent implements OnInit {
     }
   }
 
-  public toggleNotificationPopup(): void {
+  // ===== Notification popup =====
+
+  public async toggleNotificationPopup(): Promise<void> {
     this.isNotificationVisible = !this.isNotificationVisible;
+
+    if (this.isNotificationVisible) {
+      await this.reloadInvitations();
+    }
   }
 
   public closeNotification(): void {
     this.isNotificationVisible = false;
   }
 
+  public async reloadInvitations(): Promise<void> {
+    this.isGettingNotifications = true;
+
+    try {
+      const raw = await this.invitationService.getMyInvitations();
+
+      this.notifications = (raw ?? [])
+        // backup: nếu sau này có trả thêm accepted/rejected
+        .filter((inv: any) => !inv.status || inv.status === 'pending')
+        .map((inv: any) => {
+          const email = inv?.invited_by_email ?? 'Someone';
+          const boardName =
+            inv?.board_name ?? inv?.boards?.name ?? 'Unknown';
+
+          return {
+            id: inv.id,
+            type: 'invite_board',
+            message: `You have been invited to join board "${boardName}"`,
+            createdAt: inv.created_at,
+            boardId: inv.board_id,
+            senderId: inv.invited_by,
+            senderEmail: email,
+          };
+        });
+    } catch (error) {
+      console.error('Error loading invitations:', error);
+      this.notifications = [];
+    } finally {
+      this.isGettingNotifications = false;
+      this.cdr.detectChanges();
+    }
+  }
+
+
+
+  /** Gọi khi popup báo là có thay đổi (accept/reject) */
+  public async onNotificationsChanged(): Promise<void> {
+    await this.reloadInvitations();
+  }
+
+  /** Số thông báo chưa xử lý (pending) */
+  public get unreadCount(): number {
+    return this.notifications.length;
+  }
+
+  // ===== Avatar & account popup =====
+
   public get avatarUrl(): string {
-    return this.user?.user_metadata?.['avatar_url'] || 'assets/images/default-avatar.png';
+    return (
+      this.user?.user_metadata?.['avatar_url'] ||
+      'assets/images/default-avatar.png'
+    );
   }
 
   public onAvatarError(_: Event): void {
     if (this.user && this.user.user_metadata) {
-      this.user.user_metadata['avatar_url'] = 'assets/images/default-avatar.png';
+      this.user.user_metadata['avatar_url'] =
+        'assets/images/default-avatar.png';
     }
     this.cdr.detectChanges();
   }
 
   public toggleAccountPopup(): void {
     this.isPopupVisible = !this.isPopupVisible;
-    console.log('Popup visible:', this.isPopupVisible);
   }
 
   public closePopup(): void {
@@ -81,15 +160,15 @@ export class HeaderComponent implements OnInit {
   }
 
   public async logout(): Promise<void> {
-    // Sử dụng optional chaining (?.) an toàn hơn
     await this.authService?.signOut?.();
     this.user = null;
     this.closePopup();
     window.location.href = '/login';
   }
 
+  // ===== Search =====
+
   public onSearch(): void {
     this.search.emit(this.searchText);
   }
-
 }
